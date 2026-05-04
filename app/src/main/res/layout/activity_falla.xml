@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9E9E9E"
+    android:orientation="vertical">
+
+    <!-- BARRA SUPERIOR -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#000000">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_voltar_ia"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@android:drawable/ic_media_rew"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Fala IA"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_ajuda"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:src="@android:drawable/ic_menu_help"
+            app:tint="#FFFFFF" />
+    </RelativeLayout>
+
+    <!-- BOTÕES DE AÇÃO (FALAR E FAVORITAR) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
+
+        <!-- Botão Falar -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btn_falar"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:layout_marginEnd="12dp"
+            app:cardBackgroundColor="#00BCD4"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Falar"
+                    android:textColor="#000000"
+                    android:textSize="22sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_btn_speak_now"
+                    app:tint="#000000" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Botão Favorito -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btn_favoritar_ia"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:cardBackgroundColor="#00BCD4"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:src="@android:drawable/btn_star_big_on"
+                app:tint="#FFEB3B" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <!-- CAMPO DE DIGITAÇÃO -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="32dp">
+
+        <EditText
+            android:id="@+id/edt_fala_ia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:gravity="center"
+            android:hint="digite o que deseja"
+            android:textColor="#000000"
+            android:textColorHint="#424242"
+            android:textSize="20sp" />
+
+        <!-- Linha preta grossa abaixo do texto -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="4dp"
+            android:background="#000000" />
+    </LinearLayout>
+
+</LinearLayout>

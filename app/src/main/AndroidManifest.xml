@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Falla">
         <activity
+            android:name=".FallaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PerfilActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
