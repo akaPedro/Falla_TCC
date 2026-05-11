@@ -75,68 +75,94 @@
     </LinearLayout>
 
     <!-- 2. BARRA LATERAL (DRAWER) -->
-    <com.google.android.material.navigation.NavigationView
+    <FrameLayout
         android:id="@+id/nav_view"
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#000000">
+        android:background="#000000"
+        android:clickable="true"
+        android:focusable="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
+
             <TextView
                 android:id="@+id/item_tamanho"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
                 android:text="Tamanho dos botões"
                 android:textColor="#FFFFFF"
-                android:gravity="center"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#444444" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#333333" />
 
             <TextView
                 android:id="@+id/item_cores"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
                 android:text="Cores"
                 android:textColor="#FFFFFF"
-                android:gravity="center"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#444444" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#333333" />
 
             <TextView
                 android:id="@+id/item_historico"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:text="historico"
-                android:textColor="#FFFFFF"
+                android:background="?attr/selectableItemBackground"
                 android:gravity="center"
+                android:text="Histórico"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#444444" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#333333" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#444444" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#333333" />
 
             <TextView
                 android:id="@+id/item_sobre"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
                 android:text="Sobre"
                 android:textColor="#FFFFFF"
-                android:gravity="center"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
-    </com.google.android.material.navigation.NavigationView>
+    </FrameLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

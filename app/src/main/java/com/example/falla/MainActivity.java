@@ -46,9 +46,33 @@ public class MainActivity extends AppCompatActivity {
         itemHistorico = findViewById(R.id.item_historico);
         itemSobre = findViewById(R.id.item_sobre);
 
+        // Barra latreral
+        itemTamanho.setOnClickListener(v -> {
+            // Lógica para abrir configuração de tamanho
+            Toast.makeText(this, "Ajustar botões", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawers(); // Fecha a barra lateral após o clique
+        });
+
+        itemCores.setOnClickListener(v -> {
+            // Lógica para cores
+            drawerLayout.closeDrawers();
+        });
+
+        itemHistorico.setOnClickListener(v -> {
+            // Lógica para histórico
+            drawerLayout.closeDrawers();
+        });
+
+        itemSobre.setOnClickListener(v -> {
+            // Abrir uma Activity ou Dialog de "Sobre"
+            drawerLayout.closeDrawers();
+        });
+
+
+
+
 
         // Botões de navegação
-        // Barra latreral
         imgMenu.setOnClickListener(v -> {
             drawerLayout.openDrawer(GravityCompat.START);
         });
@@ -72,8 +96,6 @@ public class MainActivity extends AppCompatActivity {
             // Sua lógica de cores aqui
             drawerLayout.closeDrawer(GravityCompat.START);
         });
-
-
 
 
 
