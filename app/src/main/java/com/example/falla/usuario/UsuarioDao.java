@@ -1,11 +1,9 @@
-package com.example.falla.DAO;
+package com.example.falla.usuario;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-
-import com.example.falla.Usuario;
 
 @Dao
 public interface UsuarioDao {

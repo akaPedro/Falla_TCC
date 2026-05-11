@@ -1,4 +1,4 @@
-package com.example.falla;
+package com.example.falla.usuario;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

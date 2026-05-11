@@ -13,13 +13,13 @@
         android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.Falla">
         <activity
-            android:name=".FallaActivity"
+            android:name=".activities.FallaActivity"
             android:exported="true" />
         <activity
-            android:name=".PerfilActivity"
+            android:name=".activities.PerfilActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.example.falla;
+package com.example.falla.activities;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
@@ -20,9 +20,10 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.room.Room;
 
 import com.example.falla.DAO.AppDatabase;
+import com.example.falla.R;
+import com.example.falla.usuario.Usuario;
 
 import java.io.File;
 import java.io.FileOutputStream;

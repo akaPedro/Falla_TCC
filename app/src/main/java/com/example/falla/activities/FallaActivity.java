@@ -1,4 +1,4 @@
-package com.example.falla;
+package com.example.falla.activities;
 
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -9,10 +9,11 @@ import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.falla.R;
 
 import java.util.Locale;
 
