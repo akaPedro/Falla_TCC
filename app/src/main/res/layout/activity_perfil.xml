@@ -44,14 +44,24 @@
         android:layout_marginTop="48dp">
 
         <!-- Ícone do usuário gigante -->
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/img_foto_perfil"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="180dp"
             android:layout_height="180dp"
-            android:src="@drawable/ic_launcher_foreground"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            app:tint="@null" />
+            app:cardCornerRadius="90dp"
+            app:cardElevation="4dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="#FFFFFF"
+            android:layout_gravity="center">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/img_foto_perfil"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_launcher_foreground"
+                app:tint="@null" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Lápis de edição (CardView circular com fundo branco) -->
         <androidx.cardview.widget.CardView
