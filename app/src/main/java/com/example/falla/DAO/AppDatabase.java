@@ -5,16 +5,22 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
+import com.example.falla.usuario.Converters;
+import com.example.falla.usuario.ItemCard;
+import com.example.falla.usuario.ItemCardDao;
 import com.example.falla.usuario.Usuario;
 import com.example.falla.usuario.UsuarioDao;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Usuario.class}, version = 1)
+@TypeConverters({Converters.class}) // Adicione esta linha
+@Database(entities = {Usuario.class, ItemCard.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UsuarioDao usuarioDao();
+    public abstract ItemCardDao itemCardDao(); // Adicione isso
 
     private static volatile AppDatabase INSTANCE;
     // Executor com 4 threads para operações de banco
@@ -26,7 +32,8 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    AppDatabase.class, "banco-falla")
+                            AppDatabase.class, "banco-falla")
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

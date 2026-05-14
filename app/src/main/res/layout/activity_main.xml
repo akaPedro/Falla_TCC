@@ -33,15 +33,24 @@
                     android:layout_height="32dp"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:src="@android:drawable/btn_dialog"
-                    android:contentDescription="Abrir menu"
+                    android:src="@android:drawable/ic_menu_sort_by_size"
                     app:tint="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Falla"
+                    android:textColor="#FFFFFF"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -60,109 +69,166 @@
                         app:tint="#FFFFFF" />
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="Falla"
-                    android:textColor="#FFFFFF"
-                    android:textSize="34sp"
-                    android:textStyle="bold" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 
-        <!-- Aqui entra o restante do conteúdo da Main que faremos depois -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/container_gavetas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/btn_confirmar"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:cardBackgroundColor="#28A745"
+                        app:cardCornerRadius="8dp">
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:src="@android:drawable/checkbox_on_background" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/btn_cancelar"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        app:cardBackgroundColor="#DC3545"
+                        app:cardCornerRadius="8dp">
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:src="@android:drawable/ic_delete" />
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/header_pessoal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/seta_pessoal"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_media_play"
+                        app:tint="#000000"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pessoal"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"/>
+                </LinearLayout>
+
+                <GridLayout
+                    android:id="@+id/conteudo_pessoal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:visibility="gone">
+                </GridLayout>
+
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
-    <!-- 2. BARRA LATERAL (DRAWER) -->
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/nav_view"
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#000000"
+        android:orientation="vertical"
         android:clickable="true"
         android:focusable="true">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/item_tamanho"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:text="Tamanho dos botões"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="24dp"
+            android:gravity="center"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="30dp" />
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
 
-            <TextView
-                android:id="@+id/item_tamanho"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:text="Tamanho dos botões"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/item_cores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cores"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="24dp"
+            android:gravity="center"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#333333" />
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
 
-            <TextView
-                android:id="@+id/item_cores"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:text="Cores"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/item_historico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="historico"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="24dp"
+            android:gravity="center"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#333333" />
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
 
-            <TextView
-                android:id="@+id/item_historico"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:text="Histórico"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#333333" />
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+        <TextView
+            android:id="@+id/item_sobre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sobre"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="24dp"
+            android:gravity="center"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#333333" />
-
-            <TextView
-                android:id="@+id/item_sobre"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:text="Sobre"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-    </FrameLayout>
+    </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

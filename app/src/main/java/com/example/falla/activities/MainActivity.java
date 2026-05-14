@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatImageView imgMenu;
     // Itens da barra lateral
     private TextView itemTamanho, itemCores, itemHistorico, itemSobre;
+    private LinearLayout headerPessoal;
+    private ImageView setaPessoal;
+    private GridLayout conteudoPessoal;
 
 
     @SuppressLint("MissingInflatedId")
@@ -45,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         itemCores = findViewById(R.id.item_cores);
         itemHistorico = findViewById(R.id.item_historico);
         itemSobre = findViewById(R.id.item_sobre);
+        headerPessoal = findViewById(R.id.header_pessoal);
+        conteudoPessoal = findViewById(R.id.conteudo_pessoal);
+        setaPessoal = findViewById(R.id.seta_pessoal);
 
         // Barra latreral
         itemTamanho.setOnClickListener(v -> {
@@ -67,9 +75,6 @@ public class MainActivity extends AppCompatActivity {
             // Abrir uma Activity ou Dialog de "Sobre"
             drawerLayout.closeDrawers();
         });
-
-
-
 
 
         // Botões de navegação
@@ -97,6 +102,40 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
         });
 
+        // #####  HEADERS ##### //
+
+//        configurarGaveta(findViewById(R.id.header_favoritos), findViewById(R.id.grid_favoritos), findViewById(R.id.txt_seta_favoritos));
+//        configurarGaveta(findViewById(R.id.header_pessoal), findViewById(R.id.grid_pessoal), findViewById(R.id.txt_seta_pessoal));
+//        configurarGaveta(findViewById(R.id.header_comidas), findViewById(R.id.grid_comidas), findViewById(R.id.txt_seta_comidas));
+
+
+        headerPessoal.setOnClickListener(v -> {
+            if (conteudoPessoal.getVisibility() == View.GONE) {
+                conteudoPessoal.setVisibility(View.VISIBLE);
+                setaPessoal.setRotation(90f); // Gira a seta para baixo
+            } else {
+                conteudoPessoal.setVisibility(View.GONE);
+                setaPessoal.setRotation(0f); // Seta volta para a direita
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -121,4 +160,36 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
+
+    private void configurarGaveta(LinearLayout header, GridLayout grid, TextView seta) {
+        header.setOnClickListener(v -> {
+            if (grid.getVisibility() == View.GONE) {
+                grid.setVisibility(View.VISIBLE);
+                seta.setText("v "); // Seta para baixo
+            } else {
+                grid.setVisibility(View.GONE);
+                seta.setText("> "); // Seta para o lado
+            }
+        });
+    }
+
+//    private void setupGaveta(int headerId, int gridId, String titulo) {
+//        LinearLayout header = findViewById(headerId);
+//        GridLayout grid = findViewById(gridId);
+//        TextView txtTitulo = header.findViewById(R.id.txt_titulo_gaveta);
+//        ImageView seta = header.findViewById(R.id.img_seta);
+//
+//        txtTitulo.setText(titulo);
+//
+//        header.setOnClickListener(v -> {
+//            if (grid.getVisibility() == View.GONE) {
+//                grid.setVisibility(View.VISIBLE);
+//                seta.setRotation(90f); // Gira a seta para baixo
+//            } else {
+//                grid.setVisibility(View.GONE);
+//                seta.setRotation(0f);
+//            }
+//        });
+//    }
+
 }
