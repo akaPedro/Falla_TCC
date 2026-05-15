@@ -1,4 +1,4 @@
-package com.example.falla.usuario;
+package com.example.falla.card;
 
 public enum CategoriaItem {
     FAVORITOS("Favoritos"),

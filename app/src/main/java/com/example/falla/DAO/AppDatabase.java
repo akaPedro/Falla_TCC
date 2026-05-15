@@ -7,9 +7,9 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.example.falla.usuario.Converters;
-import com.example.falla.usuario.ItemCard;
-import com.example.falla.usuario.ItemCardDao;
+import com.example.falla.card.Converters;
+import com.example.falla.card.ItemCard;
+import com.example.falla.card.ItemCardDao;
 import com.example.falla.usuario.Usuario;
 import com.example.falla.usuario.UsuarioDao;
 
