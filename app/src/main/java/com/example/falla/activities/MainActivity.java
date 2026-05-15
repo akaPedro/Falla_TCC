@@ -3,6 +3,8 @@ package com.example.falla.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -21,8 +23,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.falla.R;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
+    private TextToSpeech tts;
     private ImageView ImgFll;
     private ImageView ImgPerf;
     private DrawerLayout drawerLayout;
@@ -54,7 +59,41 @@ public class MainActivity extends AppCompatActivity {
         conteudoPessoal = findViewById(R.id.conteudo_pessoal);
         setaPessoal = findViewById(R.id.seta_pessoal);
 
-        // Barra latreral
+        // #####  cards principais ##### //
+
+        // Card Sim
+        LinearLayout headerCardSim = findViewById(R.id.header_card_sim);
+        LinearLayout conteudoCardSim = findViewById(R.id.conteudo_card_sim);
+        TextView txtSetaSim = findViewById(R.id.txt_seta_sim);
+        ImageView iconSim = findViewById(R.id.img_sim_icon);
+
+        // Card Não
+        LinearLayout headerCardNao = findViewById(R.id.header_card_nao);
+        LinearLayout conteudoCardNao = findViewById(R.id.conteudo_card_nao);
+        TextView txtSetaNao = findViewById(R.id.txt_seta_nao);
+        ImageView iconNao = findViewById(R.id.img_nao_icon);
+
+        // Configurar as interações principais
+        configurarGavetaInternaCard(headerCardSim, conteudoCardSim, txtSetaSim, ">", "v");
+        configurarGavetaInternaCard(headerCardNao, conteudoCardNao, txtSetaNao, ">", "v");
+
+        // Se clicar direto na imagem do V/X, fala a palavra principal
+        iconSim.setOnClickListener(v -> falar("Sim"));
+        iconNao.setOnClickListener(v -> falar("Não"));
+
+        // Falas do Card Sim
+        findViewById(R.id.item_sim_quero).setOnClickListener(v -> falar("Sim, eu quero"));
+        findViewById(R.id.item_sim_gosto).setOnClickListener(v -> falar("Sim, eu gosto"));
+        findViewById(R.id.item_sim_bom).setOnClickListener(v -> falar("Isso é bom"));
+
+        // Falas do Card Não
+        findViewById(R.id.item_nao_quero).setOnClickListener(v -> falar("Não, eu não quero"));
+        findViewById(R.id.item_nao_gosto).setOnClickListener(v -> falar("Não, eu não gosto"));
+        findViewById(R.id.item_nao_ruim).setOnClickListener(v -> falar("Isso é ruim"));
+
+
+
+        // #### Barra latreral #### //
         itemTamanho.setOnClickListener(v -> {
             // Lógica para abrir configuração de tamanho
             Toast.makeText(this, "Ajustar botões", Toast.LENGTH_SHORT).show();
@@ -94,12 +133,26 @@ public class MainActivity extends AppCompatActivity {
 
         itemTamanho.setOnClickListener(v -> {
             Toast.makeText(this, "Ajustar Tamanho", Toast.LENGTH_SHORT).show();
-            drawerLayout.closeDrawer(GravityCompat.START); // Fecha após clicar
+            drawerLayout.closeDrawer(GravityCompat.START);
         });
 
         itemCores.setOnClickListener(v -> {
             // Sua lógica de cores aqui
             drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+
+        tts = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                // Define o idioma para Português Brasil
+                int result = tts.setLanguage(new Locale("pt", "BR"));
+
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "Idioma não suportado ou faltando dados.");
+                }
+            } else {
+                Log.e("TTS", "Falha na inicialização!");
+            }
         });
 
         // #####  HEADERS ##### //
@@ -118,23 +171,6 @@ public class MainActivity extends AppCompatActivity {
                 setaPessoal.setRotation(0f); // Seta volta para a direita
             }
         });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -161,16 +197,34 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void configurarGaveta(LinearLayout header, GridLayout grid, TextView seta) {
+    private void configurarGavetaInternaCard(LinearLayout header, LinearLayout conteudo, TextView seta, String textoPadrao, String textoExpandido) {
         header.setOnClickListener(v -> {
-            if (grid.getVisibility() == View.GONE) {
-                grid.setVisibility(View.VISIBLE);
-                seta.setText("v "); // Seta para baixo
+            if (conteudo.getVisibility() == View.GONE) {
+                conteudo.setVisibility(View.VISIBLE);
+                seta.setText(textoExpandido); // Ex: "v sim"
             } else {
-                grid.setVisibility(View.GONE);
-                seta.setText("> "); // Seta para o lado
+                conteudo.setVisibility(View.GONE);
+                seta.setText(textoPadrao); // Ex: "> sim"
             }
         });
+    }
+
+    // #####  FALAR ##### //
+    private void falar(String texto) {
+        if (tts != null) {
+            // QUEUE_FLUSH limpa a fila e fala agora
+            // QUEUE_ADD terminaria de falar o atual para depois falar o novo
+            tts.speak(texto, TextToSpeech.QUEUE_FLUSH, null, null);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onDestroy();
     }
 
 //    private void setupGaveta(int headerId, int gridId, String titulo) {

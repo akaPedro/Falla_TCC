@@ -88,39 +88,163 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginBottom="20dp"
+                    android:baselineAligned="false">
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/btn_confirmar"
+                        android:id="@+id/card_sim"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
                         app:cardBackgroundColor="#28A745"
+                        app:cardElevation="4dp"
                         app:cardCornerRadius="8dp">
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:src="@android:drawable/checkbox_on_background" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/header_card_sim"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/img_sim_icon"
+                                    android:layout_width="50dp"
+                                    android:layout_height="50dp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginTop="16dp"
+                                    android:layout_marginBottom="16dp"
+                                    android:src="@android:drawable/checkbox_on_background" />
+
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:paddingTop="8dp"
+                                    android:paddingBottom="8dp">
+
+                                    <TextView
+                                        android:id="@+id/txt_seta_sim"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text=">"
+                                        android:textColor="#000000"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_marginStart="16dp"/>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="sim"
+                                        android:textColor="#000000"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold"
+                                        android:layout_centerInParent="true"/>
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/conteudo_card_sim"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+                                <TextView android:id="@+id/item_sim_quero" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="quero" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+                                <TextView android:id="@+id/item_sim_gosto" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="gosto" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+                                <TextView android:id="@+id/item_sim_bom" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="bom" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/btn_cancelar"
+                        android:id="@+id/card_nao"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
                         app:cardBackgroundColor="#DC3545"
+                        app:cardElevation="4dp"
                         app:cardCornerRadius="8dp">
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:src="@android:drawable/ic_delete" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/header_card_nao"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/img_nao_icon"
+                                    android:layout_width="50dp"
+                                    android:layout_height="50dp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginTop="16dp"
+                                    android:layout_marginBottom="16dp"
+                                    android:src="@android:drawable/ic_delete" />
+
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:paddingTop="8dp"
+                                    android:paddingBottom="8dp">
+
+                                    <TextView
+                                        android:id="@+id/txt_seta_nao"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text=">"
+                                        android:textColor="#000000"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_marginStart="16dp"/>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="não"
+                                        android:textColor="#000000"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold"
+                                        android:layout_centerInParent="true"/>
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/conteudo_card_nao"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+                                <TextView android:id="@+id/item_nao_quero" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="não quero" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+                                <TextView android:id="@+id/item_nao_gosto" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="não gosto" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+                                <TextView android:id="@+id/item_nao_ruim" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="ruim" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
-
                 <LinearLayout
                     android:id="@+id/header_pessoal"
                     android:layout_width="match_parent"
