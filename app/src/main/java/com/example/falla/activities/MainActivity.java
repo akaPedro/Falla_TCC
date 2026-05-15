@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatImageView imgMenu;
     // Itens da barra lateral
     private TextView itemTamanho, itemCores, itemHistorico, itemSobre;
-    private LinearLayout headerPessoal;
-    private ImageView setaPessoal;
-    private GridLayout conteudoPessoal;
+    private LinearLayout headerPessoal, headerFavoritos, headerComidas, headerLazer, headerReferencia, headerAprendizado;
+    private ImageView setaPessoal, setaFavoritos, setaComidas, setaLazer, setaReferencia, setaAprendizado;
+    private GridLayout conteudoPessoal, conteudoFavoritos, conteudoComidas, conteudoLazer, conteudoReferencia, conteudoAprendizado;
 
 
     @SuppressLint("MissingInflatedId")
@@ -46,50 +46,51 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+       // #####  MAIN  ##### //
+        drawerLayout = findViewById(R.id.main);
 
+        // #####  BARRA PRINCIPAL  ##### //
         ImgFll = findViewById(R.id.img_keyboard);
         ImgPerf = findViewById(R.id.img_profile);
-        drawerLayout = findViewById(R.id.main);
+
+
+        // #####  BARRA LATERAL  ##### //
         imgMenu = findViewById(R.id.img_menu);
         itemTamanho = findViewById(R.id.item_tamanho);
         itemCores = findViewById(R.id.item_cores);
         itemHistorico = findViewById(R.id.item_historico);
         itemSobre = findViewById(R.id.item_sobre);
+
+        // #####  HEADERS ##### //
         headerPessoal = findViewById(R.id.header_pessoal);
-        conteudoPessoal = findViewById(R.id.conteudo_pessoal);
+        headerFavoritos = findViewById(R.id.header_favorito);
+        headerComidas = findViewById(R.id.header_Alimentos);
+        headerLazer = findViewById(R.id.header_lazer);
+        headerReferencia = findViewById(R.id.header_referencia);
+        headerAprendizado = findViewById(R.id.header_aprendizado);
+
+        // #####  SETAS ##### //
         setaPessoal = findViewById(R.id.seta_pessoal);
+        setaFavoritos = findViewById(R.id.seta_favorito);
+        setaComidas = findViewById(R.id.seta_alimento);
+        setaLazer = findViewById(R.id.seta_lazer);
+        setaReferencia = findViewById(R.id.seta_referencia);
+        setaAprendizado = findViewById(R.id.seta_aprendizado);
 
-        // #####  cards principais ##### //
+        // #####  CONTEUDO ##### //
+        conteudoFavoritos = findViewById(R.id.conteudo_favoritos);
+        conteudoPessoal = findViewById(R.id.conteudo_pessoal);
+        conteudoComidas = findViewById(R.id.conteudo_alimentos);
+        conteudoLazer = findViewById(R.id.conteudo_lazer);
+        conteudoReferencia = findViewById(R.id.conteudo_referencia);
+        conteudoAprendizado = findViewById(R.id.conteudo_aprendizado);
 
-        // Card Sim
-        LinearLayout headerCardSim = findViewById(R.id.header_card_sim);
-        LinearLayout conteudoCardSim = findViewById(R.id.conteudo_card_sim);
-        TextView txtSetaSim = findViewById(R.id.txt_seta_sim);
-        ImageView iconSim = findViewById(R.id.img_sim_icon);
 
-        // Card Não
-        LinearLayout headerCardNao = findViewById(R.id.header_card_nao);
-        LinearLayout conteudoCardNao = findViewById(R.id.conteudo_card_nao);
-        TextView txtSetaNao = findViewById(R.id.txt_seta_nao);
-        ImageView iconNao = findViewById(R.id.img_nao_icon);
 
-        // Configurar as interações principais
-        configurarGavetaInternaCard(headerCardSim, conteudoCardSim, txtSetaSim, ">", "v");
-        configurarGavetaInternaCard(headerCardNao, conteudoCardNao, txtSetaNao, ">", "v");
 
-        // Se clicar direto na imagem do V/X, fala a palavra principal
-        iconSim.setOnClickListener(v -> falar("Sim"));
-        iconNao.setOnClickListener(v -> falar("Não"));
 
-        // Falas do Card Sim
-        findViewById(R.id.item_sim_quero).setOnClickListener(v -> falar("Sim, eu quero"));
-        findViewById(R.id.item_sim_gosto).setOnClickListener(v -> falar("Sim, eu gosto"));
-        findViewById(R.id.item_sim_bom).setOnClickListener(v -> falar("Isso é bom"));
 
-        // Falas do Card Não
-        findViewById(R.id.item_nao_quero).setOnClickListener(v -> falar("Não, eu não quero"));
-        findViewById(R.id.item_nao_gosto).setOnClickListener(v -> falar("Não, eu não gosto"));
-        findViewById(R.id.item_nao_ruim).setOnClickListener(v -> falar("Isso é ruim"));
+
 
 
 
@@ -142,6 +143,110 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+        // #####  cards principais ##### //
+
+        // Card Sim
+        LinearLayout headerCardSim = findViewById(R.id.header_card_sim);
+        LinearLayout conteudoCardSim = findViewById(R.id.conteudo_card_sim);
+        TextView txtSetaSim = findViewById(R.id.txt_seta_sim);
+        ImageView iconSim = findViewById(R.id.img_sim_icon);
+
+        // Card Não
+        LinearLayout headerCardNao = findViewById(R.id.header_card_nao);
+        LinearLayout conteudoCardNao = findViewById(R.id.conteudo_card_nao);
+        TextView txtSetaNao = findViewById(R.id.txt_seta_nao);
+        ImageView iconNao = findViewById(R.id.img_nao_icon);
+
+        // Configurar as interações principais
+        configurarGavetaInternaCard(headerCardSim, conteudoCardSim, txtSetaSim, ">", "v");
+        configurarGavetaInternaCard(headerCardNao, conteudoCardNao, txtSetaNao, ">", "v");
+
+        // Se clicar direto na imagem do V/X, fala a palavra principal
+        iconSim.setOnClickListener(v -> falar("Sim"));
+        iconNao.setOnClickListener(v -> falar("Não"));
+
+        // Falas do Card Sim
+        findViewById(R.id.item_sim_quero).setOnClickListener(v -> falar("Sim, eu quero"));
+        findViewById(R.id.item_sim_gosto).setOnClickListener(v -> falar("Sim, eu gosto"));
+        findViewById(R.id.item_sim_bom).setOnClickListener(v -> falar("Isso é bom"));
+
+        // Falas do Card Não
+        findViewById(R.id.item_nao_quero).setOnClickListener(v -> falar("Não, eu não quero"));
+        findViewById(R.id.item_nao_gosto).setOnClickListener(v -> falar("Não, eu não gosto"));
+        findViewById(R.id.item_nao_ruim).setOnClickListener(v -> falar("Isso é ruim"));
+
+
+
+
+
+
+
+
+        // #####  HEADERS ##### //
+
+        headerFavoritos.setOnClickListener(v -> {
+            if (conteudoFavoritos.getVisibility() == View.GONE) {
+                conteudoFavoritos.setVisibility(View.VISIBLE);
+                setaFavoritos.setRotation(90f); // Gira a seta para baixo
+            } else {
+                conteudoFavoritos.setVisibility(View.GONE);
+                setaFavoritos.setRotation(0f); // Seta volta para a direita
+            }
+        });
+
+        headerPessoal.setOnClickListener(v -> {
+            if (conteudoPessoal.getVisibility() == View.GONE) {
+                conteudoPessoal.setVisibility(View.VISIBLE);
+                setaPessoal.setRotation(90f); // Gira a seta para baixo
+            } else {
+                conteudoPessoal.setVisibility(View.GONE);
+                setaPessoal.setRotation(0f); // Seta volta para a direita
+            }
+        });
+
+        headerComidas.setOnClickListener(v -> {
+            if (conteudoComidas.getVisibility() == View.GONE) {
+                conteudoComidas.setVisibility(View.VISIBLE);
+                setaComidas.setRotation(90f); // Gira a seta para baixo
+                } else {
+                    conteudoComidas.setVisibility(View.GONE);
+                    setaComidas.setRotation(0f); // Seta volta para a direita
+                }
+        });
+
+        headerLazer.setOnClickListener(v -> {
+            if (conteudoLazer.getVisibility() == View.GONE) {
+                conteudoLazer.setVisibility(View.VISIBLE);
+                setaLazer.setRotation(90f); // Gira a seta para baixo
+                } else {
+                    conteudoLazer.setVisibility(View.GONE);
+                    setaLazer.setRotation(0f); // Seta volta para a direita
+                }
+        });
+
+        headerReferencia.setOnClickListener(v -> {
+            if (conteudoReferencia.getVisibility() == View.GONE) {
+                conteudoReferencia.setVisibility(View.VISIBLE);
+                setaReferencia.setRotation(90f); // Gira a seta para baixo
+                } else {
+                    conteudoReferencia.setVisibility(View.GONE);
+                    setaReferencia.setRotation(0f); // Seta volta para a direita
+            }
+        });
+
+        headerAprendizado.setOnClickListener(v -> {
+            if (conteudoAprendizado.getVisibility() == View.GONE) {
+                conteudoAprendizado.setVisibility(View.VISIBLE);
+                setaAprendizado.setRotation(90f); // Gira a seta para baixo
+                } else {
+                    conteudoAprendizado.setVisibility(View.GONE);
+                    setaAprendizado.setRotation(0f); // Seta volta para a direita
+            }
+        });
+
+
+        // #####  FALAR  ##### //
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
                 // Define o idioma para Português Brasil
@@ -155,27 +260,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // #####  HEADERS ##### //
-
-//        configurarGaveta(findViewById(R.id.header_favoritos), findViewById(R.id.grid_favoritos), findViewById(R.id.txt_seta_favoritos));
-//        configurarGaveta(findViewById(R.id.header_pessoal), findViewById(R.id.grid_pessoal), findViewById(R.id.txt_seta_pessoal));
-//        configurarGaveta(findViewById(R.id.header_comidas), findViewById(R.id.grid_comidas), findViewById(R.id.txt_seta_comidas));
-
-
-        headerPessoal.setOnClickListener(v -> {
-            if (conteudoPessoal.getVisibility() == View.GONE) {
-                conteudoPessoal.setVisibility(View.VISIBLE);
-                setaPessoal.setRotation(90f); // Gira a seta para baixo
-            } else {
-                conteudoPessoal.setVisibility(View.GONE);
-                setaPessoal.setRotation(0f); // Seta volta para a direita
-            }
-        });
-
-
-
-
-        // Botao voltar padrão
+        // ####  Botao voltar padrão  #### //
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
