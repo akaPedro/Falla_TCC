@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private AppCompatImageView imgMenu;
     // Itens da barra lateral
-    private TextView itemTamanho, itemCores, itemHistorico, itemSobre;
-    private LinearLayout headerPessoal, headerFavoritos, headerComidas, headerLazer, headerReferencia, headerAprendizado;
+    private TextView itemTamanho, itemCores, itemHistorico, itemSobre, itemGrande, itemPequeno;
+    private LinearLayout headerPessoal, headerFavoritos, headerComidas, headerLazer, headerReferencia, headerAprendizado, submenuTamanho;
     private ImageView setaPessoal, setaFavoritos, setaComidas, setaLazer, setaReferencia, setaAprendizado;
     private GridLayout conteudoPessoal, conteudoFavoritos, conteudoComidas, conteudoLazer, conteudoReferencia, conteudoAprendizado;
 
@@ -56,10 +56,18 @@ public class MainActivity extends AppCompatActivity {
 
         // #####  BARRA LATERAL  ##### //
         imgMenu = findViewById(R.id.img_menu);
+
         itemTamanho = findViewById(R.id.item_tamanho);
+            // #######  TAMANHO  ##### //
+            submenuTamanho = findViewById(R.id.submenu_tamanho);
+            itemGrande = findViewById(R.id.item_tamanho_grande);
+            itemPequeno = findViewById(R.id.item_tamanho_pequeno);
+
         itemCores = findViewById(R.id.item_cores);
         itemHistorico = findViewById(R.id.item_historico);
         itemSobre = findViewById(R.id.item_sobre);
+
+
 
         // #####  HEADERS ##### //
         headerPessoal = findViewById(R.id.header_pessoal);
@@ -77,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         setaReferencia = findViewById(R.id.seta_referencia);
         setaAprendizado = findViewById(R.id.seta_aprendizado);
 
-        // #####  CONTEUDO ##### //
+        // #####  CONTEUDO / GRIDS  ##### //
         conteudoFavoritos = findViewById(R.id.conteudo_favoritos);
         conteudoPessoal = findViewById(R.id.conteudo_pessoal);
         conteudoComidas = findViewById(R.id.conteudo_alimentos);
@@ -85,7 +93,24 @@ public class MainActivity extends AppCompatActivity {
         conteudoReferencia = findViewById(R.id.conteudo_referencia);
         conteudoAprendizado = findViewById(R.id.conteudo_aprendizado);
 
+        // #####  LOGICA DE TAMANHO  ##### //
+        itemGrande.setOnClickListener(v -> {
+            conteudoFavoritos.setColumnCount(2);
+            conteudoPessoal.setColumnCount(2);
+            conteudoComidas.setColumnCount(2);
+            conteudoLazer.setColumnCount(2);
+            conteudoReferencia.setColumnCount(2);
+            conteudoAprendizado.setColumnCount(2);
+        });
 
+        itemPequeno.setOnClickListener(v -> {
+            conteudoFavoritos.setColumnCount(3);
+            conteudoPessoal.setColumnCount(3);
+            conteudoComidas.setColumnCount(3);
+            conteudoLazer.setColumnCount(3);
+            conteudoReferencia.setColumnCount(3);
+            conteudoAprendizado.setColumnCount(3);
+        });
 
 
 
@@ -96,9 +121,11 @@ public class MainActivity extends AppCompatActivity {
 
         // #### Barra latreral #### //
         itemTamanho.setOnClickListener(v -> {
-            // Lógica para abrir configuração de tamanho
-            Toast.makeText(this, "Ajustar botões", Toast.LENGTH_SHORT).show();
-            drawerLayout.closeDrawers(); // Fecha a barra lateral após o clique
+            if (submenuTamanho.getVisibility() == View.GONE) {
+                submenuTamanho.setVisibility(View.VISIBLE);
+            } else {
+                submenuTamanho.setVisibility(View.GONE);
+            }
         });
 
         itemCores.setOnClickListener(v -> {
@@ -132,15 +159,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(perfintent);
         });
 
-        itemTamanho.setOnClickListener(v -> {
-            Toast.makeText(this, "Ajustar Tamanho", Toast.LENGTH_SHORT).show();
-            drawerLayout.closeDrawer(GravityCompat.START);
-        });
 
-        itemCores.setOnClickListener(v -> {
-            // Sua lógica de cores aqui
-            drawerLayout.closeDrawer(GravityCompat.START);
-        });
 
 
 

@@ -3,7 +3,11 @@ package com.example.falla.card;
 public enum CategoriaItem {
     FAVORITOS("Favoritos"),
     PESSOAL("Pessoal"),
-    COMIDAS("Comidas");
+    COMIDAS("Comidas"),
+    LAZER("Lazer"),
+    REFERENCIA("Referencia"),
+    APRENDIZADO("Aprendizado");
+
 
     private final String nome;
 

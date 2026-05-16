@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:id="@+id/layout_conteudo_cinza"
@@ -274,6 +274,7 @@
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/header_pessoal"
                     android:layout_width="match_parent"
@@ -302,6 +303,7 @@
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/header_Alimentos"
                     android:layout_width="match_parent"
@@ -330,6 +332,7 @@
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/header_lazer"
                     android:layout_width="match_parent"
@@ -358,6 +361,7 @@
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/header_referencia"
                     android:layout_width="match_parent"
@@ -386,6 +390,7 @@
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/header_aprendizado"
                     android:layout_width="match_parent"
@@ -420,43 +425,64 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:columnCount="2"
-                    android:visibility="gone">
+                    android:visibility="visible">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:cardElevation="4dp"
+                        app:cardCornerRadius="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Item 1"
+                            android:textColor="#757575"
+                            android:textStyle="bold"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:cardElevation="4dp"
+                        app:cardCornerRadius="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Item 2"
+                            android:textColor="#757575"
+                            android:textStyle="bold"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:cardElevation="4dp"
+                        app:cardCornerRadius="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Item 3"
+                            android:textColor="#757575"
+                            android:textStyle="bold"/>
+                    </androidx.cardview.widget.CardView>
                 </GridLayout>
-                <GridLayout
-                    android:id="@+id/conteudo_favoritos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="gone">
-                </GridLayout>
-                <GridLayout
-                    android:id="@+id/conteudo_alimentos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="gone">
-                </GridLayout>
-                <GridLayout
-                    android:id="@+id/conteudo_lazer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="gone">
-                </GridLayout>
-                <GridLayout
-                    android:id="@+id/conteudo_referencia"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="gone">
-                </GridLayout>
-                <GridLayout
-                    android:id="@+id/conteudo_aprendizado"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="gone">
-                </GridLayout>
+                <GridLayout android:id="@+id/conteudo_favoritos" android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2" android:visibility="gone"/>
+                <GridLayout android:id="@+id/conteudo_alimentos" android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2" android:visibility="gone"/>
+                <GridLayout android:id="@+id/conteudo_lazer" android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2" android:visibility="gone"/>
+                <GridLayout android:id="@+id/conteudo_referencia" android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2" android:visibility="gone"/>
+                <GridLayout android:id="@+id/conteudo_aprendizado" android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2" android:visibility="gone"/>
 
             </LinearLayout>
         </ScrollView>
@@ -470,19 +496,70 @@
         android:background="#000000"
         android:orientation="vertical"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:fitsSystemWindows="true"
+        android:paddingBottom="40dp">
 
-        <TextView
-            android:id="@+id/item_tamanho"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tamanho dos botões"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:padding="24dp"
-            android:gravity="center"/>
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/item_tamanho"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tamanho dos botões"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="24dp"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"/>
+
+            <LinearLayout
+                android:id="@+id/submenu_tamanho"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:background="#1A1A1A">
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
+
+                <TextView
+                    android:id="@+id/item_tamanho_grande"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="↳  Grande"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:padding="16dp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"/>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
+
+                <TextView
+                    android:id="@+id/item_tamanho_pequeno"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="↳  Pequeno"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:padding="16dp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"/>
+            </LinearLayout>
+        </LinearLayout>
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
 
         <TextView
