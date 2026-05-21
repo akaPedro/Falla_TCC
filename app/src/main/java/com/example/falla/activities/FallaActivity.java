@@ -43,7 +43,6 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
                 String textoParaFalar = campoTexto.getText().toString();
                 falarTexto(textoParaFalar);
 
-                campoTexto.setText("");
             }
         });
 

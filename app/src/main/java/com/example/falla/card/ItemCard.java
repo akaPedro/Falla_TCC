@@ -1,41 +1,31 @@
 package com.example.falla.card;
 
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "itens_cards")
 public class ItemCard {
+
     @PrimaryKey(autoGenerate = true)
     private int id;
-
+    private String fala;
+    private String imagemUri;
     private CategoriaItem categoria;
-    private String texto;
-    private String imagemPath; // Caminho da imagem
     private boolean isFavorito;
 
-    // 1. Construtor vazio (Obrigatório para o Room)
-    public ItemCard() {
-    }
+    // --- CONSTRUTOR PADRÃO ---
+    public ItemCard() {}
 
-    // 2. Construtor personalizado (O @Ignore diz para o Room não usar este)
-    @Ignore
-    public ItemCard(String texto, String imagemPath, CategoriaItem categoria, boolean isFavorito) {
-        this.texto = texto;
-        this.imagemPath = imagemPath;
-        this.categoria = categoria;
-        this.isFavorito = isFavorito;
-    }
+    // --- ADICIONE ESSES GETTERS E SETTERS ABAIXO ---
 
-    // Getters e Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getTexto() { return texto; }
-    public void setTexto(String texto) { this.texto = texto; }
+    public String getFala() { return fala; }
+    public void setFala(String fala) { this.fala = fala; }
 
-    public String getImagemPath() { return imagemPath; }
-    public void setImagemPath(String imagemPath) { this.imagemPath = imagemPath; }
+    public String getImagemUri() { return imagemUri; }
+    public void setImagemUri(String imagemUri) { this.imagemUri = imagemUri; }
 
     public CategoriaItem getCategoria() { return categoria; }
     public void setCategoria(CategoriaItem categoria) { this.categoria = categoria; }

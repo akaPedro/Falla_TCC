@@ -86,7 +86,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botão Favorito -->
+        <!-- Botão adicionar -->
         <androidx.cardview.widget.CardView
             android:id="@+id/btn_favoritar_ia"
             android:layout_width="100dp"
@@ -99,7 +99,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:src="@android:drawable/btn_star_big_on"
+                android:src="@android:drawable/ic_input_add"
                 app:tint="#FFEB3B" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
