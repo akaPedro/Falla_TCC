@@ -22,6 +22,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -35,6 +36,8 @@ import com.example.falla.card.ItemCard;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         // #####  BANCO DE DADOS  ##### //
         db = AppDatabase.getDatabase(MainActivity.this);
         // Carrega os cards do banco em segundo plano
+        verificarEPreencherBancoInicial();
         carregarCardsDoBanco();
 
        // #####  MAIN  ##### //
@@ -602,6 +606,8 @@ public class MainActivity extends AppCompatActivity {
                         popup.getMenu().add(0, 1, 0, "Editar Imagem e Fala");
                         popup.getMenu().add(0, 2, 1, "Excluir Card");
 
+                        gridPessoal.addView(cardView);
+
                         popup.setOnMenuItemClickListener(item -> {
                             switch (item.getItemId()) {
                                 case 1: // EDITAR CARD
@@ -749,5 +755,24 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void verificarEPreencherBancoInicial() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            // Verifica se já existem cards na categoria PESSOAL
+            List<ItemCard> lista = db.itemCardDao().buscarPorCategoria(CategoriaItem.PESSOAL);
+
+            if (lista == null || lista.isEmpty()) {
+                // O banco está vazio, vamos inserir os 5 cards padrão
+                db.itemCardDao().inserir(new ItemCard("Eu", CategoriaItem.PESSOAL, android.R.drawable.ic_menu_myplaces));
+                db.itemCardDao().inserir(new ItemCard("Você", CategoriaItem.PESSOAL, android.R.drawable.button_onoff_indicator_on));
+                db.itemCardDao().inserir(new ItemCard("Ajuda", CategoriaItem.PESSOAL, android.R.drawable.ic_menu_help));
+                db.itemCardDao().inserir(new ItemCard("Mais", CategoriaItem.PESSOAL, android.R.drawable.ic_menu_add));
+                db.itemCardDao().inserir(new ItemCard("Meu", CategoriaItem.PESSOAL, android.R.drawable.btn_star_big_on));
+
+                // Depois de inserir, recarrega a interface no ecrã principal
+                carregarCardsDoBanco();
+            }
+        });
+    }
 
 }

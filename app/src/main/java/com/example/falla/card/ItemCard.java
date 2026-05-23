@@ -16,6 +16,9 @@ public class ItemCard {
     // --- CONSTRUTOR PADRÃO ---
     public ItemCard() {}
 
+    public ItemCard(String eu, CategoriaItem categoriaItem, int icMenuMyplaces) {
+    }
+
     // --- ADICIONE ESSES GETTERS E SETTERS ABAIXO ---
 
     public int getId() { return id; }
