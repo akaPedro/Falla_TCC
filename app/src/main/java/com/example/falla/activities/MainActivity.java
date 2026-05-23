@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         db = AppDatabase.getDatabase(MainActivity.this);
         // Carrega os cards do banco em segundo plano
         verificarEPreencherBancoInicial();
-        carregarCardsDoBanco();
 
        // #####  MAIN  ##### //
         drawerLayout = findViewById(R.id.main);
@@ -157,190 +156,190 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        // ############################  botao teste ################################ //
-
-
-
-        // 1. Inflar o layout do card dentro do seu metodo de criação/iteração
-        View cardView = getLayoutInflater().inflate(R.layout.item_card, conteudoPessoal, false);
-
-        //cards iniciais
-        androidx.cardview.widget.CardView cardRoot = cardView.findViewById(R.id.card_root);
-        ImageView imgEstrela = cardView.findViewById(R.id.img_estrela_favorito);
-        ImageView imgSimbolo = cardView.findViewById(R.id.img_card_simbolo);
-        TextView txtFala = cardView.findViewById(R.id.txt_card_fala);
-
-        // 3. Definir os valores dinâmicos do card (Exemplo de teste)
-        txtFala.setText("Item 1");
-        // imgSimbolo.setImageResource(R.drawable.seu_icone); // Quando tiver imagens próprias
-
-        // Variavel de controle do estado de favorito desse card
-        final boolean[] isFavorito = {false};
-
-        // 4. LÓGICA DA ESTRELA (Clique para favoritar/desfavoritar dinamicamente)
-        imgEstrela.setOnClickListener(v -> {
-            isFavorito[0] = !isFavorito[0];
-
-            // Referência para a gaveta de favoritos (certifique-se de dar findViewById nela no seu onCreate)
-            GridLayout conteudoFavoritos = findViewById(R.id.conteudo_favoritos);
-
-            // Tag única para conseguirmos achar a cópia do card na gaveta de favoritos depois
-            // Usamos o próprio texto do card + "_fav" como identificador único
-            String tagFavorito = txtFala.getText().toString() + "_fav";
-
-            if (isFavorito[0]) {
-                // 1. Modifica a estrela do card original para Amarela
-                imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
-
-                // 2. Infla uma CÓPIA exata do card para jogar nos Favoritos
-                View cardFavorito = getLayoutInflater().inflate(R.layout.item_card, conteudoFavoritos, false);
-                cardFavorito.setTag(tagFavorito); // Marca o card com a tag única
-
-                // 3. Configura os elementos internos da cópia
-                ImageView estrelaFav = cardFavorito.findViewById(R.id.img_estrela_favorito);
-                ImageView simboloFav = cardFavorito.findViewById(R.id.img_card_simbolo);
-                TextView txtFalaFav = cardFavorito.findViewById(R.id.txt_card_fala);
-
-                // Copia os dados do original
-                txtFalaFav.setText(txtFala.getText());
-                simboloFav.setImageDrawable(imgSimbolo.getDrawable());
-                estrelaFav.setImageResource(android.R.drawable.btn_star_big_on); // Já nasce amarela
-
-                // 4. Se o usuário clicar na estrela dentro dos Favoritos, desfavorita em ambos os lugares
-                estrelaFav.setOnClickListener(vFav -> {
-                    // Simula o clique no card original para disparar a remoção em cadeia
-                    imgEstrela.performClick();
-                });
-
-                // 5. Configura o clique simples de fala na cópia dos favoritos
-                cardFavorito.setOnClickListener(vFav -> {
-                    Toast.makeText(MainActivity.this, "Falando (Favorito): " + txtFalaFav.getText(), Toast.LENGTH_SHORT).show();
-                    // Seu TTS aqui
-                });
-
-                // 6. Adiciona a cópia física na gaveta de favoritos
-                conteudoFavoritos.addView(cardFavorito);
-
-                Toast.makeText(MainActivity.this, "Adicionado aos Favoritos", Toast.LENGTH_SHORT).show();
-
-            } else {
-                // 1. Volta a estrela do card original para o modo Vazio
-                imgEstrela.setImageResource(android.R.drawable.btn_star_big_off);
-
-                // 2. Procura pela cópia do card lá na gaveta de favoritos usando a Tag única
-                View cardParaRemover = conteudoFavoritos.findViewWithTag(tagFavorito);
-
-                // 3. Se encontrar a cópia lá, remove ela do layout
-                if (cardParaRemover != null) {
-                    conteudoFavoritos.removeView(cardParaRemover);
-                    Toast.makeText(MainActivity.this, "Removido dos Favoritos", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-        // LOGICA DO CLIQUE SEGUNDADO
-        cardRoot.setOnLongClickListener(v -> {
-            // Cria um menu pop-up ancorado no próprio card
-            PopupMenu popup = new PopupMenu(MainActivity.this, cardRoot);
-
-            // Adiciona as opções dinamicamente
-            popup.getMenu().add(0, 1, 0, "Editar Imagem e Fala");
-            popup.getMenu().add(0, 2, 1, "Excluir Card");
-
-            // Trata o clique de cada opção do menu
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                    case 1:
-                        // 1. Cria a visualização do Dialog baseado no XML
-                        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_card, null);
-
-                        // 2. Configura a janela do Dialog
-                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
-                        builder.setView(dialogView);
-                        android.app.AlertDialog dialog = builder.create();
-
-                        // Isso deixa o fundo do AlertDialog transparente para as bordas arredondadas do CardView aparecerem
-                        dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-
-                        // 3. Pega as referências dos itens dentro do Dialog
-                        FrameLayout containerImagem = dialogView.findViewById(R.id.container_editar_imagem);
-                        ImageView imgDialogPreview = dialogView.findViewById(R.id.img_dialog_preview);
-                        EditText editFala = dialogView.findViewById(R.id.edit_dialog_fala);
-                        TextView btnCancelar = dialogView.findViewById(R.id.btn_dialog_cancelar);
-                        TextView btnSalvar = dialogView.findViewById(R.id.btn_dialog_salvar);
-
-                        // 4. Preenche o Dialog com os dados ATUAIS do card
-                        editFala.setText(txtFala.getText().toString());
-                        imgDialogPreview.setImageDrawable(imgSimbolo.getDrawable());
-
-                        // 5. Clique para abrir a Galeria
-                        containerImagem.setOnClickListener(vClick -> {
-                            // Salva a referência de qual ImageView estamos editando agora
-                            imagemEmEdicaoAtual = imgDialogPreview;
-                            // Abre a galeria buscando apenas imagens
-                            abrirGaleria.launch("image/*");
-                        });
-
-                        // 6. Ação de Cancelar
-                        btnCancelar.setOnClickListener(vClick -> dialog.dismiss());
-
-                        // 7. Ação de Salvar
-                        btnSalvar.setOnClickListener(vClick -> {
-                            // Atualiza o texto do card principal
-                            txtFala.setText(editFala.getText().toString());
-
-                            // Atualiza a imagem do card principal com a nova imagem do dialog
-                            imgSimbolo.setImageDrawable(imgDialogPreview.getDrawable());
-
-                            // Se este card tiver uma cópia nos favoritos, seria ideal atualizar lá também,
-                            // mas por hora isso já resolve a edição na gaveta atual!
-
-                            Toast.makeText(MainActivity.this, "Card atualizado!", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        });
-
-                        // Mostra a janelinha na tela
-                        dialog.show();
-                        return true;
-
-                    case 2:
-                        // Remove do layout físico
-                        android.view.ViewGroup parent = (android.view.ViewGroup) cardView.getParent();
-                        if (parent != null) {
-                            parent.removeView(cardView);
-                        }
-
-                        // --- REMOVER DO BANCO ---
-                        // db.cardDao().excluir(cardObjeto);
-
-                        Toast.makeText(MainActivity.this, "Removido do banco", Toast.LENGTH_SHORT).show();
-                        return true;
-
-                    default:
-                        return false;
-                }
-            });
-
-            popup.show(); // Exibe o menu na tela
-            return true; // Retorna true para indicar que o evento de segurar foi consumido
-        });
-
-        // 6. LÓGICA DO CLIQUE SIMPLES (Para disparar a FALA por áudio)
-        cardRoot.setOnClickListener(v -> {
-            String textoParaFalar = txtFala.getText().toString().trim();
-
-            if (!textoParaFalar.isEmpty()) {
-                // Exibe o feedback visual que você já tinha colocado
-                Toast.makeText(MainActivity.this, "Falando: " + textoParaFalar, Toast.LENGTH_SHORT).show();
-
-                // Dispara a voz. O QUEUE_FLUSH serve para interromper uma fala anterior se o usuário clicar rápido em outro card
-                tts.speak(textoParaFalar, TextToSpeech.QUEUE_FLUSH, null, null);
-            }
-        });
+//        // ############################  botao teste ################################ //
+//
+//
+//
+//        // 1. Inflar o layout do card dentro do seu metodo de criação/iteração
+//        View cardView = getLayoutInflater().inflate(R.layout.item_card, conteudoPessoal, false);
+//
+//        //cards iniciais
+//        androidx.cardview.widget.CardView cardRoot = cardView.findViewById(R.id.card_root);
+//        ImageView imgEstrela = cardView.findViewById(R.id.img_estrela_favorito);
+//        ImageView imgSimbolo = cardView.findViewById(R.id.img_card_simbolo);
+//        TextView txtFala = cardView.findViewById(R.id.txt_card_fala);
+//
+//        // 3. Definir os valores dinâmicos do card (Exemplo de teste)
+//        txtFala.setText("Item 1");
+//        // imgSimbolo.setImageResource(R.drawable.seu_icone); // Quando tiver imagens próprias
+//
+//        // Variavel de controle do estado de favorito desse card
+//        final boolean[] isFavorito = {false};
+//
+//        // 4. LÓGICA DA ESTRELA (Clique para favoritar/desfavoritar dinamicamente)
+//        imgEstrela.setOnClickListener(v -> {
+//            isFavorito[0] = !isFavorito[0];
+//
+//            // Referência para a gaveta de favoritos (certifique-se de dar findViewById nela no seu onCreate)
+//            GridLayout conteudoFavoritos = findViewById(R.id.conteudo_favoritos);
+//
+//            // Tag única para conseguirmos achar a cópia do card na gaveta de favoritos depois
+//            // Usamos o próprio texto do card + "_fav" como identificador único
+//            String tagFavorito = txtFala.getText().toString() + "_fav";
+//
+//            if (isFavorito[0]) {
+//                // 1. Modifica a estrela do card original para Amarela
+//                imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
+//
+//                // 2. Infla uma CÓPIA exata do card para jogar nos Favoritos
+//                View cardFavorito = getLayoutInflater().inflate(R.layout.item_card, conteudoFavoritos, false);
+//                cardFavorito.setTag(tagFavorito); // Marca o card com a tag única
+//
+//                // 3. Configura os elementos internos da cópia
+//                ImageView estrelaFav = cardFavorito.findViewById(R.id.img_estrela_favorito);
+//                ImageView simboloFav = cardFavorito.findViewById(R.id.img_card_simbolo);
+//                TextView txtFalaFav = cardFavorito.findViewById(R.id.txt_card_fala);
+//
+//                // Copia os dados do original
+//                txtFalaFav.setText(txtFala.getText());
+//                simboloFav.setImageDrawable(imgSimbolo.getDrawable());
+//                estrelaFav.setImageResource(android.R.drawable.btn_star_big_on); // Já nasce amarela
+//
+//                // 4. Se o usuário clicar na estrela dentro dos Favoritos, desfavorita em ambos os lugares
+//                estrelaFav.setOnClickListener(vFav -> {
+//                    // Simula o clique no card original para disparar a remoção em cadeia
+//                    imgEstrela.performClick();
+//                });
+//
+//                // 5. Configura o clique simples de fala na cópia dos favoritos
+//                cardFavorito.setOnClickListener(vFav -> {
+//                    Toast.makeText(MainActivity.this, "Falando (Favorito): " + txtFalaFav.getText(), Toast.LENGTH_SHORT).show();
+//                    // Seu TTS aqui
+//                });
+//
+//                // 6. Adiciona a cópia física na gaveta de favoritos
+//                conteudoFavoritos.addView(cardFavorito);
+//
+//                Toast.makeText(MainActivity.this, "Adicionado aos Favoritos", Toast.LENGTH_SHORT).show();
+//
+//            } else {
+//                // 1. Volta a estrela do card original para o modo Vazio
+//                imgEstrela.setImageResource(android.R.drawable.btn_star_big_off);
+//
+//                // 2. Procura pela cópia do card lá na gaveta de favoritos usando a Tag única
+//                View cardParaRemover = conteudoFavoritos.findViewWithTag(tagFavorito);
+//
+//                // 3. Se encontrar a cópia lá, remove ela do layout
+//                if (cardParaRemover != null) {
+//                    conteudoFavoritos.removeView(cardParaRemover);
+//                    Toast.makeText(MainActivity.this, "Removido dos Favoritos", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//
+//
+//        // LOGICA DO CLIQUE SEGUNDADO
+//        cardRoot.setOnLongClickListener(v -> {
+//            // Cria um menu pop-up ancorado no próprio card
+//            PopupMenu popup = new PopupMenu(MainActivity.this, cardRoot);
+//
+//            // Adiciona as opções dinamicamente
+//            popup.getMenu().add(0, 1, 0, "Editar Imagem e Fala");
+//            popup.getMenu().add(0, 2, 1, "Excluir Card");
+//
+//            // Trata o clique de cada opção do menu
+//            popup.setOnMenuItemClickListener(item -> {
+//                switch (item.getItemId()) {
+//                    case 1:
+//                        // 1. Cria a visualização do Dialog baseado no XML
+//                        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_card, null);
+//
+//                        // 2. Configura a janela do Dialog
+//                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
+//                        builder.setView(dialogView);
+//                        android.app.AlertDialog dialog = builder.create();
+//
+//                        // Isso deixa o fundo do AlertDialog transparente para as bordas arredondadas do CardView aparecerem
+//                        dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+//
+//                        // 3. Pega as referências dos itens dentro do Dialog
+//                        FrameLayout containerImagem = dialogView.findViewById(R.id.container_editar_imagem);
+//                        ImageView imgDialogPreview = dialogView.findViewById(R.id.img_dialog_preview);
+//                        EditText editFala = dialogView.findViewById(R.id.edit_dialog_fala);
+//                        TextView btnCancelar = dialogView.findViewById(R.id.btn_dialog_cancelar);
+//                        TextView btnSalvar = dialogView.findViewById(R.id.btn_dialog_salvar);
+//
+//                        // 4. Preenche o Dialog com os dados ATUAIS do card
+//                        editFala.setText(txtFala.getText().toString());
+//                        imgDialogPreview.setImageDrawable(imgSimbolo.getDrawable());
+//
+//                        // 5. Clique para abrir a Galeria
+//                        containerImagem.setOnClickListener(vClick -> {
+//                            // Salva a referência de qual ImageView estamos editando agora
+//                            imagemEmEdicaoAtual = imgDialogPreview;
+//                            // Abre a galeria buscando apenas imagens
+//                            abrirGaleria.launch("image/*");
+//                        });
+//
+//                        // 6. Ação de Cancelar
+//                        btnCancelar.setOnClickListener(vClick -> dialog.dismiss());
+//
+//                        // 7. Ação de Salvar
+//                        btnSalvar.setOnClickListener(vClick -> {
+//                            // Atualiza o texto do card principal
+//                            txtFala.setText(editFala.getText().toString());
+//
+//                            // Atualiza a imagem do card principal com a nova imagem do dialog
+//                            imgSimbolo.setImageDrawable(imgDialogPreview.getDrawable());
+//
+//                            // Se este card tiver uma cópia nos favoritos, seria ideal atualizar lá também,
+//                            // mas por hora isso já resolve a edição na gaveta atual!
+//
+//                            Toast.makeText(MainActivity.this, "Card atualizado!", Toast.LENGTH_SHORT).show();
+//                            dialog.dismiss();
+//                        });
+//
+//                        // Mostra a janelinha na tela
+//                        dialog.show();
+//                        return true;
+//
+//                    case 2:
+//                        // Remove do layout físico
+//                        android.view.ViewGroup parent = (android.view.ViewGroup) cardView.getParent();
+//                        if (parent != null) {
+//                            parent.removeView(cardView);
+//                        }
+//
+//                        // --- REMOVER DO BANCO ---
+//                        // db.cardDao().excluir(cardObjeto);
+//
+//                        Toast.makeText(MainActivity.this, "Removido do banco", Toast.LENGTH_SHORT).show();
+//                        return true;
+//
+//                    default:
+//                        return false;
+//                }
+//            });
+//
+//            popup.show(); // Exibe o menu na tela
+//            return true; // Retorna true para indicar que o evento de segurar foi consumido
+//        });
+//
+//        // 6. LÓGICA DO CLIQUE SIMPLES (Para disparar a FALA por áudio)
+//        cardRoot.setOnClickListener(v -> {
+//            String textoParaFalar = txtFala.getText().toString().trim();
+//
+//            if (!textoParaFalar.isEmpty()) {
+//                // Exibe o feedback visual que você já tinha colocado
+//                Toast.makeText(MainActivity.this, "Falando: " + textoParaFalar, Toast.LENGTH_SHORT).show();
+//
+//                // Dispara a voz. O QUEUE_FLUSH serve para interromper uma fala anterior se o usuário clicar rápido em outro card
+//                tts.speak(textoParaFalar, TextToSpeech.QUEUE_FLUSH, null, null);
+//            }
+//        });
 
         // Por fim, adiciona o card configurado na sua respectiva gaveta
-        conteudoPessoal.addView(cardView);
+        // conteudoPessoal.addView(cardView);
 
 
         // ############################ teste ################################ //
@@ -520,22 +519,21 @@ public class MainActivity extends AppCompatActivity {
 
     // #####  BANCO DE DADOS  ##### //
     private void carregarCardsDoBanco() {
-        // 1. Garante que temos a instância real do banco antes de rodar
-        final AppDatabase bancoSeguro = AppDatabase.getDatabase(MainActivity.this);
-
-        // 2. Busca os cards da categoria Pessoal em segundo plano
+        // 1. Busca os cards da categoria Pessoal em segundo plano usando seu 'db' global
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<ItemCard> listaItens = bancoSeguro.itemCardDao().buscarPorCategoria(CategoriaItem.PESSOAL);
+            List<ItemCard> listaItens = db.itemCardDao().buscarPorCategoria(CategoriaItem.PESSOAL);
 
-            // 3. Volta para a thread de interface para desenhar na tela
+            // 2. Volta para a thread de interface para desenhar na tela
             runOnUiThread(() -> {
                 GridLayout gridPessoal = findViewById(R.id.conteudo_pessoal);
                 if (gridPessoal == null) return; // Evita erro se a tela ainda não carregou
 
                 gridPessoal.removeAllViews(); // Evita duplicar os cards ao recarregar
 
+                if (listaItens == null || listaItens.isEmpty()) return;
+
                 for (ItemCard itemCardAtual : listaItens) {
-                    // BLINDAGEM 1: Cria uma cópia final do objeto para usar com segurança dentro dos cliques (Lambdas)
+                    // BLINDAGEM 1: Cria uma cópia final do objeto para usar com segurança dentro dos cliques
                     final ItemCard card = itemCardAtual;
 
                     // Infla o layout do card
@@ -550,14 +548,16 @@ public class MainActivity extends AppCompatActivity {
                     // Preenche o card com o texto
                     txtFala.setText(card.getFala());
 
-                    // BLINDAGEM 2: Try/Catch na imagem. Se a URI falhar ou a foto não existir mais, ele não quebra o App.
+                    // BLINDAGEM 2: Try/Catch na imagem. Se a URI falhar, não quebra o App.
                     if (card.getImagemUri() != null && !card.getImagemUri().isEmpty()) {
                         try {
                             imgSimbolo.setImageURI(Uri.parse(card.getImagemUri()));
                         } catch (Exception e) {
                             e.printStackTrace();
-                            imgSimbolo.setImageResource(android.R.drawable.ic_menu_help); // Coloca um placeholder se der erro
+                            imgSimbolo.setImageResource(android.R.drawable.ic_menu_help);
                         }
+                    } else {
+                        imgSimbolo.setImageResource(android.R.drawable.ic_menu_help); // Imagem padrão
                     }
 
                     // Configura o estado inicial da estrela
@@ -581,20 +581,17 @@ public class MainActivity extends AppCompatActivity {
                     // CLIQUE NA ESTRELA: FAVORITAR / DESFAVORITAR
                     // ========================================================
                     imgEstrela.setOnClickListener(v -> {
-                        // Inverte o valor booleano do objeto seguro
                         boolean novoEstadoFavorito = !card.isFavorito();
                         card.setFavorito(novoEstadoFavorito);
 
-                        // Atualiza o ícone da estrela na interface
                         if (novoEstadoFavorito) {
                             imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
                         } else {
                             imgEstrela.setImageResource(android.R.drawable.btn_star_big_off);
                         }
 
-                        // Atualiza no banco de dados
                         AppDatabase.databaseWriteExecutor.execute(() -> {
-                            bancoSeguro.itemCardDao().atualizar(card);
+                            db.itemCardDao().atualizar(card);
                         });
                     });
 
@@ -606,22 +603,17 @@ public class MainActivity extends AppCompatActivity {
                         popup.getMenu().add(0, 1, 0, "Editar Imagem e Fala");
                         popup.getMenu().add(0, 2, 1, "Excluir Card");
 
-                        gridPessoal.addView(cardView);
-
                         popup.setOnMenuItemClickListener(item -> {
                             switch (item.getItemId()) {
                                 case 1: // EDITAR CARD
-                                    // Passamos a variável 'card' que está travada (final)
                                     abrirDialogEditarCard(card, txtFala, imgSimbolo);
                                     return true;
 
                                 case 2: // EXCLUIR CARD
-                                    // Remove visualmente da tela
-                                    gridPessoal.removeView(cardView);
+                                    gridPessoal.removeView(cardView); // Remove visualmente
 
-                                    // Remove do banco em segundo plano
                                     AppDatabase.databaseWriteExecutor.execute(() -> {
-                                        bancoSeguro.itemCardDao().deletar(card);
+                                        db.itemCardDao().deletar(card); // Remove do banco
                                     });
                                     Toast.makeText(MainActivity.this, "Card excluído", Toast.LENGTH_SHORT).show();
                                     return true;
@@ -635,13 +627,21 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     });
 
-                    // Injeta o card fisicamente no layout
+                    // ========================================================
+                    // CONFIGURAÇÃO DO GRID (Para o card não bugar na tela)
+                    // ========================================================
+                    GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                    params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f); // Define peso 1 (ocupa metade se for 2 colunas)
+                    params.width = 0; // A largura quem define é o peso acima
+                    params.setMargins(12, 12, 12, 12); // Dá um respiro entre os cards
+                    cardView.setLayoutParams(params);
+
+                    // Injeta o card fisicamente no layout (SOMENTE AQUI NO FINAL DO LOOP)
                     gridPessoal.addView(cardView);
                 }
             });
         });
     }
-
     private void configurarGavetaInternaCard(LinearLayout header, LinearLayout conteudo, TextView seta, String textoPadrao, String textoExpandido) {
         header.setOnClickListener(v -> {
             if (conteudo.getVisibility() == View.GONE) {
