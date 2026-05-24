@@ -10,6 +10,8 @@ import androidx.room.TypeConverters;
 import com.example.falla.card.Converters;
 import com.example.falla.card.ItemCard;
 import com.example.falla.card.ItemCardDao;
+import com.example.falla.card.ItemHistorico;
+import com.example.falla.historico.HistoricoDao;
 import com.example.falla.usuario.Usuario;
 import com.example.falla.usuario.UsuarioDao;
 
@@ -17,10 +19,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @TypeConverters({Converters.class}) // Adicione esta linha
-@Database(entities = {Usuario.class, ItemCard.class}, version = 2)
+@Database(entities = {Usuario.class, ItemCard.class, ItemHistorico.class}, version = 5)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UsuarioDao usuarioDao();
-    public abstract ItemCardDao itemCardDao(); // Adicione isso
+    public abstract ItemCardDao itemCardDao();
+    public abstract HistoricoDao historicoDao(); // ADICIONE ESTA LINHA
 
     private static volatile AppDatabase INSTANCE;
     // Executor com 4 threads para operações de banco

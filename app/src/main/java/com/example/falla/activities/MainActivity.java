@@ -33,6 +33,8 @@ import com.example.falla.R;
 import com.example.falla.card.CardEntity;
 import com.example.falla.card.CategoriaItem;
 import com.example.falla.card.ItemCard;
+import com.example.falla.card.ItemHistorico;
+import com.example.falla.historico.HistoricoActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -105,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
         itemCores = findViewById(R.id.item_cores);
         itemHistorico = findViewById(R.id.item_historico);
         itemSobre = findViewById(R.id.item_sobre);
+
+
+
+
 
 
 
@@ -190,6 +196,11 @@ public class MainActivity extends AppCompatActivity {
         ImgPerf.setOnClickListener(v -> {
             Intent perfintent = new Intent(MainActivity.this, PerfilActivity.class);
             startActivity(perfintent);
+        });
+
+        itemHistorico.setOnClickListener(v -> {
+            Intent historicointent = new Intent(MainActivity.this, HistoricoActivity.class);
+            startActivity(historicointent);
         });
 
 
@@ -374,7 +385,10 @@ public class MainActivity extends AppCompatActivity {
                     cardRoot.setOnClickListener(v -> {
                         String textoParaFalar = txtFala.getText().toString().trim();
                         if (!textoParaFalar.isEmpty() && tts != null) {
-                            tts.speak(textoParaFalar, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, null);
+                            tts.speak(textoParaFalar, TextToSpeech.QUEUE_ADD, null, null);
+
+                            // Registra no histórico
+                            registrarNoHistorico(card.getImagemUri(), card.getFala());
                         }
                     });
 
@@ -724,6 +738,25 @@ public class MainActivity extends AppCompatActivity {
         if (db != null) {
             carregarTodasAsGavetas();
         }
+    }
+
+
+    // ###### HISTORICO ###### //
+    private void registrarNoHistorico(String uriOuIcone, String fala) {
+        java.text.SimpleDateFormat formataData = new java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault());
+        java.text.SimpleDateFormat formataHora = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+        java.util.Date agora = new java.util.Date();
+
+        ItemHistorico novoRegistro = new ItemHistorico(
+                formataData.format(agora),
+                formataHora.format(agora),
+                uriOuIcone,
+                fala  // <- passa o texto
+        );
+
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            if (db != null) db.historicoDao().inserir(novoRegistro);
+        });
     }
 
 }
