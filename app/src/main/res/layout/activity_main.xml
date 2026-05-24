@@ -494,7 +494,7 @@
                 android:id="@+id/item_tamanho"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tamanho dos botões"
+                android:text="Tamanho dos cards"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"

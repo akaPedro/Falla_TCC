@@ -134,23 +134,22 @@ public class MainActivity extends AppCompatActivity {
 
         // #####  LOGICA DE TAMANHO  ##### //
         itemGrande.setOnClickListener(v -> {
-            conteudoFavoritos.setColumnCount(2);
-            conteudoPessoal.setColumnCount(2);
-            conteudoComidas.setColumnCount(2);
-            conteudoLazer.setColumnCount(2);
-            conteudoReferencia.setColumnCount(2);
-            conteudoAprendizado.setColumnCount(2);
+            salvarEAplicarColunas(2); // Salva 2 colunas e aplica
+            drawerLayout.closeDrawers(); // Opcional: fecha a barra lateral ao clicar
         });
 
         itemPequeno.setOnClickListener(v -> {
-            conteudoFavoritos.setColumnCount(3);
-            conteudoPessoal.setColumnCount(3);
-            conteudoComidas.setColumnCount(3);
-            conteudoLazer.setColumnCount(3);
-            conteudoReferencia.setColumnCount(3);
-            conteudoAprendizado.setColumnCount(3);
+            salvarEAplicarColunas(3); // Salva 3 colunas e aplica
+            drawerLayout.closeDrawers(); // Opcional: fecha a barra lateral ao clicar
         });
 
+        conteudoReferencia = findViewById(R.id.conteudo_referencia);
+        conteudoAprendizado = findViewById(R.id.conteudo_aprendizado);
+
+        // Recupera o tamanho salvo anteriormente. Se for a primeira vez abrindo o app, assume 2 colunas como padrão.
+        android.content.SharedPreferences pref = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
+        int colunasSalvas = pref.getInt("quantidade_colunas", 2);
+        salvarEAplicarColunas(colunasSalvas);
 
 
         // #### Barra latreral #### //
@@ -467,8 +466,16 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null && imagemEmEdicaoAtual != null) {
-                    // Se o usuário escolheu uma foto, joga ela no ImageView do Dialog
+
+                    // A MÁGICA AQUI: Pede ao Android permissão PERMANENTE para ler essa imagem
+                    // Sem isso, a URI "morre" assim que o aplicativo é fechado!
+                    getContentResolver().takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    // 1. Joga o visual da foto no ImageView do Dialog
                     imagemEmEdicaoAtual.setImageURI(uri);
+
+                    // 2. GUARDA o caminho do texto dentro da Tag da View para usarmos ao salvar
+                    imagemEmEdicaoAtual.setTag(uri.toString());
                 }
             }
     );
@@ -476,19 +483,19 @@ public class MainActivity extends AppCompatActivity {
 
     // #####  EDITAR CARD ##### //
     private void abrirDialogEditarCard(ItemCard itemCardAtual, TextView txtFalaOriginal, ImageView imgSimboloOriginal) {
-        // 1. Infla o layout do diálogo customizado
+        // 1. Infla o layout do diálogo customizado [cite: 164]
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_card, null);
 
-        // 2. Cria e configura o AlertDialog do Android
+        // 2. Cria e configura o AlertDialog do Android [cite: 165]
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
-        builder.setView(dialogView);
+        builder.setView(dialogView); //[cite: 166]
         android.app.AlertDialog dialog = builder.create();
 
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
 
-        // 3. DECLARAÇÃO LOCAL: Encontra as Views de dentro do XML do diálogo (dialog_edit_card.xml)
+        // 3. DECLARAÇÃO LOCAL: Encontra as Views de dentro do XML do diálogo
         FrameLayout containerImagem = dialogView.findViewById(R.id.container_editar_imagem);
         ImageView imgDialogPreview = dialogView.findViewById(R.id.img_dialog_preview);
         EditText editFala = dialogView.findViewById(R.id.edit_dialog_fala);
@@ -501,6 +508,9 @@ public class MainActivity extends AppCompatActivity {
         editFala.setText(itemCardAtual.getFala());
         imgDialogPreview.setImageDrawable(imgSimboloOriginal.getDrawable());
 
+        // Limpa qualquer Tag antiga que tenha ficado na View para começar do zero
+        imgDialogPreview.setTag(null);
+
         // 5. Configura a ação de clicar na imagem para abrir a galeria
         containerImagem.setOnClickListener(v -> {
             // Usa a sua variável global para rastrear qual ImageView vai receber a foto da galeria
@@ -508,43 +518,47 @@ public class MainActivity extends AppCompatActivity {
             abrirGaleria.launch("image/*");
         });
 
-        // 6. Configura a ação do botão cancelar
-        btnCancelar.setOnClickListener(v -> dialog.dismiss());
+        // 6. Configura a ação do botão cancelar        btnCancelar.setOnClickListener(v -> dialog.dismiss());
 
-        // 7. LÓGICA DO BOTÃO SALVAR (Corrigindo o print com as suas variáveis)
+        // 7. LÓGICA DO BOTÃO SALVAR CORRIGIDA
+// 7. LÓGICA DO BOTÃO SALVAR CORRIGIDA
         btnSalvarEdt.setOnClickListener(vClick -> {
             String novoTexto = editFala.getText().toString().trim();
 
-            // Verifica se imagemEmEdicaoAtual recebeu uma nova URI da galeria
-            // Se a variável 'uriDaNovaImagem' não existir como global, você pode usar uma verificação de tag ou manter a atual
+            // Verifica se imgDialogPreview recebeu uma nova URI da galeria através da Tag
             String novaUri = itemCardAtual.getImagemUri();
+            if (imgDialogPreview.getTag() != null) {
+                novaUri = imgDialogPreview.getTag().toString();
+            }
 
-            // Altera o visual do card correspondente diretamente na interface (na tela principal)
-            txtFalaOriginal.setText(novoTexto);
-            imgSimboloOriginal.setImageDrawable(imgDialogPreview.getDrawable());
-
-            // Atualiza os dados do objeto do banco de dados (ItemCard)
+            // Atualiza os dados do objeto que será enviado ao Room
             itemCardAtual.setFala(novoTexto);
             itemCardAtual.setImagemUri(novaUri);
 
             // --- SALVAR NO BANCO DE DADOS ---
-            // Roda a atualização em segundo plano usando as threads do seu AppDatabase
+            // Roda a atualização em segundo plano
             AppDatabase.databaseWriteExecutor.execute(() -> {
-                // Inicializa a sua variável global 'db' se ela estiver nula, ou usa direto o getDatabase
                 if (db == null) {
                     db = AppDatabase.getDatabase(MainActivity.this);
                 }
+
+                // 1. Atualiza permanentemente no Room
                 db.itemCardDao().atualizar(itemCardAtual);
+
+                // 2. O SEGREDO: Assim que o banco terminar de salvar, roda este bloco na UI Thread
+                runOnUiThread(() -> {
+                    // Força todas as gavetas e favoritos a redesenharem-se com os dados novos
+                    carregarTodasAsGavetas();
+                    Toast.makeText(MainActivity.this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                });
             });
 
-            Toast.makeText(MainActivity.this, "Salvo no banco de dados!", Toast.LENGTH_SHORT).show();
+            // Fecha o diálogo de edição
             dialog.dismiss();
         });
-
         // Mostra o popup na tela
         dialog.show();
     }
-
     private void verificarEPreencherBancoInicial() {
         // 1. Acessa a memória rápida do Android para ler a nossa "flag"
         android.content.SharedPreferences prefs = getSharedPreferences("FallaPrefs", MODE_PRIVATE);
@@ -681,5 +695,35 @@ public class MainActivity extends AppCompatActivity {
         carregarGridEspecifico(CategoriaItem.APRENDIZADO, findViewById(R.id.conteudo_aprendizado));
     }
 
+    // ========================================================
+// SALVA E APLICA O TAMANHO DOS CARDS PERMANENTEMENTE
+// ========================================================
+    private void salvarEAplicarColunas(int quantidadeColunas) {
+        // 1. Salva a escolha no SharedPreferences do Android
+        android.content.SharedPreferences pref = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
+        pref.edit().putInt("quantidade_colunas", quantidadeColunas).apply();
+
+        // 2. LIMPEZA PREVENTIVA: Remove os cards ANTES de encolher o Grid para evitar o crash!
+        if (conteudoFavoritos != null) conteudoFavoritos.removeAllViews();
+        if (conteudoPessoal != null) conteudoPessoal.removeAllViews();
+        if (conteudoComidas != null) conteudoComidas.removeAllViews();
+        if (conteudoLazer != null) conteudoLazer.removeAllViews();
+        if (conteudoReferencia != null) conteudoReferencia.removeAllViews();
+        if (conteudoAprendizado != null) conteudoAprendizado.removeAllViews();
+
+        // 3. Com a "casa limpa", podemos mudar o número de colunas em segurança
+        if (conteudoFavoritos != null) conteudoFavoritos.setColumnCount(quantidadeColunas);
+        if (conteudoPessoal != null) conteudoPessoal.setColumnCount(quantidadeColunas);
+        if (conteudoComidas != null) conteudoComidas.setColumnCount(quantidadeColunas);
+        if (conteudoLazer != null) conteudoLazer.setColumnCount(quantidadeColunas);
+        if (conteudoReferencia != null) conteudoReferencia.setColumnCount(quantidadeColunas);
+        if (conteudoAprendizado != null) conteudoAprendizado.setColumnCount(quantidadeColunas);
+
+        // 4. Manda o banco de dados trazer os cards e desenhá-los novamente no novo formato
+        // Mas SÓ fazemos isso se o banco (db) já estiver inicializado, para evitar erro no onCreate
+        if (db != null) {
+            carregarTodasAsGavetas();
+        }
+    }
 
 }
