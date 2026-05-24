@@ -13,10 +13,15 @@ public class ItemCard {
     private CategoriaItem categoria;
     private boolean isFavorito;
 
-    // --- CONSTRUTOR PADRÃO ---
+    // --- CONSTRUTOR PADRÃO  ---
     public ItemCard() {}
 
-    public ItemCard(String eu, CategoriaItem categoriaItem, int icMenuMyplaces) {
+    // --- CONSTRUTOR CORRETO PARA INSERÇÃO ---
+    public ItemCard(String fala, CategoriaItem categoria, String imagemUri) {
+        this.fala = fala;
+        this.categoria = categoria;
+        this.imagemUri = imagemUri;
+        this.isFavorito = false; // Todo card novo nasce sem estrela
     }
 
     // --- ADICIONE ESSES GETTERS E SETTERS ABAIXO ---

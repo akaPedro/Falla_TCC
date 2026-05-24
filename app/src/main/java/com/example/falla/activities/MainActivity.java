@@ -519,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
 
     // #####  BANCO DE DADOS  ##### //
     private void carregarCardsDoBanco() {
-        // 1. Busca os cards da categoria Pessoal em segundo plano usando seu 'db' global
+        // 1. Busca os cards da categoria Pessoal em segundo plano usando o seu 'db' global
         AppDatabase.databaseWriteExecutor.execute(() -> {
             List<ItemCard> listaItens = db.itemCardDao().buscarPorCategoria(CategoriaItem.PESSOAL);
 
@@ -533,10 +533,9 @@ public class MainActivity extends AppCompatActivity {
                 if (listaItens == null || listaItens.isEmpty()) return;
 
                 for (ItemCard itemCardAtual : listaItens) {
-                    // BLINDAGEM 1: Cria uma cópia final do objeto para usar com segurança dentro dos cliques
                     final ItemCard card = itemCardAtual;
 
-                    // Infla o layout do card
+                    // Infla o layout do card respeitando as propriedades do nó pai
                     View cardView = getLayoutInflater().inflate(R.layout.item_card, gridPessoal, false);
 
                     // Referências dos componentes internos do card
@@ -545,31 +544,32 @@ public class MainActivity extends AppCompatActivity {
                     ImageView imgSimbolo = cardView.findViewById(R.id.img_card_simbolo);
                     TextView txtFala = cardView.findViewById(R.id.txt_card_fala);
 
-                    // Preenche o card com o texto
                     txtFala.setText(card.getFala());
 
-                    // BLINDAGEM 2: Try/Catch na imagem. Se a URI falhar, não quebra o App.
-                    if (card.getImagemUri() != null && !card.getImagemUri().isEmpty()) {
+                    // BLINDAGEM: Lendo Ícones Nativos (Números) ou Fotos da Galeria (URI)
+                    String uriOuIcone = card.getImagemUri();
+                    if (uriOuIcone != null && !uriOuIcone.isEmpty()) {
                         try {
-                            imgSimbolo.setImageURI(Uri.parse(card.getImagemUri()));
+                            if (uriOuIcone.matches("\\d+")) {
+                                imgSimbolo.setImageResource(Integer.parseInt(uriOuIcone));
+                            } else {
+                                imgSimbolo.setImageURI(Uri.parse(uriOuIcone));
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             imgSimbolo.setImageResource(android.R.drawable.ic_menu_help);
                         }
                     } else {
-                        imgSimbolo.setImageResource(android.R.drawable.ic_menu_help); // Imagem padrão
+                        imgSimbolo.setImageResource(android.R.drawable.ic_menu_help);
                     }
 
-                    // Configura o estado inicial da estrela
                     if (card.isFavorito()) {
                         imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
                     } else {
                         imgEstrela.setImageResource(android.R.drawable.btn_star_big_off);
                     }
 
-                    // ========================================================
                     // CLIQUE SIMPLES: TEXT-TO-SPEECH (TTS)
-                    // ========================================================
                     cardRoot.setOnClickListener(v -> {
                         String textoParaFalar = txtFala.getText().toString().trim();
                         if (!textoParaFalar.isEmpty() && tts != null) {
@@ -577,9 +577,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    // ========================================================
                     // CLIQUE NA ESTRELA: FAVORITAR / DESFAVORITAR
-                    // ========================================================
                     imgEstrela.setOnClickListener(v -> {
                         boolean novoEstadoFavorito = !card.isFavorito();
                         card.setFavorito(novoEstadoFavorito);
@@ -595,9 +593,7 @@ public class MainActivity extends AppCompatActivity {
                         });
                     });
 
-                    // ========================================================
                     // CLIQUE LONGO: MENU DE CONTEXTO (EDITAR / EXCLUIR)
-                    // ========================================================
                     cardRoot.setOnLongClickListener(v -> {
                         PopupMenu popup = new PopupMenu(MainActivity.this, cardRoot);
                         popup.getMenu().add(0, 1, 0, "Editar Imagem e Fala");
@@ -605,19 +601,16 @@ public class MainActivity extends AppCompatActivity {
 
                         popup.setOnMenuItemClickListener(item -> {
                             switch (item.getItemId()) {
-                                case 1: // EDITAR CARD
+                                case 1:
                                     abrirDialogEditarCard(card, txtFala, imgSimbolo);
                                     return true;
-
-                                case 2: // EXCLUIR CARD
-                                    gridPessoal.removeView(cardView); // Remove visualmente
-
+                                case 2:
+                                    gridPessoal.removeView(cardView);
                                     AppDatabase.databaseWriteExecutor.execute(() -> {
-                                        db.itemCardDao().deletar(card); // Remove do banco
+                                        db.itemCardDao().deletar(card);
                                     });
                                     Toast.makeText(MainActivity.this, "Card excluído", Toast.LENGTH_SHORT).show();
                                     return true;
-
                                 default:
                                     return false;
                             }
@@ -628,15 +621,22 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     // ========================================================
-                    // CONFIGURAÇÃO DO GRID (Para o card não bugar na tela)
+                    // CONFIGURAÇÃO DO GRID (Deixando o XML ditar a altura)
                     // ========================================================
-                    GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                    params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f); // Define peso 1 (ocupa metade se for 2 colunas)
-                    params.width = 0; // A largura quem define é o peso acima
-                    params.setMargins(12, 12, 12, 12); // Dá um respiro entre os cards
+                    GridLayout.LayoutParams params = (GridLayout.LayoutParams) cardView.getLayoutParams();
+                    if (params == null) {
+                        params = new GridLayout.LayoutParams();
+                    }
+
+                    // Apenas dizemos ao Java para dividir a tela em partes iguais (peso 1)
+                    params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+
+                    // APAGAMOS O params.height PARA ELE RESPEITAR OS SEUS 130dp DO XML!
+                    params.setMargins(12, 12, 12, 12);
+
                     cardView.setLayoutParams(params);
 
-                    // Injeta o card fisicamente no layout (SOMENTE AQUI NO FINAL DO LOOP)
+                    // Injeta o card estruturado no layout
                     gridPessoal.addView(cardView);
                 }
             });
@@ -763,16 +763,15 @@ public class MainActivity extends AppCompatActivity {
 
             if (lista == null || lista.isEmpty()) {
                 // O banco está vazio, vamos inserir os 5 cards padrão
-                db.itemCardDao().inserir(new ItemCard("Eu", CategoriaItem.PESSOAL, android.R.drawable.ic_menu_myplaces));
-                db.itemCardDao().inserir(new ItemCard("Você", CategoriaItem.PESSOAL, android.R.drawable.button_onoff_indicator_on));
-                db.itemCardDao().inserir(new ItemCard("Ajuda", CategoriaItem.PESSOAL, android.R.drawable.ic_menu_help));
-                db.itemCardDao().inserir(new ItemCard("Mais", CategoriaItem.PESSOAL, android.R.drawable.ic_menu_add));
-                db.itemCardDao().inserir(new ItemCard("Meu", CategoriaItem.PESSOAL, android.R.drawable.btn_star_big_on));
-
-                // Depois de inserir, recarrega a interface no ecrã principal
-                carregarCardsDoBanco();
+                db.itemCardDao().inserir(new ItemCard("Eu", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_myplaces)));
+                db.itemCardDao().inserir(new ItemCard("Você", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.button_onoff_indicator_on)));
+                db.itemCardDao().inserir(new ItemCard("Ajuda", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_help)));
+                db.itemCardDao().inserir(new ItemCard("Mais", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_add)));
+                db.itemCardDao().inserir(new ItemCard("Meu", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_myplaces)));
             }
+
+            // CORREÇÃO: Fora do IF! Agora os cards serão lidos sempre que o app abrir.
+            carregarCardsDoBanco();
         });
     }
-
 }
