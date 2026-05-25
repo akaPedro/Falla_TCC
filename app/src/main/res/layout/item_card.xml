@@ -11,7 +11,7 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardBackgroundColor="#FFFFFF"
+    app:cardBackgroundColor="@color/fundo_card_padrao"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
@@ -27,7 +27,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:text="Item"
-            android:textColor="#000000"
+            android:textColor="@color/texto_principal"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -51,6 +51,7 @@
             android:contentDescription="Favoritar"
             android:clickable="true"
             android:focusable="true"
+            app:tint="@color/cor_estrela_favorito"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:elevation="2dp" />
 

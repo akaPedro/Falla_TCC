@@ -5,7 +5,7 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    app:cardBackgroundColor="#555555"
+    app:cardBackgroundColor="@color/fundo_card_padrao"
     app:cardCornerRadius="16dp"
     app:cardElevation="8dp">
 
@@ -29,16 +29,23 @@
                 android:layout_gravity="center"
                 android:src="@android:drawable/ic_menu_help" />
 
-            <ImageView
+            <androidx.cardview.widget.CardView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:layout_marginStart="40dp"
-                android:src="@android:drawable/ic_menu_edit"
-                app:tint="#FFFFFF"
-                android:background="#80000000"
-                android:padding="4dp"/>
+                android:layout_marginTop="35dp"
+                android:layout_marginStart="35dp"
+                app:cardBackgroundColor="@color/verde_fosco_header"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@android:drawable/ic_menu_edit"
+                    app:tint="@color/texto_header" />
+            </androidx.cardview.widget.CardView>
         </FrameLayout>
 
         <EditText
@@ -49,18 +56,18 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="16dp"
             android:gravity="center"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/texto_principal"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:backgroundTint="#FFFFFF"
+            android:backgroundTint="@color/verde_fosco_header"
             android:hint="Texto do card"
-            android:textColorHint="#AAAAAA"
+            android:textColorHint="#8A92A3"
             android:singleLine="true"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#777777"/>
+            android:background="@color/borda_sutil"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,7 +81,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="cancelar"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/texto_principal"
                 android:textSize="18sp"
                 android:gravity="center"
                 android:clickable="true"
@@ -84,7 +91,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#777777"/>
+                android:background="@color/borda_sutil"/>
 
             <TextView
                 android:id="@+id/btn_dialog_salvar"
@@ -92,8 +99,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="salvar"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/verde_fosco_header"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:clickable="true"
                 android:focusable="true"

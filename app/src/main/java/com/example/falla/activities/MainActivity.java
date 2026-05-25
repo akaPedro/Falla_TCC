@@ -13,6 +13,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextToSpeech tts;
     private ImageView ImgFll;
-    private ImageView ImgPerf;
+    private View ImgPerf;
+    private ImageView imgProfileFoto;
     private DrawerLayout drawerLayout;
     private AppCompatImageView imgMenu;
     // Itens da barra lateral
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         // #####  BARRA PRINCIPAL  ##### //
         ImgFll = findViewById(R.id.img_keyboard);
         ImgPerf = findViewById(R.id.img_profile);
+        imgProfileFoto = findViewById(R.id.img_profile_foto);
 
 
         // #####  BARRA LATERAL  ##### //
@@ -152,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         conteudoReferencia = findViewById(R.id.conteudo_referencia);
         conteudoAprendizado = findViewById(R.id.conteudo_aprendizado);
 
-        // Recupera o tamanho salvo anteriormente. Se for a primeira vez abrindo o app, assume 2 colunas como padrão.
+        // tamanho salvo anteriormente, 2 colunas como padrão.
         android.content.SharedPreferences pref = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
         int colunasSalvas = pref.getInt("quantidade_colunas", 2);
         salvarEAplicarColunas(colunasSalvas);
@@ -168,8 +171,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         itemCores.setOnClickListener(v -> {
-            // Lógica para cores
             drawerLayout.closeDrawers();
+            abrirDialogCores();
         });
 
         itemHistorico.setOnClickListener(v -> {
@@ -233,11 +236,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.item_sim_quero).setOnClickListener(v -> falar("Sim, eu quero"));
         findViewById(R.id.item_sim_gosto).setOnClickListener(v -> falar("Sim, eu gosto"));
         findViewById(R.id.item_sim_bom).setOnClickListener(v -> falar("Isso é bom"));
+        findViewById(R.id.item_mais).setOnClickListener(v -> falar("Mais"));
+
 
         // Falas do Card Não
         findViewById(R.id.item_nao_quero).setOnClickListener(v -> falar("Não, eu não quero"));
         findViewById(R.id.item_nao_gosto).setOnClickListener(v -> falar("Não, eu não gosto"));
         findViewById(R.id.item_nao_ruim).setOnClickListener(v -> falar("Isso é ruim"));
+        findViewById(R.id.item_menos).setOnClickListener(v -> falar("Menos"));
 
 
 
@@ -391,6 +397,10 @@ public class MainActivity extends AppCompatActivity {
                             registrarNoHistorico(card.getImagemUri(), card.getFala());
                         }
                     });
+
+                    // ✅ Aplica a cor da categoria no card
+                    cardRoot.setCardBackgroundColor(obterCorCategoria(categoria));
+
 
                     // Favoritar / Desfavoritar
                     imgEstrela.setOnClickListener(v -> {
@@ -685,16 +695,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // Se a variável 'db' estiver nula por algum motivo ao voltar, recria a conexão
         if (db == null) {
             db = AppDatabase.getDatabase(MainActivity.this);
         }
 
-        // Força a leitura do banco de dados para desenhar os cards novos
         carregarTodasAsGavetas();
 
-        // Se você já tiver implementado a gaveta de favoritos, descomente a linha abaixo:
-        // carregarCardsFavoritos();
+        // carrega a foto do perfil na toolbar
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            com.example.falla.usuario.Usuario user = db.usuarioDao().getUsuario();
+            runOnUiThread(() -> {
+                if (user != null && user.caminhoFoto != null) {
+                    imgProfileFoto.setImageTintList(null); // remove o tint verde
+                    imgProfileFoto.setImageURI(android.net.Uri.fromFile(new java.io.File(user.caminhoFoto)));
+                } else {
+                    // sem foto: mantém o ícone padrão com tint
+                    imgProfileFoto.setImageResource(android.R.drawable.ic_menu_myplaces);
+                    imgProfileFoto.setImageTintList(
+                            android.content.res.ColorStateList.valueOf(
+                                    androidx.core.content.ContextCompat.getColor(this, R.color.texto_header)
+                            )
+                    );
+                }
+            });
+        });
     }
 
     private void carregarTodasAsGavetas() {
@@ -757,6 +781,157 @@ public class MainActivity extends AppCompatActivity {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             if (db != null) db.historicoDao().inserir(novoRegistro);
         });
+    }
+
+    private void abrirDialogCores() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_cores, null);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT)
+            );
+        }
+
+        Spinner spinnerCategoria = dialogView.findViewById(R.id.spinner_categoria_cor);
+        android.widget.GridLayout gridPaleta = dialogView.findViewById(R.id.grid_paleta_cores);
+        androidx.cardview.widget.CardView cardPreview = dialogView.findViewById(R.id.card_preview_cor);
+        TextView btnCancelar = dialogView.findViewById(R.id.btn_cores_cancelar);
+        TextView btnSalvar = dialogView.findViewById(R.id.btn_cores_salvar);
+
+        // Categorias disponíveis (sem FAVORITOS)
+        CategoriaItem[] categorias = {
+                CategoriaItem.PESSOAL,
+                CategoriaItem.COMIDAS,
+                CategoriaItem.LAZER,
+                CategoriaItem.REFERENCIA,
+                CategoriaItem.APRENDIZADO
+        };
+
+        android.widget.ArrayAdapter<CategoriaItem> adapterCat =
+                new android.widget.ArrayAdapter<>(this,
+                        android.R.layout.simple_spinner_dropdown_item, categorias);
+        spinnerCategoria.setAdapter(adapterCat);
+
+        // Paleta de cores suaves para autistas
+        // Formato: {cor em int, nome para acessibilidade}
+        int[] paleta = {
+                // Neutros
+                0xFFFFFFFF, // Branco
+                0xFFF4F4F6, // Cinza claro
+                0xFFDDE3E0, // Cinza esverdeado
+                0xFFD6D3CC, // Bege acinzentado
+                0xFFBFC5C2, // Cinza médio
+
+                // Verdes suaves
+                0xFFA8D5B5, // Verde menta
+                0xFFB8D8C8, // Verde sage
+                0xFFC8E6D4, // Verde água
+                0xFF9ECFB0, // Verde folha suave
+                0xFF7DB89A, // Verde musgo claro
+
+                // Azuis suaves
+                0xFFC2DCE8, // Azul bebê
+                0xFFB5D0E0, // Azul claro
+                0xFFA8C8DC, // Azul sereno
+                0xFFD0E8F2, // Azul gelo
+                0xFF8EC0D8, // Azul piscina suave
+
+                // Lilás/Roxo suave
+                0xFFD4C5E2, // Lilás claro
+                0xFFC8B8D8, // Lilás médio
+                0xFFBCADD0, // Lavanda
+                0xFFE2D8EE, // Lilás quase branco
+                0xFFAA9DC4, // Roxo dessaturado
+
+                // Terrosos/Quentes suaves
+                0xFFF5D9C2, // Pêssego
+                0xFFEDCFB8, // Laranja claro
+                0xFFF2E2D0, // Creme
+                0xFFE8D0BC, // Bege quente
+                0xFFD4B8A0, // Caramelo claro
+
+                // Rosa suave
+                0xFFF2C8CC, // Rosa bebê
+                0xFFEDB8BC, // Rosé
+                0xFFF5D8DA, // Rosa quase branco
+                0xFFE8A8AD, // Rosa antigo
+                0xFFDDA0A4, // Rosa empoeirado
+        };
+
+        // Cor selecionada atualmente (começa com a cor já salva da categoria)
+        final int[] corSelecionada = {obterCorCategoria(categorias[0])};
+        cardPreview.setCardBackgroundColor(corSelecionada[0]);
+
+        // Atualiza a cor do preview quando muda a categoria
+        spinnerCategoria.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int pos, long id) {
+                corSelecionada[0] = obterCorCategoria(categorias[pos]);
+                cardPreview.setCardBackgroundColor(corSelecionada[0]);
+            }
+            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        });
+
+        // Monta a paleta visualmente
+        int tamanhoCirculo = (int) (48 * getResources().getDisplayMetrics().density);
+        int margin = (int) (6 * getResources().getDisplayMetrics().density);
+
+        for (int cor : paleta) {
+            final int corAtual = cor;
+
+            android.widget.FrameLayout circuloContainer = new android.widget.FrameLayout(this);
+            android.widget.GridLayout.LayoutParams paramsGrid = new android.widget.GridLayout.LayoutParams();
+            paramsGrid.width = tamanhoCirculo;
+            paramsGrid.height = tamanhoCirculo;
+            paramsGrid.setMargins(margin, margin, margin, margin);
+            circuloContainer.setLayoutParams(paramsGrid);
+
+            // Círculo colorido
+            android.view.View circulo = new android.view.View(this);
+            android.widget.FrameLayout.LayoutParams paramsCir =
+                    new android.widget.FrameLayout.LayoutParams(tamanhoCirculo, tamanhoCirculo);
+            circulo.setLayoutParams(paramsCir);
+
+            android.graphics.drawable.GradientDrawable shape = new android.graphics.drawable.GradientDrawable();
+            shape.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+            shape.setColor(corAtual);
+            shape.setStroke(2, 0xFFCCCCCC);
+            circulo.setBackground(shape);
+
+            circulo.setOnClickListener(v -> {
+                corSelecionada[0] = corAtual;
+                cardPreview.setCardBackgroundColor(corAtual);
+            });
+
+            circuloContainer.addView(circulo);
+            gridPaleta.addView(circuloContainer);
+        }
+
+        btnCancelar.setOnClickListener(v -> dialog.dismiss());
+
+        btnSalvar.setOnClickListener(v -> {
+            CategoriaItem catEscolhida = categorias[spinnerCategoria.getSelectedItemPosition()];
+            salvarCorCategoria(catEscolhida, corSelecionada[0]);
+            carregarTodasAsGavetas(); // Redesenha os cards com a nova cor
+            dialog.dismiss();
+            drawerLayout.closeDrawers();
+        });
+
+        dialog.show();
+    }
+
+    // Lê a cor salva para uma categoria (retorna branco como padrão)
+    private int obterCorCategoria(CategoriaItem categoria) {
+        android.content.SharedPreferences prefs = getSharedPreferences("CoresCategoria", MODE_PRIVATE);
+        return prefs.getInt("cor_" + categoria.name(), 0xFFFFFFFF);
+    }
+
+    // Salva a cor escolhida para a categoria
+    private void salvarCorCategoria(CategoriaItem categoria, int cor) {
+        android.content.SharedPreferences prefs = getSharedPreferences("CoresCategoria", MODE_PRIVATE);
+        prefs.edit().putInt("cor_" + categoria.name(), cor).apply();
     }
 
 }

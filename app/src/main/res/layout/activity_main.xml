@@ -12,13 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#9E9E9E">
+        android:background="@color/background_principal">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_top"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#000000"
+            android:background="@color/verde_fosco_header"
             app:contentInsetStart="0dp">
 
             <RelativeLayout
@@ -34,14 +34,14 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:src="@android:drawable/ic_menu_sort_by_size"
-                    app:tint="#FFFFFF" />
+                    app:tint="@color/texto_header" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:text="Falla"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/texto_header"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
@@ -59,14 +59,28 @@
                         android:layout_height="32dp"
                         android:layout_marginEnd="16dp"
                         android:src="@drawable/m3_split_button_chevron_avd"
-                        app:tint="#FFFFFF" />
+                        app:tint="@color/texto_header" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/img_profile"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_launcher_foreground"
-                        app:tint="#FFFFFF" />
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="18dp"
+                        app:cardElevation="2dp"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/texto_header">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/img_profile_foto"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_launcher_foreground"
+                            app:tint="@color/texto_header" />
+
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
             </RelativeLayout>
@@ -97,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
-                        app:cardBackgroundColor="#28A745"
+                        app:cardBackgroundColor="@color/card_sim_verde"
                         app:cardElevation="4dp"
                         app:cardCornerRadius="8dp">
 
@@ -121,7 +135,7 @@
                                     android:layout_marginBottom="16dp"
                                     android:src="@android:drawable/checkbox_on_background" />
 
-                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
@@ -134,7 +148,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text=">"
-                                        android:textColor="#000000"
+                                        android:textColor="@color/texto_principal"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:layout_alignParentStart="true"
@@ -144,7 +158,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="sim"
-                                        android:textColor="#000000"
+                                        android:textColor="@color/texto_principal"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:layout_centerInParent="true"/>
@@ -158,12 +172,14 @@
                                 android:orientation="vertical"
                                 android:visibility="gone">
 
-                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
-                                <TextView android:id="@+id/item_sim_quero" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="quero" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
-                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
-                                <TextView android:id="@+id/item_sim_gosto" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="gosto" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
-                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
-                                <TextView android:id="@+id/item_sim_bom" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="bom" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
+                                <TextView android:id="@+id/item_sim_quero" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="quero" android:gravity="center" android:padding="10dp" android:textColor="@color/texto_principal" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
+                                <TextView android:id="@+id/item_sim_gosto" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="gosto" android:gravity="center" android:padding="10dp" android:textColor="@color/texto_principal" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
+                                <TextView android:id="@+id/item_sim_bom" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="bom" android:gravity="center" android:padding="10dp" android:textColor="@color/texto_principal" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
+                                <TextView android:id="@+id/item_mais" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="mais" android:gravity="center" android:padding="10dp" android:textColor="@color/texto_principal" android:textSize="18sp"/>
                             </LinearLayout>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -174,7 +190,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
-                        app:cardBackgroundColor="#DC3545"
+                        app:cardBackgroundColor="@color/card_nao_vermelho"
                         app:cardElevation="4dp"
                         app:cardCornerRadius="8dp">
 
@@ -198,7 +214,7 @@
                                     android:layout_marginBottom="16dp"
                                     android:src="@android:drawable/ic_delete" />
 
-                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
@@ -211,7 +227,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text=">"
-                                        android:textColor="#000000"
+                                        android:textColor="@color/texto_principal"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:layout_alignParentStart="true"
@@ -221,7 +237,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="não"
-                                        android:textColor="#000000"
+                                        android:textColor="@color/texto_principal"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:layout_centerInParent="true"/>
@@ -235,17 +251,18 @@
                                 android:orientation="vertical"
                                 android:visibility="gone">
 
-                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
-                                <TextView android:id="@+id/item_nao_quero" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="não quero" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
-                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
-                                <TextView android:id="@+id/item_nao_gosto" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="não gosto" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
-                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#40000000"/>
-                                <TextView android:id="@+id/item_nao_ruim" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="ruim" android:gravity="center" android:padding="10dp" android:textColor="#000000" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
+                                <TextView android:id="@+id/item_nao_quero" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="não quero" android:gravity="center" android:padding="10dp" android:textColor="@color/texto_principal" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
+                                <TextView android:id="@+id/item_nao_gosto" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="não gosto" android:gravity="center" android:padding="10dp" android:textColor="@color/texto_principal" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
+                                <TextView android:id="@+id/item_nao_ruim" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="ruim" android:gravity="center" android:padding="10dp" android:textColor="@color/texto_principal" android:textSize="18sp"/>
+                                <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
+                                <TextView android:id="@+id/item_menos" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="menos" android:gravity="center" android:padding="10dp" android:textColor="@color/texto_principal" android:textSize="18sp"/>
                             </LinearLayout>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/header_favorito"
@@ -264,13 +281,13 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_media_play"
-                        app:tint="#000000"/>
+                        app:tint="@color/texto_principal"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Favoritos"
-                        android:textColor="#000000"
+                        android:textColor="@color/texto_principal"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
@@ -282,7 +299,6 @@
                     android:layout_height="wrap_content"
                     android:columnCount="2"
                     android:visibility="gone"/>
-
 
                 <LinearLayout
                     android:id="@+id/header_pessoal"
@@ -301,13 +317,13 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_media_play"
-                        app:tint="#000000"/>
+                        app:tint="@color/texto_principal"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Pessoal"
-                        android:textColor="#000000"
+                        android:textColor="@color/texto_principal"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
@@ -318,9 +334,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:columnCount="2"
-                    android:visibility="visible">
-                </GridLayout>
-
+                    android:visibility="visible"/>
 
                 <LinearLayout
                     android:id="@+id/header_Alimentos"
@@ -339,13 +353,13 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_media_play"
-                        app:tint="#000000"/>
+                        app:tint="@color/texto_principal"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Alimentos"
-                        android:textColor="#000000"
+                        android:textColor="@color/texto_principal"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
@@ -357,7 +371,6 @@
                     android:layout_height="wrap_content"
                     android:columnCount="2"
                     android:visibility="gone"/>
-
 
                 <LinearLayout
                     android:id="@+id/header_lazer"
@@ -376,13 +389,13 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_media_play"
-                        app:tint="#000000"/>
+                        app:tint="@color/texto_principal"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Lazer e diversão"
-                        android:textColor="#000000"
+                        android:textColor="@color/texto_principal"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
@@ -394,7 +407,6 @@
                     android:layout_height="wrap_content"
                     android:columnCount="2"
                     android:visibility="gone"/>
-
 
                 <LinearLayout
                     android:id="@+id/header_referencia"
@@ -413,13 +425,13 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_media_play"
-                        app:tint="#000000"/>
+                        app:tint="@color/texto_principal"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Referencia"
-                        android:textColor="#000000"
+                        android:textColor="@color/texto_principal"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
@@ -431,7 +443,6 @@
                     android:layout_height="wrap_content"
                     android:columnCount="2"
                     android:visibility="gone"/>
-
 
                 <LinearLayout
                     android:id="@+id/header_aprendizado"
@@ -450,13 +461,13 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_media_play"
-                        app:tint="#000000"/>
+                        app:tint="@color/texto_principal"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Aprendizado"
-                        android:textColor="#000000"
+                        android:textColor="@color/texto_principal"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"/>
@@ -478,7 +489,7 @@
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#000000"
+        android:background="@color/verde_fosco_lateral"
         android:orientation="vertical"
         android:clickable="true"
         android:focusable="true"
@@ -495,7 +506,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Tamanho dos cards"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/texto_header"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:padding="24dp"
@@ -510,16 +521,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
-                android:background="#1A1A1A">
+                android:background="@color/verde_fosco_header">
 
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#33FFFFFF"/>
 
                 <TextView
                     android:id="@+id/item_tamanho_grande"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="↳  Grande"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/texto_header"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:padding="16dp"
@@ -528,14 +539,14 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"/>
 
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#33FFFFFF"/>
 
                 <TextView
                     android:id="@+id/item_tamanho_pequeno"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="↳  Pequeno"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/texto_header"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:padding="16dp"
@@ -545,47 +556,47 @@
                     android:background="?attr/selectableItemBackground"/>
             </LinearLayout>
         </LinearLayout>
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#33FFFFFF"/>
 
         <TextView
             android:id="@+id/item_cores"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Cores"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/texto_header"
             android:textSize="16sp"
             android:textStyle="bold"
             android:padding="24dp"
             android:gravity="center"/>
 
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#33FFFFFF"/>
 
         <TextView
             android:id="@+id/item_historico"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="historico"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/texto_header"
             android:textSize="16sp"
             android:textStyle="bold"
             android:padding="24dp"
             android:gravity="center"/>
 
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#33FFFFFF"/>
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333"/>
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#33FFFFFF"/>
 
         <TextView
             android:id="@+id/item_sobre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sobre"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/texto_header"
             android:textSize="16sp"
             android:textStyle="bold"
             android:padding="24dp"

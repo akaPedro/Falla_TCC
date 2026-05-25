@@ -71,7 +71,11 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
         // Gatilho para Falar
         btnFallar.setOnClickListener(v -> {
             if (campoTexto != null && campoTexto.getText() != null) {
-                falarTexto(campoTexto.getText().toString());
+                String texto = campoTexto.getText().toString().trim();
+                if (!texto.isEmpty()) {
+                    falarTexto(texto);
+                    registrarNoHistorico(texto);
+                }
             }
         });
 
@@ -167,6 +171,24 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
         if (tts != null && !texto.trim().isEmpty()) {
             tts.speak(texto, TextToSpeech.QUEUE_FLUSH, null, "falla_id_" + System.currentTimeMillis());
         }
+    }
+
+    // registra a digitação livre no histórico
+    private void registrarNoHistorico(String texto) {
+        java.text.SimpleDateFormat formataData = new java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault());
+        java.text.SimpleDateFormat formataHora = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+        java.util.Date agora = new java.util.Date();
+
+        com.example.falla.card.ItemHistorico novoRegistro = new com.example.falla.card.ItemHistorico(
+                formataData.format(agora),
+                formataHora.format(agora),
+                String.valueOf(android.R.drawable.ic_menu_edit), // ícone de "digitado"
+                texto
+        );
+
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            if (db != null) db.historicoDao().inserir(novoRegistro);
+        });
     }
 
     @Override

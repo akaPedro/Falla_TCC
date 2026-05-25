@@ -3,16 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9E9E9E"
+    android:background="@color/background_principal"
     android:id="@+id/perfil"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <!-- BARRA SUPERIOR -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#000000">
+        android:background="@color/verde_fosco_header">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btn_voltar"
@@ -23,34 +22,31 @@
             android:layout_marginStart="16dp"
             android:contentDescription="Voltar"
             android:src="@android:drawable/ic_media_rew"
-            app:tint="#FFFFFF" />
+            app:tint="@color/texto_header" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Perfil"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/texto_header"
             android:textSize="34sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <!-- ÁREA DA FOTO DE PERFIL -->
-    <!-- O FrameLayout permite colocar um item em cima do outro -->
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="48dp">
 
-        <!-- Ícone do usuário gigante -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="180dp"
             android:layout_height="180dp"
             app:cardCornerRadius="90dp"
             app:cardElevation="4dp"
             app:strokeWidth="2dp"
-            app:strokeColor="#FFFFFF"
+            app:strokeColor="@color/verde_fosco_header"
             android:layout_gravity="center">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -63,7 +59,6 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Lápis de edição (CardView circular com fundo branco) -->
         <androidx.cardview.widget.CardView
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -73,7 +68,7 @@
             android:clickable="true"
             android:focusable="true"
             android:id="@+id/edit_foto"
-            app:cardBackgroundColor="#FFFFFF"
+            app:cardBackgroundColor="@color/fundo_card_padrao"
             app:cardCornerRadius="24dp"
             app:cardElevation="4dp">
 
@@ -82,11 +77,10 @@
                 android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@android:drawable/ic_menu_edit"
-                app:tint="#000000" />
+                app:tint="@color/texto_principal" />
         </androidx.cardview.widget.CardView>
     </FrameLayout>
 
-    <!-- CAMPOS DE TEXTO (NOME E REGISTRO) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,12 +92,12 @@
             android:id="@+id/edt_nome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FFFFFF"
+            android:backgroundTint="@color/verde_fosco_header"
             android:gravity="center"
             android:hint="Nome"
             android:paddingBottom="8dp"
-            android:textColor="#000000"
-            android:textColorHint="#424242"
+            android:textColor="@color/texto_principal"
+            android:textColorHint="#8A92A3"
             android:textSize="20sp" />
 
         <EditText
@@ -111,23 +105,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:backgroundTint="#FFFFFF"
+            android:backgroundTint="@color/verde_fosco_header"
             android:gravity="center"
             android:hint="Registro"
             android:inputType="text"
             android:paddingBottom="8dp"
-            android:textColor="#000000"
-            android:textColorHint="#424242"
+            android:textColor="@color/texto_principal"
+            android:textColorHint="#8A92A3"
             android:textSize="20sp" />
     </LinearLayout>
 
-    <!-- BOTÕES DE GÊNERO (Formato Pílula) -->
     <androidx.cardview.widget.CardView
         android:layout_width="260dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="48dp"
-        app:cardBackgroundColor="#000000"
+        app:cardBackgroundColor="@color/verde_fosco_header"
         app:cardCornerRadius="25dp">
 
         <LinearLayout
@@ -144,16 +137,15 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="Menino"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/texto_header"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <!-- Linha branca divisória no meio -->
             <View
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
                 android:layout_marginVertical="8dp"
-                android:background="#FFFFFF" />
+                android:background="#33FFFFFF" />
 
             <TextView
                 android:id="@+id/btn_menina"
@@ -164,7 +156,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="Menina"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/texto_header"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>

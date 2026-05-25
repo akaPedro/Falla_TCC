@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#9E9E9E">
+    android:background="@color/background_principal">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#000000"
+        android:background="@color/verde_fosco_header"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp">
@@ -20,22 +20,22 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@android:drawable/ic_media_previous"
-            app:tint="@android:color/white" />
+            app:tint="@color/texto_header" />
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Historico"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Historico"
+            android:textAlignment="center"
+            android:textColor="@color/texto_header"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-    <View
-        android:layout_width="40dp"
-        android:layout_height="40dp"/>
-</LinearLayout>
+        <View
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"

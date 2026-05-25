@@ -3,16 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9E9E9E"
+    android:background="@color/background_principal"
     android:id="@+id/falla"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <!-- BARRA SUPERIOR -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#000000">
+        android:background="@color/verde_fosco_header">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btn_voltar_ia"
@@ -22,14 +21,14 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:src="@android:drawable/ic_media_rew"
-            app:tint="#FFFFFF" />
+            app:tint="@color/texto_header" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Fala IA"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/texto_header"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -41,10 +40,9 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:src="@android:drawable/ic_menu_help"
-            app:tint="#FFFFFF" />
+            app:tint="@color/texto_header" />
     </RelativeLayout>
 
-    <!-- BOTÕES DE AÇÃO (FALAR E FAVORITAR) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,13 +51,12 @@
         android:orientation="horizontal"
         android:paddingHorizontal="16dp">
 
-        <!-- Botão Falar -->
         <androidx.cardview.widget.CardView
             android:id="@+id/btn_falar"
             android:layout_width="160dp"
             android:layout_height="100dp"
             android:layout_marginEnd="12dp"
-            app:cardBackgroundColor="#00BCD4"
+            app:cardBackgroundColor="@color/categoria_lazer"
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp">
 
@@ -74,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Falar"
-                    android:textColor="#000000"
+                    android:textColor="@color/texto_principal"
                     android:textSize="22sp"
                     android:layout_marginEnd="8dp"/>
 
@@ -82,16 +79,15 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@android:drawable/ic_btn_speak_now"
-                    app:tint="#000000" />
+                    app:tint="@color/texto_principal" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botão adicionar -->
         <androidx.cardview.widget.CardView
             android:id="@+id/btn_favoritar_ia"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            app:cardBackgroundColor="#00BCD4"
+            app:cardBackgroundColor="@color/fundo_card_padrao"
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp">
 
@@ -100,11 +96,10 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:src="@android:drawable/ic_input_add"
-                app:tint="#FFEB3B" />
+                app:tint="@color/texto_principal" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 
-    <!-- CAMPO DE DIGITAÇÃO -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -116,19 +111,9 @@
             android:id="@+id/edt_fala_ia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@null"
-            android:gravity="center"
-            android:hint="digite o que deseja"
-            android:textColor="#000000"
-            android:textColorHint="#424242"
-            android:textSize="20sp" />
-
-        <!-- Linha preta grossa abaixo do texto -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_marginTop="4dp"
-            android:background="#000000" />
+            android:ems="10"
+            android:inputType="text"
+            android:text="Texto a ser falado" />
     </LinearLayout>
 
 </LinearLayout>
