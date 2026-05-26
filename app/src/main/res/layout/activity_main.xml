@@ -329,12 +329,112 @@
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
-                <GridLayout
+                <LinearLayout
                     android:id="@+id/conteudo_pessoal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="visible"/>
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!-- SUB: EU -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_pessoal_eu" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Eu"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_pessoal_eu" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_pessoal_eu" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <!-- SUB: REFERÊNCIA -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_pessoal_referencia" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Referência"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_pessoal_referencia" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_pessoal_referencia" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <!-- SUB: SENTIMENTOS -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_pessoal_sentimentos" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Sentimentos"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_pessoal_sentimentos" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_pessoal_sentimentos" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <!-- SUB: CUIDADOS -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_pessoal_cuidados" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Cuidados"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_pessoal_cuidados" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_pessoal_cuidados" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <!-- SUB: ROUPAS -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_pessoal_roupas" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Roupas"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_pessoal_roupas" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_pessoal_roupas" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <!-- SUB: AÇÕES -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_pessoal_acoes" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Ações"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_pessoal_acoes" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_pessoal_acoes" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                </LinearLayout>
+
+
 
                 <LinearLayout
                     android:id="@+id/header_Alimentos"
@@ -365,12 +465,76 @@
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
-                <GridLayout
+                <LinearLayout
                     android:id="@+id/conteudo_alimentos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="gone"/>
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_comidas_refeicao" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Refeição"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_comidas_refeicao" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_comidas_refeicao" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_comidas_cafe" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Café e Lanches"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_comidas_cafe" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_comidas_cafe" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_comidas_bebidas" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Bebidas"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_comidas_bebidas" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_comidas_bebidas" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_comidas_doces" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Doces e Sobremesas"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_comidas_doces" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_comidas_doces" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                </LinearLayout>
+
+
 
                 <LinearLayout
                     android:id="@+id/header_lazer"
@@ -401,48 +565,76 @@
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
-                <GridLayout
+                <LinearLayout
                     android:id="@+id/conteudo_lazer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="gone"/>
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <LinearLayout
-                    android:id="@+id/header_referencia"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_lazer_jogos" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Jogos e Brinquedos"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_lazer_jogos" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_lazer_jogos" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
 
-                    <ImageView
-                        android:id="@+id/seta_referencia"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@android:drawable/ic_media_play"
-                        app:tint="@color/texto_principal"/>
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_lazer_telas" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Telas e Mídias"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_lazer_telas" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_lazer_telas" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Referencia"
-                        android:textColor="@color/texto_principal"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_marginStart="8dp"/>
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_lazer_externo" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Atividades Externas"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_lazer_externo" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_lazer_externo" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_lazer_social" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Interação Social"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_lazer_social" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_lazer_social" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
                 </LinearLayout>
 
-                <GridLayout
-                    android:id="@+id/conteudo_referencia"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="gone"/>
+
 
                 <LinearLayout
                     android:id="@+id/header_aprendizado"
@@ -473,12 +665,91 @@
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
-                <GridLayout
+                <LinearLayout
                     android:id="@+id/conteudo_aprendizado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:visibility="gone"/>
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_aprend_numeros" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Números"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_aprend_numeros" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_aprend_numeros" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_aprend_alfabeto" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Alfabeto"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_aprend_alfabeto" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_aprend_alfabeto" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_aprend_vogais" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Vogais"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_aprend_vogais" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_aprend_vogais" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_aprend_cores" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Cores"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_aprend_cores" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_aprend_cores" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:id="@+id/header_sub_aprend_formas" android:orientation="horizontal"
+                        android:background="@color/verde_fosco_lateral" android:padding="12dp"
+                        android:layout_marginTop="4dp" android:clickable="true" android:focusable="true">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="  Formas"
+                            android:textColor="@color/texto_header" android:textSize="15sp"/>
+                        <ImageView android:id="@+id/seta_sub_aprend_formas" android:layout_width="20dp"
+                            android:layout_height="20dp" android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/texto_header"/>
+                    </LinearLayout>
+                    <GridLayout android:id="@+id/grid_sub_aprend_formas" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:columnCount="2"
+                        android:visibility="gone" android:padding="8dp"/>
+
+                </LinearLayout>
+
+
 
             </LinearLayout>
         </ScrollView>

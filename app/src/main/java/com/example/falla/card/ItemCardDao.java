@@ -13,7 +13,6 @@ public interface ItemCardDao {
     @Insert
     void inserir(ItemCard item);
 
-    // Mude de String para CategoriaItem aqui
     @Query("SELECT * FROM itens_cards WHERE categoria = :cat")
     List<ItemCard> buscarPorCategoria(CategoriaItem cat);
 

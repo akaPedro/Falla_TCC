@@ -52,10 +52,21 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatImageView imgMenu;
     // Itens da barra lateral
     private TextView itemTamanho, itemCores, itemHistorico, itemSobre, itemGrande, itemPequeno, btnSalvarEdt;
-    private LinearLayout headerPessoal, headerFavoritos, headerComidas, headerLazer, headerReferencia, headerAprendizado, submenuTamanho;
-    private ImageView setaPessoal, setaFavoritos, setaComidas, setaLazer, setaReferencia, setaAprendizado;
-    private GridLayout conteudoPessoal, conteudoFavoritos, conteudoComidas, conteudoLazer, conteudoReferencia, conteudoAprendizado;
-    // Variável temporária para guardar em qual ImageView vamos colocar a foto da galeria
+    private LinearLayout headerPessoal, headerFavoritos, headerComidas, headerLazer, headerAprendizado, submenuTamanho;
+    private ImageView setaPessoal, setaFavoritos, setaComidas, setaLazer, setaAprendizado;
+    private LinearLayout conteudoPessoal, conteudoComidas, conteudoLazer, conteudoAprendizado;
+
+    // Subgavetas Pessoal
+    private GridLayout gridSubPessoalEu, gridSubPessoalReferencia, gridSubPessoalSentimentos, gridSubPessoalCuidados, gridSubPessoalRoupas, gridSubPessoalAcoes;
+
+    // Subgavetas Comidas
+    private GridLayout gridSubComidasRefeicao, gridSubComidasCafe, gridSubComidasBebidas, gridSubComidasDoces;
+
+    // Subgavetas Lazer
+    private GridLayout gridSubLazerJogos, gridSubLazerTelas, gridSubLazerExterno, gridSubLazerSocial;
+
+    // Subgavetas Aprendizado
+    private GridLayout conteudoFavoritos, gridSubAprendNumeros, gridSubAprendAlfabeto, gridSubAprendVogais, gridSubAprendCores, gridSubAprendFormas;    // Variável temporária para guardar em qual ImageView vamos colocar a foto da galeria
     private ImageView imagemEmEdicaoAtual = null;
 
     private AppDatabase db;
@@ -112,6 +123,32 @@ public class MainActivity extends AppCompatActivity {
         itemSobre = findViewById(R.id.item_sobre);
 
 
+        // Subgavetas Pessoal
+        gridSubPessoalEu            = findViewById(R.id.grid_sub_pessoal_eu);
+        gridSubPessoalReferencia = findViewById(R.id.grid_sub_pessoal_referencia);
+        gridSubPessoalSentimentos   = findViewById(R.id.grid_sub_pessoal_sentimentos);
+        gridSubPessoalCuidados      = findViewById(R.id.grid_sub_pessoal_cuidados);
+        gridSubPessoalRoupas        = findViewById(R.id.grid_sub_pessoal_roupas);
+        gridSubPessoalAcoes         = findViewById(R.id.grid_sub_pessoal_acoes);
+
+        // Subgavetas Comidas
+        gridSubComidasRefeicao  = findViewById(R.id.grid_sub_comidas_refeicao);
+        gridSubComidasCafe      = findViewById(R.id.grid_sub_comidas_cafe);
+        gridSubComidasBebidas   = findViewById(R.id.grid_sub_comidas_bebidas);
+        gridSubComidasDoces     = findViewById(R.id.grid_sub_comidas_doces);
+
+        // Subgavetas Lazer
+        gridSubLazerJogos   = findViewById(R.id.grid_sub_lazer_jogos);
+        gridSubLazerTelas   = findViewById(R.id.grid_sub_lazer_telas);
+        gridSubLazerExterno = findViewById(R.id.grid_sub_lazer_externo);
+        gridSubLazerSocial  = findViewById(R.id.grid_sub_lazer_social);
+
+        // Subgavetas Aprendizado
+        gridSubAprendNumeros  = findViewById(R.id.grid_sub_aprend_numeros);
+        gridSubAprendAlfabeto = findViewById(R.id.grid_sub_aprend_alfabeto);
+        gridSubAprendVogais   = findViewById(R.id.grid_sub_aprend_vogais);
+        gridSubAprendCores    = findViewById(R.id.grid_sub_aprend_cores);
+        gridSubAprendFormas   = findViewById(R.id.grid_sub_aprend_formas);
 
 
 
@@ -122,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
         headerFavoritos = findViewById(R.id.header_favorito);
         headerComidas = findViewById(R.id.header_Alimentos);
         headerLazer = findViewById(R.id.header_lazer);
-        headerReferencia = findViewById(R.id.header_referencia);
         headerAprendizado = findViewById(R.id.header_aprendizado);
 
         // #####  SETAS ##### //
@@ -130,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
         setaFavoritos = findViewById(R.id.seta_favorito);
         setaComidas = findViewById(R.id.seta_alimento);
         setaLazer = findViewById(R.id.seta_lazer);
-        setaReferencia = findViewById(R.id.seta_referencia);
         setaAprendizado = findViewById(R.id.seta_aprendizado);
 
         // #####  CONTEUDO / GRIDS  ##### //
@@ -138,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
         conteudoPessoal = findViewById(R.id.conteudo_pessoal);
         conteudoComidas = findViewById(R.id.conteudo_alimentos);
         conteudoLazer = findViewById(R.id.conteudo_lazer);
-        conteudoReferencia = findViewById(R.id.conteudo_referencia);
         conteudoAprendizado = findViewById(R.id.conteudo_aprendizado);
 
         // #####  LOGICA DE TAMANHO  ##### //
@@ -152,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawers(); // Opcional: fecha a barra lateral ao clicar
         });
 
-        conteudoReferencia = findViewById(R.id.conteudo_referencia);
+
         conteudoAprendizado = findViewById(R.id.conteudo_aprendizado);
 
         // tamanho salvo anteriormente, 2 colunas como padrão.
@@ -247,7 +281,29 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        // Conectar cliques das subgavetas
+        configurarSubgaveta(R.id.header_sub_pessoal_eu,          R.id.seta_sub_pessoal_eu,          gridSubPessoalEu);
+        configurarSubgaveta(R.id.header_sub_pessoal_referencia,  R.id.seta_sub_pessoal_referencia, gridSubPessoalReferencia);
+        configurarSubgaveta(R.id.header_sub_pessoal_sentimentos, R.id.seta_sub_pessoal_sentimentos, gridSubPessoalSentimentos);
+        configurarSubgaveta(R.id.header_sub_pessoal_cuidados,    R.id.seta_sub_pessoal_cuidados,    gridSubPessoalCuidados);
+        configurarSubgaveta(R.id.header_sub_pessoal_roupas,      R.id.seta_sub_pessoal_roupas,      gridSubPessoalRoupas);
+        configurarSubgaveta(R.id.header_sub_pessoal_acoes,       R.id.seta_sub_pessoal_acoes,       gridSubPessoalAcoes);
 
+        configurarSubgaveta(R.id.header_sub_comidas_refeicao, R.id.seta_sub_comidas_refeicao, gridSubComidasRefeicao);
+        configurarSubgaveta(R.id.header_sub_comidas_cafe,     R.id.seta_sub_comidas_cafe,     gridSubComidasCafe);
+        configurarSubgaveta(R.id.header_sub_comidas_bebidas,  R.id.seta_sub_comidas_bebidas,  gridSubComidasBebidas);
+        configurarSubgaveta(R.id.header_sub_comidas_doces,    R.id.seta_sub_comidas_doces,    gridSubComidasDoces);
+
+        configurarSubgaveta(R.id.header_sub_lazer_jogos,   R.id.seta_sub_lazer_jogos,   gridSubLazerJogos);
+        configurarSubgaveta(R.id.header_sub_lazer_telas,   R.id.seta_sub_lazer_telas,   gridSubLazerTelas);
+        configurarSubgaveta(R.id.header_sub_lazer_externo, R.id.seta_sub_lazer_externo, gridSubLazerExterno);
+        configurarSubgaveta(R.id.header_sub_lazer_social,  R.id.seta_sub_lazer_social,  gridSubLazerSocial);
+
+        configurarSubgaveta(R.id.header_sub_aprend_numeros,  R.id.seta_sub_aprend_numeros,  gridSubAprendNumeros);
+        configurarSubgaveta(R.id.header_sub_aprend_alfabeto, R.id.seta_sub_aprend_alfabeto, gridSubAprendAlfabeto);
+        configurarSubgaveta(R.id.header_sub_aprend_vogais,   R.id.seta_sub_aprend_vogais,   gridSubAprendVogais);
+        configurarSubgaveta(R.id.header_sub_aprend_cores,    R.id.seta_sub_aprend_cores,    gridSubAprendCores);
+        configurarSubgaveta(R.id.header_sub_aprend_formas,   R.id.seta_sub_aprend_formas,   gridSubAprendFormas);
 
 
 
@@ -292,16 +348,6 @@ public class MainActivity extends AppCompatActivity {
                     conteudoLazer.setVisibility(View.GONE);
                     setaLazer.setRotation(0f); // Seta volta para a direita
                 }
-        });
-
-        headerReferencia.setOnClickListener(v -> {
-            if (conteudoReferencia.getVisibility() == View.GONE) {
-                conteudoReferencia.setVisibility(View.VISIBLE);
-                setaReferencia.setRotation(90f); // Gira a seta para baixo
-                } else {
-                    conteudoReferencia.setVisibility(View.GONE);
-                    setaReferencia.setRotation(0f); // Seta volta para a direita
-            }
         });
 
         headerAprendizado.setOnClickListener(v -> {
@@ -455,7 +501,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         });
-    }    private void configurarGavetaInternaCard(LinearLayout header, LinearLayout conteudo, TextView seta, String textoPadrao, String textoExpandido) {
+    }
+
+
+    private void configurarGavetaInternaCard(LinearLayout header, LinearLayout conteudo, TextView seta, String textoPadrao, String textoExpandido) {
         header.setOnClickListener(v -> {
             if (conteudo.getVisibility() == View.GONE) {
                 conteudo.setVisibility(View.VISIBLE);
@@ -466,6 +515,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void configurarSubgaveta(int headerId, int setaId, GridLayout grid) {
+        LinearLayout header = findViewById(headerId);
+        ImageView seta = findViewById(setaId);
+        if (header == null || grid == null) return;
+
+        header.setOnClickListener(v -> {
+            if (grid.getVisibility() == View.GONE) {
+                grid.setVisibility(View.VISIBLE);
+                seta.setRotation(180f);
+            } else {
+                grid.setVisibility(View.GONE);
+                seta.setRotation(0f);
+            }
+        });
+    }
+
 
     // #####  FALAR ##### //
     private void falar(String texto) {
@@ -600,7 +666,7 @@ public class MainActivity extends AppCompatActivity {
                     db.itemCardDao().inserir(new ItemCard("Você", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.button_onoff_indicator_on)));
                     db.itemCardDao().inserir(new ItemCard("Ajuda", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_help)));
                     db.itemCardDao().inserir(new ItemCard("Mais", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_add)));
-                    db.itemCardDao().inserir(new ItemCard("Meu", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_myplaces)));
+                    db.itemCardDao().inserir(new ItemCard("Meu", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_myplaces)));
 
                     // 3. Salva a flag avisando que o banco já foi preenchido!
                     // Assim, na próxima vez que o app abrir, ele nunca mais vai repovoar o banco.
@@ -722,43 +788,74 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void carregarTodasAsGavetas() {
-        // Carrega a gaveta de favoritos (que criamos anteriormente)
         carregarCardsFavoritos();
 
-        // Conecta a categoria ao Grid correto na interface
-        carregarGridEspecifico(CategoriaItem.PESSOAL, findViewById(R.id.conteudo_pessoal));
-        carregarGridEspecifico(CategoriaItem.COMIDAS, findViewById(R.id.conteudo_alimentos));
-        carregarGridEspecifico(CategoriaItem.LAZER, findViewById(R.id.conteudo_lazer));
-        carregarGridEspecifico(CategoriaItem.REFERENCIA, findViewById(R.id.conteudo_referencia));
-        carregarGridEspecifico(CategoriaItem.APRENDIZADO, findViewById(R.id.conteudo_aprendizado));
-    }
+        // Subgavetas Pessoal
+        carregarGridEspecifico(CategoriaItem.PESSOAL_EU,           gridSubPessoalEu);
+        carregarGridEspecifico(CategoriaItem.PESSOAL_REFERENCIA, gridSubPessoalReferencia);
+        carregarGridEspecifico(CategoriaItem.PESSOAL_SENTIMENTOS,  gridSubPessoalSentimentos);
+        carregarGridEspecifico(CategoriaItem.PESSOAL_CUIDADOS,     gridSubPessoalCuidados);
+        carregarGridEspecifico(CategoriaItem.PESSOAL_ROUPAS,       gridSubPessoalRoupas);
+        carregarGridEspecifico(CategoriaItem.PESSOAL_ACOES,        gridSubPessoalAcoes);
 
+        // Subgavetas Comidas
+        carregarGridEspecifico(CategoriaItem.COMIDAS_REFEICAO,    gridSubComidasRefeicao);
+        carregarGridEspecifico(CategoriaItem.COMIDAS_CAFE_LANCHES, gridSubComidasCafe);
+        carregarGridEspecifico(CategoriaItem.COMIDAS_BEBIDAS,     gridSubComidasBebidas);
+        carregarGridEspecifico(CategoriaItem.COMIDAS_DOCES,       gridSubComidasDoces);
+
+        // Subgavetas Lazer
+        carregarGridEspecifico(CategoriaItem.LAZER_JOGOS,    gridSubLazerJogos);
+        carregarGridEspecifico(CategoriaItem.LAZER_TELAS,    gridSubLazerTelas);
+        carregarGridEspecifico(CategoriaItem.LAZER_EXTERNO,  gridSubLazerExterno);
+        carregarGridEspecifico(CategoriaItem.LAZER_SOCIAL,   gridSubLazerSocial);
+
+        // Subgavetas Aprendizado
+        carregarGridEspecifico(CategoriaItem.APRENDIZADO_NUMEROS,  gridSubAprendNumeros);
+        carregarGridEspecifico(CategoriaItem.APRENDIZADO_ALFABETO, gridSubAprendAlfabeto);
+        carregarGridEspecifico(CategoriaItem.APRENDIZADO_VOGAIS,   gridSubAprendVogais);
+        carregarGridEspecifico(CategoriaItem.APRENDIZADO_CORES,    gridSubAprendCores);
+        carregarGridEspecifico(CategoriaItem.APRENDIZADO_FORMAS,   gridSubAprendFormas);
+    }
     // ========================================================
 // SALVA E APLICA O TAMANHO DOS CARDS PERMANENTEMENTE
 // ========================================================
     private void salvarEAplicarColunas(int quantidadeColunas) {
-        // 1. Salva a escolha no SharedPreferences do Android
+        // 1. Salva a escolha
         android.content.SharedPreferences pref = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
         pref.edit().putInt("quantidade_colunas", quantidadeColunas).apply();
 
-        // 2. LIMPEZA PREVENTIVA: Remove os cards ANTES de encolher o Grid para evitar o crash!
-        if (conteudoFavoritos != null) conteudoFavoritos.removeAllViews();
-        if (conteudoPessoal != null) conteudoPessoal.removeAllViews();
-        if (conteudoComidas != null) conteudoComidas.removeAllViews();
-        if (conteudoLazer != null) conteudoLazer.removeAllViews();
-        if (conteudoReferencia != null) conteudoReferencia.removeAllViews();
-        if (conteudoAprendizado != null) conteudoAprendizado.removeAllViews();
+        // 2. Lista de TODOS os GridLayouts reais do app
+        GridLayout[] todosOsGrids = {
+                // Favoritos
+                conteudoFavoritos,
 
-        // 3. Com a "casa limpa", podemos mudar o número de colunas em segurança
-        if (conteudoFavoritos != null) conteudoFavoritos.setColumnCount(quantidadeColunas);
-        if (conteudoPessoal != null) conteudoPessoal.setColumnCount(quantidadeColunas);
-        if (conteudoComidas != null) conteudoComidas.setColumnCount(quantidadeColunas);
-        if (conteudoLazer != null) conteudoLazer.setColumnCount(quantidadeColunas);
-        if (conteudoReferencia != null) conteudoReferencia.setColumnCount(quantidadeColunas);
-        if (conteudoAprendizado != null) conteudoAprendizado.setColumnCount(quantidadeColunas);
+                // Subgavetas Pessoal
+                gridSubPessoalEu, gridSubPessoalSentimentos, gridSubPessoalCuidados,
+                gridSubPessoalRoupas, gridSubPessoalAcoes, gridSubPessoalReferencia,
 
-        // 4. Manda o banco de dados trazer os cards e desenhá-los novamente no novo formato
-        // Mas SÓ fazemos isso se o banco (db) já estiver inicializado, para evitar erro no onCreate
+                // Subgavetas Comidas
+                gridSubComidasRefeicao, gridSubComidasCafe,
+                gridSubComidasBebidas, gridSubComidasDoces,
+
+                // Subgavetas Lazer
+                gridSubLazerJogos, gridSubLazerTelas,
+                gridSubLazerExterno, gridSubLazerSocial,
+
+                // Subgavetas Aprendizado
+                gridSubAprendNumeros, gridSubAprendAlfabeto, gridSubAprendVogais,
+                gridSubAprendCores, gridSubAprendFormas
+        };
+
+        // 3. Limpa e redefine colunas em todos os grids
+        for (GridLayout g : todosOsGrids) {
+            if (g != null) {
+                g.removeAllViews();
+                g.setColumnCount(quantidadeColunas);
+            }
+        }
+
+        // 4. Recarrega os cards no novo formato
         if (db != null) {
             carregarTodasAsGavetas();
         }
@@ -805,7 +902,6 @@ public class MainActivity extends AppCompatActivity {
                 CategoriaItem.PESSOAL,
                 CategoriaItem.COMIDAS,
                 CategoriaItem.LAZER,
-                CategoriaItem.REFERENCIA,
                 CategoriaItem.APRENDIZADO
         };
 
