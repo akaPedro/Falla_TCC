@@ -107,59 +107,157 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
         builder.setView(dialogView);
         android.app.AlertDialog dialog = builder.create();
 
-        // Fundo transparente para respeitar as bordas arredondadas do CardView no XML
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
 
-        // Elementos do Dialog
-        FrameLayout containerImagem = dialogView.findViewById(R.id.container_imagem_novo);
-        imgPreviewDialogAtual = dialogView.findViewById(R.id.img_preview_novo);
-        EditText editTextoNovo = dialogView.findViewById(R.id.edit_texto_novo);
-        Spinner spinnerCategoria = dialogView.findViewById(R.id.spinner_categoria_novo);
-        TextView btnCancelar = dialogView.findViewById(R.id.btn_cancelar_novo);
-        TextView btnSalvar = dialogView.findViewById(R.id.btn_salvar_novo);
+        FrameLayout containerImagem   = dialogView.findViewById(R.id.container_imagem_novo);
+        imgPreviewDialogAtual         = dialogView.findViewById(R.id.img_preview_novo);
+        EditText editTextoNovo        = dialogView.findViewById(R.id.edit_texto_novo);
+        Spinner spinnerCategoria      = dialogView.findViewById(R.id.spinner_categoria_novo);
+        Spinner spinnerSub            = dialogView.findViewById(R.id.spinner_subcategoria_novo);
+        View containerSub             = dialogView.findViewById(R.id.container_spinner_sub);
+        TextView btnCancelar          = dialogView.findViewById(R.id.btn_cancelar_novo);
+        TextView btnSalvar            = dialogView.findViewById(R.id.btn_salvar_novo);
 
-        // Reset da imagem (caso queira usar um ícone padrão como string)
         uriImagemTemporaria = String.valueOf(android.R.drawable.ic_menu_camera);
-
-        // Preenche com o texto que o usuário já tinha digitado fora do menu
         editTextoNovo.setText(textoInicial);
 
-        // Popula o Spinner com as categorias
-        ArrayAdapter<CategoriaItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, CategoriaItem.values());
-        spinnerCategoria.setAdapter(adapter);
+        // Mapeamento: categoria principal → suas subcategorias
+        java.util.Map<CategoriaItem, CategoriaItem[]> subMap = new java.util.LinkedHashMap<>();
+        subMap.put(CategoriaItem.PESSOAL, new CategoriaItem[]{
+                CategoriaItem.PESSOAL_EU,
+                CategoriaItem.PESSOAL_SENTIMENTOS,
+                CategoriaItem.PESSOAL_CUIDADOS,
+                CategoriaItem.PESSOAL_ROUPAS,
+                CategoriaItem.PESSOAL_ACOES,
+                CategoriaItem.PESSOAL_REFERENCIA
+        });
+        subMap.put(CategoriaItem.COMIDAS, new CategoriaItem[]{
+                CategoriaItem.COMIDAS_REFEICAO,
+                CategoriaItem.COMIDAS_CAFE_LANCHES,
+                CategoriaItem.COMIDAS_BEBIDAS,
+                CategoriaItem.COMIDAS_DOCES
+        });
+        subMap.put(CategoriaItem.LAZER, new CategoriaItem[]{
+                CategoriaItem.LAZER_JOGOS,
+                CategoriaItem.LAZER_TELAS,
+                CategoriaItem.LAZER_EXTERNO,
+                CategoriaItem.LAZER_SOCIAL
+        });
+        subMap.put(CategoriaItem.APRENDIZADO, new CategoriaItem[]{
+                CategoriaItem.APRENDIZADO_NUMEROS,
+                CategoriaItem.APRENDIZADO_ALFABETO,
+                CategoriaItem.APRENDIZADO_VOGAIS,
+                CategoriaItem.APRENDIZADO_CORES,
+                CategoriaItem.APRENDIZADO_FORMAS
+        });
 
-        // Abrir galeria
+        // Spinner de categorias principais (apenas as que têm subgavetas + FAVORITOS)
+        CategoriaItem[] principais = {
+                CategoriaItem.FAVORITOS,
+                CategoriaItem.PESSOAL,
+                CategoriaItem.COMIDAS,
+                CategoriaItem.LAZER,
+                CategoriaItem.APRENDIZADO
+        };
+
+        // Adapter que exibe o nome legível (getNome()) em vez do nome do enum
+        android.widget.ArrayAdapter<CategoriaItem> adapterPrincipal =
+                new android.widget.ArrayAdapter<CategoriaItem>(this,
+                        android.R.layout.simple_spinner_dropdown_item, principais) {
+                    @Override public String toString() { return ""; }
+
+                    @androidx.annotation.NonNull
+                    @Override
+                    public android.view.View getView(int pos, android.view.View v, @androidx.annotation.NonNull android.view.ViewGroup parent) {
+                        android.widget.TextView tv = (android.widget.TextView)
+                                super.getView(pos, v, parent);
+                        tv.setText(principais[pos].getNome());
+                        return tv;
+                    }
+
+                    @Override
+                    public android.view.View getDropDownView(int pos, android.view.View v, @androidx.annotation.NonNull android.view.ViewGroup parent) {
+                        android.widget.TextView tv = (android.widget.TextView)
+                                super.getDropDownView(pos, v, parent);
+                        tv.setText(principais[pos].getNome());
+                        return tv;
+                    }
+                };
+        spinnerCategoria.setAdapter(adapterPrincipal);
+
+        // Quando muda a categoria principal, atualiza o spinner de subcategorias
+        spinnerCategoria.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int pos, long id) {
+                CategoriaItem catSelecionada = principais[pos];
+                CategoriaItem[] subs = subMap.get(catSelecionada);
+
+                if (subs != null && subs.length > 0) {
+                    // Tem subcategorias: mostra o segundo spinner
+                    android.widget.ArrayAdapter<CategoriaItem> adapterSub =
+                            new android.widget.ArrayAdapter<CategoriaItem>(FallaActivity.this,
+                                    android.R.layout.simple_spinner_dropdown_item, subs) {
+                                @androidx.annotation.NonNull
+                                @Override
+                                public android.view.View getView(int p, android.view.View v, @androidx.annotation.NonNull android.view.ViewGroup par) {
+                                    android.widget.TextView tv = (android.widget.TextView)
+                                            super.getView(p, v, par);
+                                    tv.setText(subs[p].getNome());
+                                    return tv;
+                                }
+                                @Override
+                                public android.view.View getDropDownView(int p, android.view.View v, @androidx.annotation.NonNull android.view.ViewGroup par) {
+                                    android.widget.TextView tv = (android.widget.TextView)
+                                            super.getDropDownView(p, v, par);
+                                    tv.setText(subs[p].getNome());
+                                    return tv;
+                                }
+                            };
+                    spinnerSub.setAdapter(adapterSub);
+                    containerSub.setVisibility(View.VISIBLE);
+                } else {
+                    // FAVORITOS não tem subcategoria: esconde o segundo spinner
+                    containerSub.setVisibility(View.GONE);
+                }
+            }
+            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        });
+
         containerImagem.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
-
-        // Ações dos botões
         btnCancelar.setOnClickListener(v -> dialog.dismiss());
 
         btnSalvar.setOnClickListener(v -> {
             String textoFinal = editTextoNovo.getText().toString().trim();
-
             if (textoFinal.isEmpty()) {
                 Toast.makeText(this, "O texto é obrigatório!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            CategoriaItem catSelecionada = (CategoriaItem) spinnerCategoria.getSelectedItem();
-            ItemCard novoCard = new ItemCard(textoFinal, catSelecionada, uriImagemTemporaria);
+            // Usa a subcategoria se visível, senão usa a categoria principal (FAVORITOS)
+            CategoriaItem catFinal;
+            if (containerSub.getVisibility() == View.VISIBLE) {
+                catFinal = (CategoriaItem) spinnerSub.getSelectedItem();
+            } else {
+                catFinal = (CategoriaItem) spinnerCategoria.getSelectedItem();
+            }
+
+            ItemCard novoCard = new ItemCard(textoFinal, catFinal, uriImagemTemporaria);
 
             AppDatabase.databaseWriteExecutor.execute(() -> {
                 db.itemCardDao().inserir(novoCard);
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Card criado e salvo no banco!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Card criado!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
-                    finish(); // Retorna para a tela principal
+                    finish();
                 });
             });
         });
 
         dialog.show();
     }
-
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
