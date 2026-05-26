@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @TypeConverters({Converters.class}) // Adicione esta linha
-@Database(entities = {Usuario.class, ItemCard.class, ItemHistorico.class}, version = 7)
+@Database(entities = {Usuario.class, ItemCard.class, ItemHistorico.class}, version = 8)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UsuarioDao usuarioDao();
     public abstract ItemCardDao itemCardDao();

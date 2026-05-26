@@ -10,7 +10,7 @@ public enum CategoriaItem {
 
     // Subgavetas: Pessoal
     PESSOAL_EU("Eu"),
-    PESSOAL_SENTIMENTOS("Sentimentos"),
+    PESSOAL_SAUDE("Saude"),
     PESSOAL_CUIDADOS("Cuidados"),
     PESSOAL_ROUPAS("Roupas"),
     PESSOAL_ACOES("Ações"),

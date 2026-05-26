@@ -8,6 +8,7 @@ public class ItemCard {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private String texto;
     private String fala;
     private String imagemUri;
     private CategoriaItem categoria;
@@ -19,15 +20,28 @@ public class ItemCard {
     // --- CONSTRUTOR CORRETO PARA INSERÇÃO ---
     public ItemCard(String fala, CategoriaItem categoria, String imagemUri) {
         this.fala = fala;
+        this.texto = fala;
         this.categoria = categoria;
         this.imagemUri = imagemUri;
         this.isFavorito = false; // Todo card novo nasce sem estrela
+    }
+
+    // Construtor especial — texto exibido diferente da fala (números, letras, cores, formas)
+    public ItemCard(String texto, CategoriaItem categoria, String imagemUri, String fala) {
+        this.texto = texto;
+        this.fala = fala;
+        this.categoria = categoria;
+        this.imagemUri = imagemUri;
+        this.isFavorito = false;
     }
 
     // --- ADICIONE ESSES GETTERS E SETTERS ABAIXO ---
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public String getTexto() { return texto; }
+    public void setTexto(String texto) { this.texto = texto; }
 
     public String getFala() { return fala; }
     public void setFala(String fala) { this.fala = fala; }

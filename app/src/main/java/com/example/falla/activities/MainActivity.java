@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout conteudoPessoal, conteudoComidas, conteudoLazer, conteudoAprendizado;
 
     // Subgavetas Pessoal
-    private GridLayout gridSubPessoalEu, gridSubPessoalReferencia, gridSubPessoalSentimentos, gridSubPessoalCuidados, gridSubPessoalRoupas, gridSubPessoalAcoes;
+    private GridLayout gridSubPessoalEu, gridSubPessoalReferencia, gridSubPessoalSaude, gridSubPessoalCuidados, gridSubPessoalRoupas, gridSubPessoalAcoes;
 
     // Subgavetas Comidas
     private GridLayout gridSubComidasRefeicao, gridSubComidasCafe, gridSubComidasBebidas, gridSubComidasDoces;
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         // #####  BANCO DE DADOS  ##### //
         db = AppDatabase.getDatabase(MainActivity.this);
         // Carrega os cards do banco em segundo plano
-        verificarEPreencherBancoInicial();
+        inserirCardsPadrao();
         carregarCardsFavoritos();
 
 
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         // Subgavetas Pessoal
         gridSubPessoalEu            = findViewById(R.id.grid_sub_pessoal_eu);
         gridSubPessoalReferencia = findViewById(R.id.grid_sub_pessoal_referencia);
-        gridSubPessoalSentimentos   = findViewById(R.id.grid_sub_pessoal_sentimentos);
+        gridSubPessoalSaude   = findViewById(R.id.grid_sub_pessoal_saude);
         gridSubPessoalCuidados      = findViewById(R.id.grid_sub_pessoal_cuidados);
         gridSubPessoalRoupas        = findViewById(R.id.grid_sub_pessoal_roupas);
         gridSubPessoalAcoes         = findViewById(R.id.grid_sub_pessoal_acoes);
@@ -283,8 +283,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Conectar cliques das subgavetas
         configurarSubgaveta(R.id.header_sub_pessoal_eu,          R.id.seta_sub_pessoal_eu,          gridSubPessoalEu);
-        configurarSubgaveta(R.id.header_sub_pessoal_referencia,  R.id.seta_sub_pessoal_referencia, gridSubPessoalReferencia);
-        configurarSubgaveta(R.id.header_sub_pessoal_sentimentos, R.id.seta_sub_pessoal_sentimentos, gridSubPessoalSentimentos);
+        configurarSubgaveta(R.id.header_sub_pessoal_referencia,  R.id.seta_sub_pessoal_referencia,  gridSubPessoalReferencia);
+            configurarSubgaveta(R.id.header_sub_pessoal_saude,   R.id.seta_sub_pessoal_saude,       gridSubPessoalSaude);
         configurarSubgaveta(R.id.header_sub_pessoal_cuidados,    R.id.seta_sub_pessoal_cuidados,    gridSubPessoalCuidados);
         configurarSubgaveta(R.id.header_sub_pessoal_roupas,      R.id.seta_sub_pessoal_roupas,      gridSubPessoalRoupas);
         configurarSubgaveta(R.id.header_sub_pessoal_acoes,       R.id.seta_sub_pessoal_acoes,       gridSubPessoalAcoes);
@@ -411,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
                     ImageView imgSimbolo = cardView.findViewById(R.id.img_card_simbolo);
                     TextView txtFala = cardView.findViewById(R.id.txt_card_fala);
 
-                    txtFala.setText(card.getFala());
+                    txtFala.setText(card.getTexto());
 
                     // Tratamento da Imagem (URI da Galeria ou Ícone do Android)
                     String uriOuIcone = card.getImagemUri();
@@ -538,7 +538,7 @@ public class MainActivity extends AppCompatActivity {
         if (tts != null) {
             // QUEUE_FLUSH limpa a fila e fala agora
             // QUEUE_ADD terminaria de falar o atual para depois falar o novo
-            tts.speak(texto, TextToSpeech.QUEUE_FLUSH, null, null);
+            tts.speak(texto, TextToSpeech.QUEUE_ADD, null, null);
         }
     }
 
@@ -649,33 +649,146 @@ public class MainActivity extends AppCompatActivity {
         // Mostra o popup na tela
         dialog.show();
     }
-    private void verificarEPreencherBancoInicial() {
-        // 1. Acessa a memória rápida do Android para ler a nossa "flag"
-        android.content.SharedPreferences prefs = getSharedPreferences("FallaPrefs", MODE_PRIVATE);
-        boolean isBancoInicializado = prefs.getBoolean("banco_inicializado", false);
+    private void inserirCardsPadrao() {
+        android.content.SharedPreferences prefs = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
+        if (prefs.getBoolean("cards_padrao_inseridos", false)) return;
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            // 2. Só entra no bloco de inserção se for a PRIMEIRA VEZ que o app roda
-            if (!isBancoInicializado) {
-                List<ItemCard> lista = db.itemCardDao().buscarPorCategoria(CategoriaItem.PESSOAL);
-
-                // Se realmente estiver vazio, faz a inserção inicial
-                if (lista == null || lista.isEmpty()) {
-                    db.itemCardDao().inserir(new ItemCard("Eu", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_myplaces)));
-                    db.itemCardDao().inserir(new ItemCard("Você", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.button_onoff_indicator_on)));
-                    db.itemCardDao().inserir(new ItemCard("Ajuda", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_help)));
-                    db.itemCardDao().inserir(new ItemCard("Mais", CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_add)));
-                    db.itemCardDao().inserir(new ItemCard("Meu", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_myplaces)));
-
-                    // 3. Salva a flag avisando que o banco já foi preenchido!
-                    // Assim, na próxima vez que o app abrir, ele nunca mais vai repovoar o banco.
-                    prefs.edit().putBoolean("banco_inicializado", true).apply();
-                }
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            String nomeUsuario = "...";
+            com.example.falla.usuario.Usuario user = db.usuarioDao().getUsuario();
+            if (user != null && user.nome != null && !user.nome.isEmpty()) {
+                nomeUsuario = user.nome;
             }
+            final String nomeFinal = nomeUsuario;
 
-            // 4. Sempre carrega os cards da interface (seja 5, 20 ou 0 se você tiver apagado todos)
-            carregarTodasAsGavetas();
+            java.util.List<ItemCard> cards = new java.util.ArrayList<>();
+            String ico = String.valueOf(android.R.drawable.ic_menu_add);
+
+            // ══════════════════════════════════════════
+            // PESSOAL — coringas
+            // ══════════════════════════════════════════
+            cards.add(new ItemCard("Quero ir ao banheiro",    CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_directions)));
+            cards.add(new ItemCard("Estou com dor",           CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_help)));
+            cards.add(new ItemCard("Meu nome é " + nomeFinal, CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_myplaces)));
+
+            // PESSOAL_EU
+            for (String s : new String[]{"Estou feliz","Estou triste","Estou com raiva",
+                    "Estou cansado","Estou com medo","Quero ficar sozinho","Quero um abraço"})
+                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_EU, ico));
+
+            // PESSOAL_REFERENCIA
+            for (String s : new String[]{"Eu","Você","Ele","Ela","A gente","Nós",
+                    "Isto","Isso","Aquilo","Aquele","Aqui","Lá","Ali","Meu","Minha"})
+                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_REFERENCIA, ico));
+
+            // PESSOAL_SAUDE
+            for (String s : new String[]{"Dor de cabeça","Dor de barriga","Estou enjoado",
+                    "Estou com febre","Preciso de remédio","Me machuquei"})
+                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_SAUDE, ico));
+
+            // PESSOAL_CUIDADOS
+            for (String s : new String[]{"Tomar banho","Escovar os dentes","Lavar as mãos",
+                    "Pentear o cabelo","Assoar o nariz","Cortar a unha","Cortar o cabelo"})
+                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_CUIDADOS, ico));
+
+            // PESSOAL_ROUPAS
+            for (String s : new String[]{"Estou com frio","Estou com calor","Trocar de roupa",
+                    "Vestir casaco","Calçar sapato","Tirar o sapato","Colocar pijama"})
+                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_ROUPAS, ico));
+
+            // PESSOAL_ACOES
+            for (String s : new String[]{"Ir","Ver","Parar","Esperar"})
+                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_ACOES, ico));
+
+            // ══════════════════════════════════════════
+            // COMIDAS — coringas
+            // ══════════════════════════════════════════
+            cards.add(new ItemCard("Estou com fome", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
+            cards.add(new ItemCard("Estou com sede", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
+
+            // COMIDAS_REFEICAO
+            for (String s : new String[]{"Arroz e feijão","Carne","Frango","Macarrão",
+                    "Peixe","Sopa","Salada","Picadinho","Purê de batata","Pizza","Hambúrguer"})
+                cards.add(new ItemCard(s, CategoriaItem.COMIDAS_REFEICAO, ico));
+
+            // COMIDAS_CAFE_LANCHES
+            for (String s : new String[]{"Pão","Bolo","Biscoito","Fruta",
+                    "Danone","Queijo","Presunto","Cereal"})
+                cards.add(new ItemCard(s, CategoriaItem.COMIDAS_CAFE_LANCHES, ico));
+
+            // COMIDAS_BEBIDAS
+            for (String s : new String[]{"Água","Suco","Café","Leite",
+                    "Achocolatado","Refrigerante","Chá"})
+                cards.add(new ItemCard(s, CategoriaItem.COMIDAS_BEBIDAS, ico));
+
+            // COMIDAS_DOCES
+            for (String s : new String[]{"Chocolate","Sorvete","Gelatina",
+                    "Pudim","Doce","Brigadeiro"})
+                cards.add(new ItemCard(s, CategoriaItem.COMIDAS_DOCES, ico));
+
+            // ══════════════════════════════════════════
+            // LAZER — coringas
+            // ══════════════════════════════════════════
+            cards.add(new ItemCard("Quero brincar",  CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
+            cards.add(new ItemCard("Quero passear",  CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
+
+            // LAZER_JOGOS
+            for (String s : new String[]{"Videogame","Jogo de tabuleiro","Cartas",
+                    "Quebra-cabeça","Blocos de montar","Meus brinquedos"})
+                cards.add(new ItemCard(s, CategoriaItem.LAZER_JOGOS, ico));
+
+            // LAZER_TELAS
+            for (String s : new String[]{"Assistir TV","Assistir YouTube","Ver filme",
+                    "Ver desenho","Ouvir música","Celular","Tablet"})
+                cards.add(new ItemCard(s, CategoriaItem.LAZER_TELAS, ico));
+
+            // LAZER_EXTERNO
+            for (String s : new String[]{"Ir ao parque","Ir à praça","Jogar futebol",
+                    "Jogar vôlei","Ir à piscina","Ir à praia",
+                    "Passear de carro","Passear de moto","Dar uma caminhada"})
+                cards.add(new ItemCard(s, CategoriaItem.LAZER_EXTERNO, ico));
+
+            // LAZER_SOCIAL
+            for (String s : new String[]{"Brincar com amigos","Conversar","Visitar família",
+                    "Brincar com cachorro","Brincar com gato","Fazer uma ligação"})
+                cards.add(new ItemCard(s, CategoriaItem.LAZER_SOCIAL, ico));
+
+            // ══════════════════════════════════════════
+            // APRENDIZADO — coringas
+            // ══════════════════════════════════════════
+            cards.add(new ItemCard("Quero estudar",    CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
+            cards.add(new ItemCard("Preciso de ajuda", CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
+
+            // APRENDIZADO_NUMEROS — 1 a 100
+            for (int i = 1; i <= 100; i++)
+                cards.add(new ItemCard(String.valueOf(i), CategoriaItem.APRENDIZADO_NUMEROS,
+                        ico, "Número " + i));
+
+            // APRENDIZADO_ALFABETO — a a z
+            for (char c = 'A'; c <= 'Z'; c++)
+                cards.add(new ItemCard(String.valueOf(c), CategoriaItem.APRENDIZADO_ALFABETO,
+                        ico, "Letra " + c));
+
+            // APRENDIZADO_VOGAIS
+            for (char v : new char[]{'A','E','I','O','U'})
+                cards.add(new ItemCard(String.valueOf(v), CategoriaItem.APRENDIZADO_VOGAIS,
+                        ico, "Letra " + v));
+
+            // APRENDIZADO_CORES
+            for (String s : new String[]{"Vermelho","Azul","Amarelo","Verde","Laranja",
+                    "Roxo","Rosa","Marrom","Preto","Branco","Cinza"})
+                cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_CORES, ico, "Cor " + s));
+
+            // APRENDIZADO_FORMAS
+            for (String s : new String[]{"Círculo","Quadrado","Triângulo","Retângulo",
+                    "Oval","Estrela","Coração","Losango","Hexágono"})
+                cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_FORMAS, ico, "Forma " + s));
+
+            for (ItemCard card : cards)
+                db.itemCardDao().inserir(card);
+
+            prefs.edit().putBoolean("cards_padrao_inseridos", true).apply();
+            runOnUiThread(() -> carregarTodasAsGavetas());
         });
     }
 
@@ -726,7 +839,7 @@ public class MainActivity extends AppCompatActivity {
                     cardRoot.setOnClickListener(v -> {
                         String textoParaFalar = txtFala.getText().toString().trim();
                         if (!textoParaFalar.isEmpty() && tts != null) {
-                            tts.speak(textoParaFalar, TextToSpeech.QUEUE_FLUSH, null, null);
+                            tts.speak(textoParaFalar, TextToSpeech.QUEUE_ADD, null, null);
                         }
                     });
 
@@ -792,8 +905,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Subgavetas Pessoal
         carregarGridEspecifico(CategoriaItem.PESSOAL_EU,           gridSubPessoalEu);
-        carregarGridEspecifico(CategoriaItem.PESSOAL_REFERENCIA, gridSubPessoalReferencia);
-        carregarGridEspecifico(CategoriaItem.PESSOAL_SENTIMENTOS,  gridSubPessoalSentimentos);
+        carregarGridEspecifico(CategoriaItem.PESSOAL_REFERENCIA,   gridSubPessoalReferencia);
+        carregarGridEspecifico(CategoriaItem.PESSOAL_SAUDE,        gridSubPessoalSaude);
         carregarGridEspecifico(CategoriaItem.PESSOAL_CUIDADOS,     gridSubPessoalCuidados);
         carregarGridEspecifico(CategoriaItem.PESSOAL_ROUPAS,       gridSubPessoalRoupas);
         carregarGridEspecifico(CategoriaItem.PESSOAL_ACOES,        gridSubPessoalAcoes);
@@ -822,8 +935,7 @@ public class MainActivity extends AppCompatActivity {
 // ========================================================
     private void salvarEAplicarColunas(int quantidadeColunas) {
         // 1. Salva a escolha
-        android.content.SharedPreferences pref = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
-        pref.edit().putInt("quantidade_colunas", quantidadeColunas).apply();
+        getSharedPreferences("ConfigFalla", MODE_PRIVATE).edit().remove("cards_padrao_inseridos").apply();
 
         // 2. Lista de TODOS os GridLayouts reais do app
         GridLayout[] todosOsGrids = {
@@ -831,7 +943,7 @@ public class MainActivity extends AppCompatActivity {
                 conteudoFavoritos,
 
                 // Subgavetas Pessoal
-                gridSubPessoalEu, gridSubPessoalSentimentos, gridSubPessoalCuidados,
+                gridSubPessoalEu, gridSubPessoalSaude, gridSubPessoalCuidados,
                 gridSubPessoalRoupas, gridSubPessoalAcoes, gridSubPessoalReferencia,
 
                 // Subgavetas Comidas

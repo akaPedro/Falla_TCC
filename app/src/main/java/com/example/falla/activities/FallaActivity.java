@@ -128,7 +128,7 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
         java.util.Map<CategoriaItem, CategoriaItem[]> subMap = new java.util.LinkedHashMap<>();
         subMap.put(CategoriaItem.PESSOAL, new CategoriaItem[]{
                 CategoriaItem.PESSOAL_EU,
-                CategoriaItem.PESSOAL_SENTIMENTOS,
+                CategoriaItem.PESSOAL_SAUDE,
                 CategoriaItem.PESSOAL_CUIDADOS,
                 CategoriaItem.PESSOAL_ROUPAS,
                 CategoriaItem.PESSOAL_ACOES,
