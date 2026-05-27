@@ -127,6 +127,7 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
         // Mapeamento: categoria principal → suas subcategorias
         java.util.Map<CategoriaItem, CategoriaItem[]> subMap = new java.util.LinkedHashMap<>();
         subMap.put(CategoriaItem.PESSOAL, new CategoriaItem[]{
+                CategoriaItem.PESSOAL,
                 CategoriaItem.PESSOAL_EU,
                 CategoriaItem.PESSOAL_SAUDE,
                 CategoriaItem.PESSOAL_CUIDADOS,
@@ -135,18 +136,21 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
                 CategoriaItem.PESSOAL_REFERENCIA
         });
         subMap.put(CategoriaItem.COMIDAS, new CategoriaItem[]{
+                CategoriaItem.COMIDAS,
                 CategoriaItem.COMIDAS_REFEICAO,
                 CategoriaItem.COMIDAS_CAFE_LANCHES,
                 CategoriaItem.COMIDAS_BEBIDAS,
                 CategoriaItem.COMIDAS_DOCES
         });
         subMap.put(CategoriaItem.LAZER, new CategoriaItem[]{
+                CategoriaItem.LAZER,
                 CategoriaItem.LAZER_JOGOS,
                 CategoriaItem.LAZER_TELAS,
                 CategoriaItem.LAZER_EXTERNO,
                 CategoriaItem.LAZER_SOCIAL
         });
         subMap.put(CategoriaItem.APRENDIZADO, new CategoriaItem[]{
+                CategoriaItem.APRENDIZADO,
                 CategoriaItem.APRENDIZADO_NUMEROS,
                 CategoriaItem.APRENDIZADO_ALFABETO,
                 CategoriaItem.APRENDIZADO_VOGAIS,
@@ -236,15 +240,30 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
                 return;
             }
 
-            // Usa a subcategoria se visível, senão usa a categoria principal (FAVORITOS)
             CategoriaItem catFinal;
+            boolean deveSerFavorito = false;
+
             if (containerSub.getVisibility() == View.VISIBLE) {
-                catFinal = (CategoriaItem) spinnerSub.getSelectedItem();
+                CategoriaItem subSelecionada = (CategoriaItem) spinnerSub.getSelectedItem();
+
+                // se selecionou "Nenhuma", vai para o grid coringa da categoria pai
+                if (subSelecionada == null || subSelecionada.name().equals("NENHUMA")) {
+                    catFinal = (CategoriaItem) spinnerCategoria.getSelectedItem();
+                } else {
+                    catFinal = subSelecionada;
+                }
             } else {
                 catFinal = (CategoriaItem) spinnerCategoria.getSelectedItem();
             }
 
+            // card criado na categoria FAVORITOS já nasce com estrela ligada
+            if (catFinal == CategoriaItem.FAVORITOS) {
+                deveSerFavorito = true;
+            }
+
+            final boolean favorito = deveSerFavorito;
             ItemCard novoCard = new ItemCard(textoFinal, catFinal, uriImagemTemporaria);
+            novoCard.setFavorito(favorito);
 
             AppDatabase.databaseWriteExecutor.execute(() -> {
                 db.itemCardDao().inserir(novoCard);
@@ -255,7 +274,6 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
                 });
             });
         });
-
         dialog.show();
     }
     @Override

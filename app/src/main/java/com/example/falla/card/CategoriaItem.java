@@ -4,7 +4,7 @@ public enum CategoriaItem {
     // Categorias principais
     FAVORITOS("Favoritos"),
     PESSOAL("Pessoal"),
-    COMIDAS("Comidas"),
+    COMIDAS("Alimentos"),
     LAZER("Lazer"),
     APRENDIZADO("Aprendizado"),
 

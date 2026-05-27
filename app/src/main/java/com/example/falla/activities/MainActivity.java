@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView setaPessoal, setaFavoritos, setaComidas, setaLazer, setaAprendizado;
     private LinearLayout conteudoPessoal, conteudoComidas, conteudoLazer, conteudoAprendizado;
 
+    // Cards coringas
+    private GridLayout gridCoringaPessoal, gridCoringaAlimentos, gridCoringaLazer, gridCoringaAprendizado;
     // Subgavetas Pessoal
     private GridLayout gridSubPessoalEu, gridSubPessoalReferencia, gridSubPessoalSaude, gridSubPessoalCuidados, gridSubPessoalRoupas, gridSubPessoalAcoes;
 
@@ -121,6 +123,12 @@ public class MainActivity extends AppCompatActivity {
         itemCores = findViewById(R.id.item_cores);
         itemHistorico = findViewById(R.id.item_historico);
         itemSobre = findViewById(R.id.item_sobre);
+
+        // Cards coringas
+        gridCoringaPessoal = findViewById(R.id.grid_coringa_pessoal);
+        gridCoringaAlimentos = findViewById(R.id.grid_coringa_alimentos);
+        gridCoringaLazer = findViewById(R.id.grid_coringa_lazer);
+        gridCoringaAprendizado = findViewById(R.id.grid_coringa_aprendizado);
 
 
         // Subgavetas Pessoal
@@ -650,10 +658,12 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
     private void inserirCardsPadrao() {
-        android.content.SharedPreferences prefs = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
-        if (prefs.getBoolean("cards_padrao_inseridos", false)) return;
-
         AppDatabase.databaseWriteExecutor.execute(() -> {
+
+            // ✅ Checa no BANCO — se já tem qualquer card em PESSOAL, não insere nada
+            List<ItemCard> jaExistem = db.itemCardDao().buscarPorCategoria(CategoriaItem.PESSOAL);
+            if (jaExistem != null && !jaExistem.isEmpty()) return;
+
             String nomeUsuario = "...";
             com.example.falla.usuario.Usuario user = db.usuarioDao().getUsuario();
             if (user != null && user.nome != null && !user.nome.isEmpty()) {
@@ -664,9 +674,7 @@ public class MainActivity extends AppCompatActivity {
             java.util.List<ItemCard> cards = new java.util.ArrayList<>();
             String ico = String.valueOf(android.R.drawable.ic_menu_add);
 
-            // ══════════════════════════════════════════
             // PESSOAL — coringas
-            // ══════════════════════════════════════════
             cards.add(new ItemCard("Quero ir ao banheiro",    CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_directions)));
             cards.add(new ItemCard("Estou com dor",           CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_help)));
             cards.add(new ItemCard("Meu nome é " + nomeFinal, CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_myplaces)));
@@ -700,9 +708,7 @@ public class MainActivity extends AppCompatActivity {
             for (String s : new String[]{"Ir","Ver","Parar","Esperar"})
                 cards.add(new ItemCard(s, CategoriaItem.PESSOAL_ACOES, ico));
 
-            // ══════════════════════════════════════════
             // COMIDAS — coringas
-            // ══════════════════════════════════════════
             cards.add(new ItemCard("Estou com fome", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
             cards.add(new ItemCard("Estou com sede", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
 
@@ -726,11 +732,9 @@ public class MainActivity extends AppCompatActivity {
                     "Pudim","Doce","Brigadeiro"})
                 cards.add(new ItemCard(s, CategoriaItem.COMIDAS_DOCES, ico));
 
-            // ══════════════════════════════════════════
             // LAZER — coringas
-            // ══════════════════════════════════════════
-            cards.add(new ItemCard("Quero brincar",  CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
-            cards.add(new ItemCard("Quero passear",  CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
+            cards.add(new ItemCard("Quero brincar", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
+            cards.add(new ItemCard("Quero passear", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
 
             // LAZER_JOGOS
             for (String s : new String[]{"Videogame","Jogo de tabuleiro","Cartas",
@@ -753,44 +757,39 @@ public class MainActivity extends AppCompatActivity {
                     "Brincar com cachorro","Brincar com gato","Fazer uma ligação"})
                 cards.add(new ItemCard(s, CategoriaItem.LAZER_SOCIAL, ico));
 
-            // ══════════════════════════════════════════
             // APRENDIZADO — coringas
-            // ══════════════════════════════════════════
             cards.add(new ItemCard("Quero estudar",    CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
             cards.add(new ItemCard("Preciso de ajuda", CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
 
             // APRENDIZADO_NUMEROS — 1 a 100
             for (int i = 1; i <= 100; i++)
-                cards.add(new ItemCard(String.valueOf(i), CategoriaItem.APRENDIZADO_NUMEROS,
-                        ico, "Número " + i));
+                cards.add(new ItemCard(String.valueOf(i), CategoriaItem.APRENDIZADO_NUMEROS, ico));
 
-            // APRENDIZADO_ALFABETO — a a z
+            // APRENDIZADO_ALFABETO — A a Z
             for (char c = 'A'; c <= 'Z'; c++)
-                cards.add(new ItemCard(String.valueOf(c), CategoriaItem.APRENDIZADO_ALFABETO,
-                        ico, "Letra " + c));
+                cards.add(new ItemCard(String.valueOf(c), CategoriaItem.APRENDIZADO_ALFABETO, ico));
 
             // APRENDIZADO_VOGAIS
             for (char v : new char[]{'A','E','I','O','U'})
-                cards.add(new ItemCard(String.valueOf(v), CategoriaItem.APRENDIZADO_VOGAIS,
-                        ico, "Letra " + v));
+                cards.add(new ItemCard(String.valueOf(v), CategoriaItem.APRENDIZADO_VOGAIS, ico));
 
             // APRENDIZADO_CORES
             for (String s : new String[]{"Vermelho","Azul","Amarelo","Verde","Laranja",
                     "Roxo","Rosa","Marrom","Preto","Branco","Cinza"})
-                cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_CORES, ico, "Cor " + s));
+                cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_CORES, ico));
 
             // APRENDIZADO_FORMAS
             for (String s : new String[]{"Círculo","Quadrado","Triângulo","Retângulo",
                     "Oval","Estrela","Coração","Losango","Hexágono"})
-                cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_FORMAS, ico, "Forma " + s));
+                cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_FORMAS, ico));
 
             for (ItemCard card : cards)
                 db.itemCardDao().inserir(card);
 
-            prefs.edit().putBoolean("cards_padrao_inseridos", true).apply();
             runOnUiThread(() -> carregarTodasAsGavetas());
         });
     }
+
 
     // ####### FAVORITOS ####### //
     private void carregarCardsFavoritos() {
@@ -903,6 +902,12 @@ public class MainActivity extends AppCompatActivity {
     private void carregarTodasAsGavetas() {
         carregarCardsFavoritos();
 
+        // Coringas
+        carregarGridEspecifico(CategoriaItem.PESSOAL, gridCoringaPessoal);
+        carregarGridEspecifico(CategoriaItem.COMIDAS, gridCoringaAlimentos);
+        carregarGridEspecifico(CategoriaItem.LAZER, gridCoringaLazer);
+        carregarGridEspecifico(CategoriaItem.APRENDIZADO, gridCoringaAprendizado);
+
         // Subgavetas Pessoal
         carregarGridEspecifico(CategoriaItem.PESSOAL_EU,           gridSubPessoalEu);
         carregarGridEspecifico(CategoriaItem.PESSOAL_REFERENCIA,   gridSubPessoalReferencia);
@@ -911,7 +916,7 @@ public class MainActivity extends AppCompatActivity {
         carregarGridEspecifico(CategoriaItem.PESSOAL_ROUPAS,       gridSubPessoalRoupas);
         carregarGridEspecifico(CategoriaItem.PESSOAL_ACOES,        gridSubPessoalAcoes);
 
-        // Subgavetas Comidas
+        // Subgavetas Alimentos
         carregarGridEspecifico(CategoriaItem.COMIDAS_REFEICAO,    gridSubComidasRefeicao);
         carregarGridEspecifico(CategoriaItem.COMIDAS_CAFE_LANCHES, gridSubComidasCafe);
         carregarGridEspecifico(CategoriaItem.COMIDAS_BEBIDAS,     gridSubComidasBebidas);
@@ -931,8 +936,8 @@ public class MainActivity extends AppCompatActivity {
         carregarGridEspecifico(CategoriaItem.APRENDIZADO_FORMAS,   gridSubAprendFormas);
     }
     // ========================================================
-// SALVA E APLICA O TAMANHO DOS CARDS PERMANENTEMENTE
-// ========================================================
+    // SALVA E APLICA O TAMANHO DOS CARDS PERMANENTEMENTE
+    // ========================================================
     private void salvarEAplicarColunas(int quantidadeColunas) {
         // 1. Salva a escolha
         getSharedPreferences("ConfigFalla", MODE_PRIVATE).edit().remove("cards_padrao_inseridos").apply();
@@ -941,6 +946,11 @@ public class MainActivity extends AppCompatActivity {
         GridLayout[] todosOsGrids = {
                 // Favoritos
                 conteudoFavoritos,
+
+                // Cards coringas
+                gridCoringaPessoal, gridCoringaAlimentos,
+                gridCoringaLazer, gridCoringaAprendizado,
+
 
                 // Subgavetas Pessoal
                 gridSubPessoalEu, gridSubPessoalSaude, gridSubPessoalCuidados,

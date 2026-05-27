@@ -26,6 +26,8 @@ public class ItemCard {
         this.isFavorito = false; // Todo card novo nasce sem estrela
     }
 
+
+
     // Construtor especial — texto exibido diferente da fala (números, letras, cores, formas)
     public ItemCard(String texto, CategoriaItem categoria, String imagemUri, String fala) {
         this.texto = texto;
