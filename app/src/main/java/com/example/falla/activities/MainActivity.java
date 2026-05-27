@@ -2,6 +2,7 @@ package com.example.falla.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -80,6 +81,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        // Verifica se é o primeiro uso
+        SharedPreferences prefs = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
+        if (!prefs.getBoolean("onboarding_concluido", false)) {
+            startActivity(new Intent(this, OnboardingActivity.class));
+            finish();
+            return;
+        }
 
         // #####  BANCO DE DADOS  ##### //
         db = AppDatabase.getDatabase(MainActivity.this);
@@ -660,9 +669,19 @@ public class MainActivity extends AppCompatActivity {
     private void inserirCardsPadrao() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
 
-            // ✅ Checa no BANCO — se já tem qualquer card em PESSOAL, não insere nada
-            List<ItemCard> jaExistem = db.itemCardDao().buscarPorCategoria(CategoriaItem.PESSOAL);
-            if (jaExistem != null && !jaExistem.isEmpty()) return;
+            // Checa TODAS as categorias coringa, não só PESSOAL
+            List<ItemCard> pessoal     = db.itemCardDao().buscarPorCategoria(CategoriaItem.PESSOAL);
+            List<ItemCard> comidas     = db.itemCardDao().buscarPorCategoria(CategoriaItem.COMIDAS);
+            List<ItemCard> lazer       = db.itemCardDao().buscarPorCategoria(CategoriaItem.LAZER);
+            List<ItemCard> aprendizado = db.itemCardDao().buscarPorCategoria(CategoriaItem.APRENDIZADO);
+
+            boolean pessoalOk     = pessoal     != null && !pessoal.isEmpty();
+            boolean comidasOk     = comidas     != null && !comidas.isEmpty();
+            boolean lazerOk       = lazer       != null && !lazer.isEmpty();
+            boolean aprendizadoOk = aprendizado != null && !aprendizado.isEmpty();
+
+            // Se todos já existem, não faz nada
+            if (pessoalOk && comidasOk && lazerOk && aprendizadoOk) return;
 
             String nomeUsuario = "...";
             com.example.falla.usuario.Usuario user = db.usuarioDao().getUsuario();
@@ -674,114 +693,100 @@ public class MainActivity extends AppCompatActivity {
             java.util.List<ItemCard> cards = new java.util.ArrayList<>();
             String ico = String.valueOf(android.R.drawable.ic_menu_add);
 
-            // PESSOAL — coringas
-            cards.add(new ItemCard("Quero ir ao banheiro",    CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_directions)));
-            cards.add(new ItemCard("Estou com dor",           CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_help)));
-            cards.add(new ItemCard("Meu nome é " + nomeFinal, CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_myplaces)));
+            // Insere apenas os grupos que estão faltando
+            if (!pessoalOk) {
+                cards.add(new ItemCard("Quero ir ao banheiro",    CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_directions)));
+                cards.add(new ItemCard("Estou com dor",           CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_help)));
+                cards.add(new ItemCard("Meu nome é " + nomeFinal, CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_myplaces)));
 
-            // PESSOAL_EU
-            for (String s : new String[]{"Estou feliz","Estou triste","Estou com raiva",
-                    "Estou cansado","Estou com medo","Quero ficar sozinho","Quero um abraço"})
-                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_EU, ico));
+                for (String s : new String[]{"Estou feliz","Estou triste","Estou com raiva",
+                        "Estou cansado","Estou com medo","Quero ficar sozinho","Quero um abraço"})
+                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_EU, ico));
 
-            // PESSOAL_REFERENCIA
-            for (String s : new String[]{"Eu","Você","Ele","Ela","A gente","Nós",
-                    "Isto","Isso","Aquilo","Aquele","Aqui","Lá","Ali","Meu","Minha"})
-                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_REFERENCIA, ico));
+                for (String s : new String[]{"Eu","Você","Ele","Ela","A gente","Nós",
+                        "Isto","Isso","Aquilo","Aquele","Aqui","Lá","Ali","Meu","Minha"})
+                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_REFERENCIA, ico));
 
-            // PESSOAL_SAUDE
-            for (String s : new String[]{"Dor de cabeça","Dor de barriga","Estou enjoado",
-                    "Estou com febre","Preciso de remédio","Me machuquei"})
-                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_SAUDE, ico));
+                for (String s : new String[]{"Dor de cabeça","Dor de barriga","Estou enjoado",
+                        "Estou com febre","Preciso de remédio","Me machuquei"})
+                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_SAUDE, ico));
 
-            // PESSOAL_CUIDADOS
-            for (String s : new String[]{"Tomar banho","Escovar os dentes","Lavar as mãos",
-                    "Pentear o cabelo","Assoar o nariz","Cortar a unha","Cortar o cabelo"})
-                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_CUIDADOS, ico));
+                for (String s : new String[]{"Tomar banho","Escovar os dentes","Lavar as mãos",
+                        "Pentear o cabelo","Assoar o nariz","Cortar a unha","Cortar o cabelo"})
+                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_CUIDADOS, ico));
 
-            // PESSOAL_ROUPAS
-            for (String s : new String[]{"Estou com frio","Estou com calor","Trocar de roupa",
-                    "Vestir casaco","Calçar sapato","Tirar o sapato","Colocar pijama"})
-                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_ROUPAS, ico));
+                for (String s : new String[]{"Estou com frio","Estou com calor","Trocar de roupa",
+                        "Vestir casaco","Calçar sapato","Tirar o sapato","Colocar pijama"})
+                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_ROUPAS, ico));
 
-            // PESSOAL_ACOES
-            for (String s : new String[]{"Ir","Ver","Parar","Esperar"})
-                cards.add(new ItemCard(s, CategoriaItem.PESSOAL_ACOES, ico));
+                for (String s : new String[]{"Ir","Ver","Parar","Esperar"})
+                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_ACOES, ico));
+            }
 
-            // COMIDAS — coringas
-            cards.add(new ItemCard("Estou com fome", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
-            cards.add(new ItemCard("Estou com sede", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
+            if (!comidasOk) {
+                cards.add(new ItemCard("Estou com fome", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
+                cards.add(new ItemCard("Estou com sede", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
 
-            // COMIDAS_REFEICAO
-            for (String s : new String[]{"Arroz e feijão","Carne","Frango","Macarrão",
-                    "Peixe","Sopa","Salada","Picadinho","Purê de batata","Pizza","Hambúrguer"})
-                cards.add(new ItemCard(s, CategoriaItem.COMIDAS_REFEICAO, ico));
+                for (String s : new String[]{"Arroz e feijão","Carne","Frango","Macarrão",
+                        "Peixe","Sopa","Salada","Picadinho","Purê de batata","Pizza","Hambúrguer"})
+                    cards.add(new ItemCard(s, CategoriaItem.COMIDAS_REFEICAO, ico));
 
-            // COMIDAS_CAFE_LANCHES
-            for (String s : new String[]{"Pão","Bolo","Biscoito","Fruta",
-                    "Danone","Queijo","Presunto","Cereal"})
-                cards.add(new ItemCard(s, CategoriaItem.COMIDAS_CAFE_LANCHES, ico));
+                for (String s : new String[]{"Pão","Bolo","Biscoito","Fruta",
+                        "Danone","Queijo","Presunto","Cereal"})
+                    cards.add(new ItemCard(s, CategoriaItem.COMIDAS_CAFE_LANCHES, ico));
 
-            // COMIDAS_BEBIDAS
-            for (String s : new String[]{"Água","Suco","Café","Leite",
-                    "Achocolatado","Refrigerante","Chá"})
-                cards.add(new ItemCard(s, CategoriaItem.COMIDAS_BEBIDAS, ico));
+                for (String s : new String[]{"Água","Suco","Café","Leite",
+                        "Achocolatado","Refrigerante","Chá"})
+                    cards.add(new ItemCard(s, CategoriaItem.COMIDAS_BEBIDAS, ico));
 
-            // COMIDAS_DOCES
-            for (String s : new String[]{"Chocolate","Sorvete","Gelatina",
-                    "Pudim","Doce","Brigadeiro"})
-                cards.add(new ItemCard(s, CategoriaItem.COMIDAS_DOCES, ico));
+                for (String s : new String[]{"Chocolate","Sorvete","Gelatina",
+                        "Pudim","Doce","Brigadeiro"})
+                    cards.add(new ItemCard(s, CategoriaItem.COMIDAS_DOCES, ico));
+            }
 
-            // LAZER — coringas
-            cards.add(new ItemCard("Quero brincar", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
-            cards.add(new ItemCard("Quero passear", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
+            if (!lazerOk) {
+                cards.add(new ItemCard("Quero brincar", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
+                cards.add(new ItemCard("Quero passear", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
 
-            // LAZER_JOGOS
-            for (String s : new String[]{"Videogame","Jogo de tabuleiro","Cartas",
-                    "Quebra-cabeça","Blocos de montar","Meus brinquedos"})
-                cards.add(new ItemCard(s, CategoriaItem.LAZER_JOGOS, ico));
+                for (String s : new String[]{"Videogame","Jogo de tabuleiro","Cartas",
+                        "Quebra-cabeça","Blocos de montar","Meus brinquedos"})
+                    cards.add(new ItemCard(s, CategoriaItem.LAZER_JOGOS, ico));
 
-            // LAZER_TELAS
-            for (String s : new String[]{"Assistir TV","Assistir YouTube","Ver filme",
-                    "Ver desenho","Ouvir música","Celular","Tablet"})
-                cards.add(new ItemCard(s, CategoriaItem.LAZER_TELAS, ico));
+                for (String s : new String[]{"Assistir TV","Assistir YouTube","Ver filme",
+                        "Ver desenho","Ouvir música","Celular","Tablet"})
+                    cards.add(new ItemCard(s, CategoriaItem.LAZER_TELAS, ico));
 
-            // LAZER_EXTERNO
-            for (String s : new String[]{"Ir ao parque","Ir à praça","Jogar futebol",
-                    "Jogar vôlei","Ir à piscina","Ir à praia",
-                    "Passear de carro","Passear de moto","Dar uma caminhada"})
-                cards.add(new ItemCard(s, CategoriaItem.LAZER_EXTERNO, ico));
+                for (String s : new String[]{"Ir ao parque","Ir à praça","Jogar futebol",
+                        "Jogar vôlei","Ir à piscina","Ir à praia",
+                        "Passear de carro","Passear de moto","Dar uma caminhada"})
+                    cards.add(new ItemCard(s, CategoriaItem.LAZER_EXTERNO, ico));
 
-            // LAZER_SOCIAL
-            for (String s : new String[]{"Brincar com amigos","Conversar","Visitar família",
-                    "Brincar com cachorro","Brincar com gato","Fazer uma ligação"})
-                cards.add(new ItemCard(s, CategoriaItem.LAZER_SOCIAL, ico));
+                for (String s : new String[]{"Brincar com amigos","Conversar","Visitar família",
+                        "Brincar com cachorro","Brincar com gato","Fazer uma ligação"})
+                    cards.add(new ItemCard(s, CategoriaItem.LAZER_SOCIAL, ico));
+            }
 
-            // APRENDIZADO — coringas
-            cards.add(new ItemCard("Quero estudar",    CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
-            cards.add(new ItemCard("Preciso de ajuda", CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
+            if (!aprendizadoOk) {
+                cards.add(new ItemCard("Quero estudar",    CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
+                cards.add(new ItemCard("Preciso de ajuda", CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
 
-            // APRENDIZADO_NUMEROS — 1 a 100
-            for (int i = 1; i <= 100; i++)
-                cards.add(new ItemCard(String.valueOf(i), CategoriaItem.APRENDIZADO_NUMEROS, ico));
+                for (int i = 1; i <= 100; i++)
+                    cards.add(new ItemCard(String.valueOf(i), CategoriaItem.APRENDIZADO_NUMEROS, ico));
 
-            // APRENDIZADO_ALFABETO — A a Z
-            for (char c = 'A'; c <= 'Z'; c++)
-                cards.add(new ItemCard(String.valueOf(c), CategoriaItem.APRENDIZADO_ALFABETO, ico));
+                for (char c = 'A'; c <= 'Z'; c++)
+                    cards.add(new ItemCard(String.valueOf(c), CategoriaItem.APRENDIZADO_ALFABETO, ico));
 
-            // APRENDIZADO_VOGAIS
-            for (char v : new char[]{'A','E','I','O','U'})
-                cards.add(new ItemCard(String.valueOf(v), CategoriaItem.APRENDIZADO_VOGAIS, ico));
+                for (char v : new char[]{'A','E','I','O','U'})
+                    cards.add(new ItemCard(String.valueOf(v), CategoriaItem.APRENDIZADO_VOGAIS, ico));
 
-            // APRENDIZADO_CORES
-            for (String s : new String[]{"Vermelho","Azul","Amarelo","Verde","Laranja",
-                    "Roxo","Rosa","Marrom","Preto","Branco","Cinza"})
-                cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_CORES, ico));
+                for (String s : new String[]{"Vermelho","Azul","Amarelo","Verde","Laranja",
+                        "Roxo","Rosa","Marrom","Preto","Branco","Cinza"})
+                    cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_CORES, ico));
 
-            // APRENDIZADO_FORMAS
-            for (String s : new String[]{"Círculo","Quadrado","Triângulo","Retângulo",
-                    "Oval","Estrela","Coração","Losango","Hexágono"})
-                cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_FORMAS, ico));
+                for (String s : new String[]{"Círculo","Quadrado","Triângulo","Retângulo",
+                        "Oval","Estrela","Coração","Losango","Hexágono"})
+                    cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_FORMAS, ico));
+            }
 
             for (ItemCard card : cards)
                 db.itemCardDao().inserir(card);
@@ -789,7 +794,6 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> carregarTodasAsGavetas());
         });
     }
-
 
     // ####### FAVORITOS ####### //
     private void carregarCardsFavoritos() {
@@ -940,7 +944,7 @@ public class MainActivity extends AppCompatActivity {
     // ========================================================
     private void salvarEAplicarColunas(int quantidadeColunas) {
         // 1. Salva a escolha
-        getSharedPreferences("ConfigFalla", MODE_PRIVATE).edit().remove("cards_padrao_inseridos").apply();
+        getSharedPreferences("ConfigFalla", MODE_PRIVATE).edit().putInt("quantidade_colunas", quantidadeColunas).apply();
 
         // 2. Lista de TODOS os GridLayouts reais do app
         GridLayout[] todosOsGrids = {

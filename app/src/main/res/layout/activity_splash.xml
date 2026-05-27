@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/verde_fosco_header">
+
+    <!-- Logo / ícone central -->
+    <androidx.cardview.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginBottom="32dp"
+        app:cardCornerRadius="70dp"
+        app:cardBackgroundColor="#33FFFFFF"
+        app:cardElevation="0dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_launcher_foreground"
+            android:scaleType="fitCenter"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Nome do app -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Falla"
+        android:textColor="@color/texto_header"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.1"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Tagline -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comunicação sem barreiras"
+        android:textColor="@color/texto_header"
+        android:textSize="16sp"
+        android:alpha="0.75"
+        android:layout_marginBottom="64dp"/>
+
+    <!-- Barra de carregamento -->
+    <ProgressBar
+        android:id="@+id/progress_splash"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="180dp"
+        android:layout_height="4dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/texto_header"
+        android:progressTint="@color/texto_header"/>
+
+</LinearLayout>
