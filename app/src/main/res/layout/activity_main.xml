@@ -133,7 +133,7 @@
                                     android:layout_gravity="center"
                                     android:layout_marginTop="16dp"
                                     android:layout_marginBottom="16dp"
-                                    android:src="@android:drawable/checkbox_on_background" />
+                                    android:src="@drawable/ok" />
 
                                 <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
 
@@ -212,7 +212,7 @@
                                     android:layout_gravity="center"
                                     android:layout_marginTop="16dp"
                                     android:layout_marginBottom="16dp"
-                                    android:src="@android:drawable/ic_delete" />
+                                    android:src="@drawable/no" />
 
                                 <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/borda_sutil"/>
 

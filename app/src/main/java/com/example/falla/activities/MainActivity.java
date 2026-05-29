@@ -226,14 +226,9 @@ public class MainActivity extends AppCompatActivity {
             abrirDialogCores();
         });
 
-        itemHistorico.setOnClickListener(v -> {
-            // Lógica para histórico
-            drawerLayout.closeDrawers();
-        });
-
         itemSobre.setOnClickListener(v -> {
-            // Abrir uma Activity ou Dialog de "Sobre"
             drawerLayout.closeDrawers();
+            startActivity(new Intent(MainActivity.this, SobreActivity.class));
         });
 
 
