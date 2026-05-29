@@ -32,6 +32,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.falla.DAO.AppDatabase;
 import com.example.falla.R;
+import com.example.falla.card.AssetImageHelper;
 import com.example.falla.card.CardEntity;
 import com.example.falla.card.CategoriaItem;
 import com.example.falla.card.ItemCard;
@@ -275,21 +276,21 @@ public class MainActivity extends AppCompatActivity {
         configurarGavetaInternaCard(headerCardNao, conteudoCardNao, txtSetaNao, ">", "v");
 
         // Se clicar direto na imagem do V/X, fala a palavra principal
-        iconSim.setOnClickListener(v -> falar("Sim"));
-        iconNao.setOnClickListener(v -> falar("Não"));
+        iconSim.setOnClickListener(v -> falarERegistrar("Sim"));
+        iconNao.setOnClickListener(v -> falarERegistrar("Não"));
 
         // Falas do Card Sim
-        findViewById(R.id.item_sim_quero).setOnClickListener(v -> falar("Sim, eu quero"));
-        findViewById(R.id.item_sim_gosto).setOnClickListener(v -> falar("Sim, eu gosto"));
-        findViewById(R.id.item_sim_bom).setOnClickListener(v -> falar("Isso é bom"));
-        findViewById(R.id.item_mais).setOnClickListener(v -> falar("Mais"));
+        findViewById(R.id.item_sim_quero).setOnClickListener(v -> falarERegistrar("Sim, eu quero"));
+        findViewById(R.id.item_sim_gosto).setOnClickListener(v -> falarERegistrar("Sim, eu gosto"));
+        findViewById(R.id.item_sim_bom).setOnClickListener(v -> falarERegistrar("Isso é bom"));
+        findViewById(R.id.item_mais).setOnClickListener(v -> falarERegistrar("Mais"));
 
 
         // Falas do Card Não
-        findViewById(R.id.item_nao_quero).setOnClickListener(v -> falar("Não, eu não quero"));
-        findViewById(R.id.item_nao_gosto).setOnClickListener(v -> falar("Não, eu não gosto"));
-        findViewById(R.id.item_nao_ruim).setOnClickListener(v -> falar("Isso é ruim"));
-        findViewById(R.id.item_menos).setOnClickListener(v -> falar("Menos"));
+        findViewById(R.id.item_nao_quero).setOnClickListener(v -> falarERegistrar("Não, eu não quero"));
+        findViewById(R.id.item_nao_gosto).setOnClickListener(v -> falarERegistrar("Não, eu não gosto"));
+        findViewById(R.id.item_nao_ruim).setOnClickListener(v -> falarERegistrar("Isso é ruim"));
+        findViewById(R.id.item_menos).setOnClickListener(v -> falarERegistrar("Menos"));
 
 
 
@@ -447,12 +448,12 @@ public class MainActivity extends AppCompatActivity {
 
                     // TTS (Falar)
                     cardRoot.setOnClickListener(v -> {
-                        String textoParaFalar = txtFala.getText().toString().trim();
-                        if (!textoParaFalar.isEmpty() && tts != null) {
+                        String textoParaFalar = (card.getFala() != null && !card.getFala().isEmpty())
+                                ? card.getFala()
+                                : card.getTexto();
+                        if (textoParaFalar != null && !textoParaFalar.isEmpty() && tts != null) {
                             tts.speak(textoParaFalar, TextToSpeech.QUEUE_ADD, null, null);
-
-                            // Registra no histórico
-                            registrarNoHistorico(card.getImagemUri(), card.getFala());
+                            registrarNoHistorico(card.getImagemUri(), textoParaFalar);
                         }
                     });
 
@@ -546,12 +547,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     // #####  FALAR ##### //
-    private void falar(String texto) {
+    private void falarERegistrar(String texto) {
         if (tts != null) {
-            // QUEUE_FLUSH limpa a fila e fala agora
-            // QUEUE_ADD terminaria de falar o atual para depois falar o novo
             tts.speak(texto, TextToSpeech.QUEUE_ADD, null, null);
         }
+        registrarNoHistorico(
+                String.valueOf(android.R.drawable.ic_menu_more), // ícone genérico para sim/não
+                texto
+        );
     }
 
     @Override
@@ -627,44 +630,35 @@ public class MainActivity extends AppCompatActivity {
         btnSalvarEdt.setOnClickListener(vClick -> {
             String novoTexto = editFala.getText().toString().trim();
 
-            // Verifica se imgDialogPreview recebeu uma nova URI da galeria através da Tag
             String novaUri = itemCardAtual.getImagemUri();
             if (imgDialogPreview.getTag() != null) {
                 novaUri = imgDialogPreview.getTag().toString();
             }
 
-            // Atualiza os dados do objeto que será enviado ao Room
             itemCardAtual.setFala(novoTexto);
+            itemCardAtual.setTexto(novoTexto); // ✅ atualiza o texto também
             itemCardAtual.setImagemUri(novaUri);
 
-            // --- SALVAR NO BANCO DE DADOS ---
-            // Roda a atualização em segundo plano
+            // ✅ Atualiza o TextView visualmente na hora, sem precisar recarregar
+            txtFalaOriginal.setText(novoTexto);
+            AssetImageHelper.carregarImagem(MainActivity.this, novaUri, imgSimboloOriginal);
+
             AppDatabase.databaseWriteExecutor.execute(() -> {
-                if (db == null) {
-                    db = AppDatabase.getDatabase(MainActivity.this);
-                }
-
-                // 1. Atualiza permanentemente no Room
                 db.itemCardDao().atualizar(itemCardAtual);
-
-                // 2. O SEGREDO: Assim que o banco terminar de salvar, roda este bloco na UI Thread
-                runOnUiThread(() -> {
-                    // Força todas as gavetas e favoritos a redesenharem-se com os dados novos
-                    carregarTodasAsGavetas();
-                    Toast.makeText(MainActivity.this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show();
-                });
+                runOnUiThread(() ->
+                        Toast.makeText(MainActivity.this, "Salvo!", Toast.LENGTH_SHORT).show()
+                );
             });
 
-            // Fecha o diálogo de edição
             dialog.dismiss();
         });
+
         // Mostra o popup na tela
         dialog.show();
     }
     private void inserirCardsPadrao() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
 
-            // Checa TODAS as categorias coringa, não só PESSOAL
             List<ItemCard> pessoal     = db.itemCardDao().buscarPorCategoria(CategoriaItem.PESSOAL);
             List<ItemCard> comidas     = db.itemCardDao().buscarPorCategoria(CategoriaItem.COMIDAS);
             List<ItemCard> lazer       = db.itemCardDao().buscarPorCategoria(CategoriaItem.LAZER);
@@ -675,7 +669,6 @@ public class MainActivity extends AppCompatActivity {
             boolean lazerOk       = lazer       != null && !lazer.isEmpty();
             boolean aprendizadoOk = aprendizado != null && !aprendizado.isEmpty();
 
-            // Se todos já existem, não faz nada
             if (pessoalOk && comidasOk && lazerOk && aprendizadoOk) return;
 
             String nomeUsuario = "...";
@@ -685,102 +678,215 @@ public class MainActivity extends AppCompatActivity {
             }
             final String nomeFinal = nomeUsuario;
 
-            java.util.List<ItemCard> cards = new java.util.ArrayList<>();
+            // Ícone genérico — substitua pelo caminho do asset quando tiver a imagem
             String ico = String.valueOf(android.R.drawable.ic_menu_add);
 
-            // Insere apenas os grupos que estão faltando
+            java.util.List<ItemCard> cards = new java.util.ArrayList<>();
+
+            // ══════════════════════════════════════════════════════
+            // PESSOAL — coringas
+            // ══════════════════════════════════════════════════════
             if (!pessoalOk) {
-                cards.add(new ItemCard("Quero ir ao banheiro",    CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_directions)));
-                cards.add(new ItemCard("Estou com dor",           CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_help)));
-                cards.add(new ItemCard("Meu nome é " + nomeFinal, CategoriaItem.PESSOAL, String.valueOf(android.R.drawable.ic_menu_myplaces)));
+                cards.add(new ItemCard("Quero ir ao banheiro",    CategoriaItem.PESSOAL, "assets/pessoal/toilet.png"));
+                cards.add(new ItemCard("Estou com dor",           CategoriaItem.PESSOAL, "assets/pessoal/face_with_head_bandage.png"));
+                cards.add(new ItemCard("Meu nome é " + nomeFinal, CategoriaItem.PESSOAL, "assets/pessoal/grinning.png"));
 
-                for (String s : new String[]{"Estou feliz","Estou triste","Estou com raiva",
-                        "Estou cansado","Estou com medo","Quero ficar sozinho","Quero um abraço"})
-                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_EU, ico));
+                // ── EU ──
+                cards.add(new ItemCard("Estou feliz",         CategoriaItem.PESSOAL_EU, "assets/pessoal/smiley.png"));
+                cards.add(new ItemCard("Estou triste",        CategoriaItem.PESSOAL_EU, "assets/pessoal/slightly_frowning_face.png"));
+                cards.add(new ItemCard("Estou com raiva",     CategoriaItem.PESSOAL_EU, "asstes/pessoal/rage.png"));
+                cards.add(new ItemCard("Estou cansado",       CategoriaItem.PESSOAL_EU, "assets/pessoal/sweat.png"));
+                cards.add(new ItemCard("Estou com medo",      CategoriaItem.PESSOAL_EU, "assets/pessoal/fearful.png"));
+                cards.add(new ItemCard("Quero ficar sozinho", CategoriaItem.PESSOAL_EU, "assets/pessoal/dotted_line_face.png"));
+                cards.add(new ItemCard("Quero um abraço",     CategoriaItem.PESSOAL_EU, "assets/pessoal/people_hugging.png"));
 
-                for (String s : new String[]{"Eu","Você","Ele","Ela","A gente","Nós",
-                        "Isto","Isso","Aquilo","Aquele","Aqui","Lá","Ali","Meu","Minha"})
-                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_REFERENCIA, ico));
+                // ── REFERÊNCIA ──
+                cards.add(new ItemCard("Eu",      CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/grinning"));
+                cards.add(new ItemCard("Você",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/index_pointing_at_the_viewer"));
+                cards.add(new ItemCard("Ele",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/adult"));
+                cards.add(new ItemCard("Ela",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/girl"));
+                cards.add(new ItemCard("A gente", CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/busts_in_silhouette"));
+                cards.add(new ItemCard("Nós",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/busts_in_silhouette"));
+                cards.add(new ItemCard("Isto",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_right"));
+                cards.add(new ItemCard("Isso",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_down"));
+                cards.add(new ItemCard("Aquilo",  CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_up_2"));
+                cards.add(new ItemCard("Aquele",  CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/raising_hand.png"));
+                cards.add(new ItemCard("Aqui",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/palm_up_hand.png"));
+                cards.add(new ItemCard("Lá",      CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_up_2"));
+                cards.add(new ItemCard("Ali",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_down"));
+                cards.add(new ItemCard("Meu",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/raising_hand"));
+                cards.add(new ItemCard("Minha",   CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/raising_hand"));
 
-                for (String s : new String[]{"Dor de cabeça","Dor de barriga","Estou enjoado",
-                        "Estou com febre","Preciso de remédio","Me machuquei"})
-                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_SAUDE, ico));
+                // ── SAÚDE ──
+                cards.add(new ItemCard("Dor de cabeça",      CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/face_with_head_bandage.png"));
+                cards.add(new ItemCard("Dor de barriga",     CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/sweat.png"));
+                cards.add(new ItemCard("Estou enjoado",      CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/nauseated_face"));
+                cards.add(new ItemCard("Estou com febre",    CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/face_with_thermometer.png"));
+                cards.add(new ItemCard("Preciso de remédio", CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/pill"));
+                cards.add(new ItemCard("Me machuquei",       CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/adhesive_bandage.png"));
 
-                for (String s : new String[]{"Tomar banho","Escovar os dentes","Lavar as mãos",
-                        "Pentear o cabelo","Assoar o nariz","Cortar a unha","Cortar o cabelo"})
-                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_CUIDADOS, ico));
+                // ── CUIDADOS ──
+                cards.add(new ItemCard("Tomar banho",       CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/shower.png"));
+                cards.add(new ItemCard("Escovar os dentes", CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/toothbrush.png"));
+                cards.add(new ItemCard("Lavar as mãos",     CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/palms_up_together.png"));
+                cards.add(new ItemCard("Pentear o cabelo",  CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/hair_pick.jpg"));
+                cards.add(new ItemCard("Assoar o nariz",    CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/nose.jpg"));
+                cards.add(new ItemCard("Cortar a unha",     CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/scissors.jpg"));
+                cards.add(new ItemCard("Cortar o cabelo",   CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/haircut.png"));
 
-                for (String s : new String[]{"Estou com frio","Estou com calor","Trocar de roupa",
-                        "Vestir casaco","Calçar sapato","Tirar o sapato","Colocar pijama"})
-                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_ROUPAS, ico));
+                // ── ROUPAS ──
+                cards.add(new ItemCard("Estou com frio",  CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/cold_face.png"));
+                cards.add(new ItemCard("Estou com calor", CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/hot_face.png"));
+                cards.add(new ItemCard("Trocar de roupa", CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/shirt.jpg"));
+                cards.add(new ItemCard("Vestir casaco",   CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/coat.png"));
+                cards.add(new ItemCard("Calçar sapato",   CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/athletic_shoe.png"));
+                cards.add(new ItemCard("Tirar o sapato",  CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/athletic_shoe.png"));
+                cards.add(new ItemCard("Colocar pijama",  CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/kimono.png"));
 
-                for (String s : new String[]{"Ir","Ver","Parar","Esperar"})
-                    cards.add(new ItemCard(s, CategoriaItem.PESSOAL_ACOES, ico));
+                // ── AÇÕES ──
+                cards.add(new ItemCard("Ir",      CategoriaItem.PESSOAL_ACOES, "assets/pessoal/walking.png"));
+                cards.add(new ItemCard("Ver",     CategoriaItem.PESSOAL_ACOES, "assets/pessoal/eyes.png"));
+                cards.add(new ItemCard("Parar",   CategoriaItem.PESSOAL_ACOES, "assets/pessoal/octagonal_sign.png"));
+                cards.add(new ItemCard("Esperar", CategoriaItem.PESSOAL_ACOES, "assets/pessoal/hourglass.png"));
             }
 
+            // ══════════════════════════════════════════════════════
+            // COMIDAS — coringas
+            // ══════════════════════════════════════════════════════
             if (!comidasOk) {
-                cards.add(new ItemCard("Estou com fome", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
-                cards.add(new ItemCard("Estou com sede", CategoriaItem.COMIDAS, String.valueOf(android.R.drawable.ic_menu_help)));
+                cards.add(new ItemCard("Estou com fome", CategoriaItem.COMIDAS, "assets/alimentos/drooling_face.png"));
+                cards.add(new ItemCard("Estou com sede", CategoriaItem.COMIDAS, "assets/alimentos/hot_face.png"));
 
-                for (String s : new String[]{"Arroz e feijão","Carne","Frango","Macarrão",
-                        "Peixe","Sopa","Salada","Picadinho","Purê de batata","Pizza","Hambúrguer"})
-                    cards.add(new ItemCard(s, CategoriaItem.COMIDAS_REFEICAO, ico));
+                // ── REFEIÇÃO ──
+                cards.add(new ItemCard("Arroz e feijão",  CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/curry.png"));
+                cards.add(new ItemCard("Carne",           CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/cut_of_meat.png"));
+                cards.add(new ItemCard("Frango",          CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/poultry_leg.png"));
+                cards.add(new ItemCard("Macarrão",        CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/ramen.png"));
+                cards.add(new ItemCard("Peixe",           CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/fish.png"));
+                cards.add(new ItemCard("Sopa",            CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/stew.png"));
+                cards.add(new ItemCard("Salada",          CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/green_salad.png"));
+                cards.add(new ItemCard("Picadinho",       CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/curry.png"));
+                cards.add(new ItemCard("Purê de batata",  CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/potato.png"));
+                cards.add(new ItemCard("Pizza",           CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/pizza.png"));
+                cards.add(new ItemCard("Hambúrguer",      CategoriaItem.COMIDAS_REFEICAO, "assets/alimentos/hamburger.png"));
 
-                for (String s : new String[]{"Pão","Bolo","Biscoito","Fruta",
-                        "Danone","Queijo","Presunto","Cereal"})
-                    cards.add(new ItemCard(s, CategoriaItem.COMIDAS_CAFE_LANCHES, ico));
+                // ── CAFÉ E LANCHES ──
+                cards.add(new ItemCard("Pão",      CategoriaItem.COMIDAS_CAFE_LANCHES, "assets/alimentos/bread.png"));
+                cards.add(new ItemCard("Bolo",     CategoriaItem.COMIDAS_CAFE_LANCHES, "assets/alimentos/cake.png"));
+                cards.add(new ItemCard("Biscoito", CategoriaItem.COMIDAS_CAFE_LANCHES, "assets/alimentos/cookie.png"));
+                cards.add(new ItemCard("Fruta",    CategoriaItem.COMIDAS_CAFE_LANCHES, "assets/alimentos/apple.png"));
+                cards.add(new ItemCard("Danone",   CategoriaItem.COMIDAS_CAFE_LANCHES, "assets/alimentos/baby_bottle.png"));
+                cards.add(new ItemCard("Queijo",   CategoriaItem.COMIDAS_CAFE_LANCHES, "assets/alimentos/cheese_wedge.png"));
+                cards.add(new ItemCard("Presunto", CategoriaItem.COMIDAS_CAFE_LANCHES, "assets/alimentos/bacon.png"));
+                cards.add(new ItemCard("Cereal",   CategoriaItem.COMIDAS_CAFE_LANCHES, "assets/alimentos/bowl_with_spoon.png"));
 
-                for (String s : new String[]{"Água","Suco","Café","Leite",
-                        "Achocolatado","Refrigerante","Chá"})
-                    cards.add(new ItemCard(s, CategoriaItem.COMIDAS_BEBIDAS, ico));
+                // ── BEBIDAS ──
+                cards.add(new ItemCard("Água",          CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/droplet.jpg"));
+                cards.add(new ItemCard("Suco",          CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/tropical_drink.png"));
+                cards.add(new ItemCard("Café",          CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/coffee.png"));
+                cards.add(new ItemCard("Leite",         CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/glass_of_milk.png"));
+                cards.add(new ItemCard("Achocolatado",  CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/chocolate_bar.png"));
+                cards.add(new ItemCard("Refrigerante",  CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/tropical_drink.png"));
+                cards.add(new ItemCard("Chá",           CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/tea.png"));
 
-                for (String s : new String[]{"Chocolate","Sorvete","Gelatina",
-                        "Pudim","Doce","Brigadeiro"})
-                    cards.add(new ItemCard(s, CategoriaItem.COMIDAS_DOCES, ico));
+                // ── DOCES E SOBREMESAS ──
+                cards.add(new ItemCard("Chocolate", CategoriaItem.COMIDAS_DOCES, "assets/alimentos/chocolate_bar.png"));
+                cards.add(new ItemCard("Sorvete",   CategoriaItem.COMIDAS_DOCES, "assets/alimentos/icecream.png"));
+                cards.add(new ItemCard("Gelatina",  CategoriaItem.COMIDAS_DOCES, "assets/alimentos/custard.png"));
+                cards.add(new ItemCard("Pudim",     CategoriaItem.COMIDAS_DOCES, "assets/alimentos/custard.png"));
+                cards.add(new ItemCard("Doce",      CategoriaItem.COMIDAS_DOCES, "assets/alimentos/candy.png"));
+                cards.add(new ItemCard("Brigadeiro",CategoriaItem.COMIDAS_DOCES, "assets/alimentos/candy.png"));
             }
 
+            // ══════════════════════════════════════════════════════
+            // LAZER — coringas
+            // ══════════════════════════════════════════════════════
             if (!lazerOk) {
-                cards.add(new ItemCard("Quero brincar", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
-                cards.add(new ItemCard("Quero passear", CategoriaItem.LAZER, String.valueOf(android.R.drawable.ic_menu_help)));
+                cards.add(new ItemCard("Quero brincar", CategoriaItem.LAZER, "assets/lazer/zany_face.png"));
+                cards.add(new ItemCard("Quero passear", CategoriaItem.LAZER, "assets/lazer/walking.png"));
 
-                for (String s : new String[]{"Videogame","Jogo de tabuleiro","Cartas",
-                        "Quebra-cabeça","Blocos de montar","Meus brinquedos"})
-                    cards.add(new ItemCard(s, CategoriaItem.LAZER_JOGOS, ico));
+                // ── JOGOS E BRINQUEDOS ──
+                cards.add(new ItemCard("Videogame",          CategoriaItem.LAZER_JOGOS, "assets/lazer/video_game.png"));
+                cards.add(new ItemCard("Jogo de tabuleiro",  CategoriaItem.LAZER_JOGOS, "assets/lazer/game_die.png"));
+                cards.add(new ItemCard("Cartas",             CategoriaItem.LAZER_JOGOS, "assets/lazer/black_joker.png"));
+                cards.add(new ItemCard("Quebra-cabeça",      CategoriaItem.LAZER_JOGOS, "assets/lazer/jigsaw.png"));
+                cards.add(new ItemCard("Blocos de montar",   CategoriaItem.LAZER_JOGOS, "assets/lazer/bricks.png"));
+                cards.add(new ItemCard("Meus brinquedos",    CategoriaItem.LAZER_JOGOS, "assets/lazer/teddy_bear.png"));
 
-                for (String s : new String[]{"Assistir TV","Assistir YouTube","Ver filme",
-                        "Ver desenho","Ouvir música","Celular","Tablet"})
-                    cards.add(new ItemCard(s, CategoriaItem.LAZER_TELAS, ico));
+                // ── TELAS E MÍDIAS ──
+                cards.add(new ItemCard("Assistir TV",       CategoriaItem.LAZER_TELAS, "assets/lazer/desktop_computer.png"));
+                cards.add(new ItemCard("Assistir YouTube",  CategoriaItem.LAZER_TELAS, "assets/lazer/small_red_triangle.png"));
+                cards.add(new ItemCard("Ver filme",         CategoriaItem.LAZER_TELAS, "assets/lazer/clapper.png"));
+                cards.add(new ItemCard("Ver desenho",       CategoriaItem.LAZER_TELAS, "assets/lazer/frame_with_picture.png"));
+                cards.add(new ItemCard("Ouvir música",      CategoriaItem.LAZER_TELAS, "assets/lazer/notes.png"));
+                cards.add(new ItemCard("Celular",           CategoriaItem.LAZER_TELAS, "assets/lazer/calling.png"));
+                cards.add(new ItemCard("Tablet",            CategoriaItem.LAZER_TELAS, "assets/lazer/iphone.png"));
 
-                for (String s : new String[]{"Ir ao parque","Ir à praça","Jogar futebol",
-                        "Jogar vôlei","Ir à piscina","Ir à praia",
-                        "Passear de carro","Passear de moto","Dar uma caminhada"})
-                    cards.add(new ItemCard(s, CategoriaItem.LAZER_EXTERNO, ico));
+                // ── AO AR LIVRE ──
+                cards.add(new ItemCard("Ir ao parque",       CategoriaItem.LAZER_EXTERNO, "assets/lazer/deciduous_tree.png"));
+                cards.add(new ItemCard("Ir à praça",         CategoriaItem.LAZER_EXTERNO, "assets/lazer/fountain.png"));
+                cards.add(new ItemCard("Jogar futebol",      CategoriaItem.LAZER_EXTERNO, "assets/lazer/soccer.png"));
+                cards.add(new ItemCard("Jogar vôlei",        CategoriaItem.LAZER_EXTERNO, "assets/lazer/volleyball.png"));
+                cards.add(new ItemCard("Ir à piscina",       CategoriaItem.LAZER_EXTERNO, "assets/lazer/swimmer.png"));
+                cards.add(new ItemCard("Ir à praia",         CategoriaItem.LAZER_EXTERNO, "assets/lazer/beach_with_umbrella.png"));
+                cards.add(new ItemCard("Passear de carro",   CategoriaItem.LAZER_EXTERNO, "assets/lazer/blue_car.png"));
+                cards.add(new ItemCard("Passear de moto",    CategoriaItem.LAZER_EXTERNO, "assets/lazer/racing_motorcycle.png"));
+                cards.add(new ItemCard("Dar uma caminhada",  CategoriaItem.LAZER_EXTERNO, "assets/lazer/walking.png"));
 
-                for (String s : new String[]{"Brincar com amigos","Conversar","Visitar família",
-                        "Brincar com cachorro","Brincar com gato","Fazer uma ligação"})
-                    cards.add(new ItemCard(s, CategoriaItem.LAZER_SOCIAL, ico));
+                // ── INTERAÇÃO SOCIAL ──
+                cards.add(new ItemCard("Brincar com amigos",  CategoriaItem.LAZER_SOCIAL, "assets/lazer/zany_face.png"));
+                cards.add(new ItemCard("Conversar",           CategoriaItem.LAZER_SOCIAL, "assets/lazer/speaking_head_in_silhouette.png"));
+                cards.add(new ItemCard("Visitar família",     CategoriaItem.LAZER_SOCIAL, "assets/lazer/man-woman-boy.png"));
+                cards.add(new ItemCard("Brincar com cachorro",CategoriaItem.LAZER_SOCIAL, "assets/lazer/dog2.png"));
+                cards.add(new ItemCard("Brincar com gato",    CategoriaItem.LAZER_SOCIAL, "assets/lazer/cat2.png"));
+                cards.add(new ItemCard("Fazer uma ligação",   CategoriaItem.LAZER_SOCIAL, "assets/lazer/telephone_receiver.png"));
             }
 
+            // ══════════════════════════════════════════════════════
+            // APRENDIZADO — coringas
+            // ══════════════════════════════════════════════════════
             if (!aprendizadoOk) {
-                cards.add(new ItemCard("Quero estudar",    CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
-                cards.add(new ItemCard("Preciso de ajuda", CategoriaItem.APRENDIZADO, String.valueOf(android.R.drawable.ic_menu_help)));
+                cards.add(new ItemCard("Quero estudar",    CategoriaItem.APRENDIZADO, ico));
+                cards.add(new ItemCard("Preciso de ajuda", CategoriaItem.APRENDIZADO, ico));
 
+                // ── NÚMEROS ──
                 for (int i = 1; i <= 100; i++)
                     cards.add(new ItemCard(String.valueOf(i), CategoriaItem.APRENDIZADO_NUMEROS, ico));
 
+                // ── ALFABETO ──
                 for (char c = 'A'; c <= 'Z'; c++)
                     cards.add(new ItemCard(String.valueOf(c), CategoriaItem.APRENDIZADO_ALFABETO, ico));
 
-                for (char v : new char[]{'A','E','I','O','U'})
-                    cards.add(new ItemCard(String.valueOf(v), CategoriaItem.APRENDIZADO_VOGAIS, ico));
+                // ── VOGAIS ──
+                cards.add(new ItemCard("A", CategoriaItem.APRENDIZADO_VOGAIS, ico));
+                cards.add(new ItemCard("E", CategoriaItem.APRENDIZADO_VOGAIS, ico));
+                cards.add(new ItemCard("I", CategoriaItem.APRENDIZADO_VOGAIS, ico));
+                cards.add(new ItemCard("O", CategoriaItem.APRENDIZADO_VOGAIS, ico));
+                cards.add(new ItemCard("U", CategoriaItem.APRENDIZADO_VOGAIS, ico));
 
-                for (String s : new String[]{"Vermelho","Azul","Amarelo","Verde","Laranja",
-                        "Roxo","Rosa","Marrom","Preto","Branco","Cinza"})
-                    cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_CORES, ico));
+                // ── CORES ──
+                cards.add(new ItemCard("Vermelho", CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/large_red_square.png"));
+                cards.add(new ItemCard("Azul",     CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/large_blue_square.png"));
+                cards.add(new ItemCard("Amarelo",  CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/large_yellow_square.png"));
+                cards.add(new ItemCard("Verde",    CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/large_green_square.png"));
+                cards.add(new ItemCard("Laranja",  CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/large_orange_square.png"));
+                cards.add(new ItemCard("Roxo",     CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/large_purple_square.png"));
+                cards.add(new ItemCard("Rosa",     CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/Gemini_Generated_Image_gm89d5gm89d5gm89-removebg-preview.png"));
+                cards.add(new ItemCard("Marrom",   CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/large_brown_square.png"));
+                cards.add(new ItemCard("Preto",    CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/black_large_square.png"));
+                cards.add(new ItemCard("Branco",   CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/white_large_square.png"));
+                cards.add(new ItemCard("Cinza",    CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/Gemini_Generated_Image_93e6r93e6r93e6r9-removebg-preview.png"));
 
-                for (String s : new String[]{"Círculo","Quadrado","Triângulo","Retângulo",
-                        "Oval","Estrela","Coração","Losango","Hexágono"})
-                    cards.add(new ItemCard(s, CategoriaItem.APRENDIZADO_FORMAS, ico));
+                // ── FORMAS ──
+                cards.add(new ItemCard("Círculo",    CategoriaItem.APRENDIZADO_FORMAS, "assets/aprendizado/black_circle.png"));
+                cards.add(new ItemCard("Quadrado",   CategoriaItem.APRENDIZADO_FORMAS, "assets/aprendizado/black_large_square.png"));
+                cards.add(new ItemCard("Triângulo",  CategoriaItem.APRENDIZADO_FORMAS, "assets/aprendizado/small_red_triangle.png"));
+                cards.add(new ItemCard("Retângulo",  CategoriaItem.APRENDIZADO_FORMAS, "assets/aprendizado/black_large_rectangle.png"));
+                cards.add(new ItemCard("Oval",       CategoriaItem.APRENDIZADO_FORMAS, "assets/aprendizado/egg.png"));
+                cards.add(new ItemCard("Estrela",    CategoriaItem.APRENDIZADO_FORMAS, "assets/aprendizado/star.png"));
+                cards.add(new ItemCard("Coração",    CategoriaItem.APRENDIZADO_FORMAS, "assets/aprendizado/heart.png"));
+                cards.add(new ItemCard("Losango",    CategoriaItem.APRENDIZADO_FORMAS, "assets/aprendizado/large_orange_diamond.png"));
+                cards.add(new ItemCard("Hexágono",   CategoriaItem.APRENDIZADO_FORMAS, "assets/aprendizado/octagonal_sign.png"));
             }
 
             for (ItemCard card : cards)
@@ -789,7 +895,6 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> carregarTodasAsGavetas());
         });
     }
-
     // ####### FAVORITOS ####### //
     private void carregarCardsFavoritos() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
