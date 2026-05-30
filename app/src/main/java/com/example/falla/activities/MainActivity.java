@@ -426,25 +426,17 @@ public class MainActivity extends AppCompatActivity {
 
                     txtFala.setText(card.getTexto());
 
-                    // Tratamento da Imagem (URI da Galeria ou Ícone do Android)
-                    String uriOuIcone = card.getImagemUri();
-                    if (uriOuIcone != null && !uriOuIcone.isEmpty()) {
-                        try {
-                            if (uriOuIcone.matches("\\d+")) {
-                                imgSimbolo.setImageResource(Integer.parseInt(uriOuIcone));
-                            } else {
-                                imgSimbolo.setImageURI(android.net.Uri.parse(uriOuIcone));
-                            }
-                        } catch (Exception e) {
-                            imgSimbolo.setImageResource(android.R.drawable.ic_menu_help);
-                        }
-                    } else {
-                        imgSimbolo.setImageResource(android.R.drawable.ic_menu_help);
-                    }
+                    // Tratamento dos assets
+                    AssetImageHelper.carregarImagem(MainActivity.this, card.getImagemUri(), imgSimbolo);
 
                     // Verifica se tem estrela
-                    if (card.isFavorito()) imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
-                    else imgEstrela.setImageResource(android.R.drawable.btn_star_big_off);
+                    if (card.isFavorito()) {
+                        imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
+                        imgEstrela.setAlpha(1.0f);
+                    } else {
+                        imgEstrela.setImageResource(android.R.drawable.btn_star_big_off);
+                        imgEstrela.setAlpha(0.25f); // quase invisível quando não favoritado
+                    }
 
                     // TTS (Falar)
                     cardRoot.setOnClickListener(v -> {
@@ -466,12 +458,16 @@ public class MainActivity extends AppCompatActivity {
                         boolean novoEstadoFavorito = !card.isFavorito();
                         card.setFavorito(novoEstadoFavorito);
 
-                        if (novoEstadoFavorito) imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
-                        else imgEstrela.setImageResource(android.R.drawable.btn_star_big_off);
+                        if (novoEstadoFavorito) {
+                            imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
+                            imgEstrela.setAlpha(1.0f);
+                        } else {
+                            imgEstrela.setImageResource(android.R.drawable.btn_star_big_off);
+                            imgEstrela.setAlpha(0.25f);
+                        }
 
                         AppDatabase.databaseWriteExecutor.execute(() -> {
                             db.itemCardDao().atualizar(card);
-                            // Atualiza a gaveta de favoritos instantaneamente
                             carregarCardsFavoritos();
                         });
                     });
@@ -701,43 +697,43 @@ public class MainActivity extends AppCompatActivity {
                 cards.add(new ItemCard("Quero um abraço",     CategoriaItem.PESSOAL_EU, "assets/pessoal/people_hugging.png"));
 
                 // ── REFERÊNCIA ──
-                cards.add(new ItemCard("Eu",      CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/grinning"));
-                cards.add(new ItemCard("Você",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/index_pointing_at_the_viewer"));
-                cards.add(new ItemCard("Ele",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/adult"));
-                cards.add(new ItemCard("Ela",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/girl"));
-                cards.add(new ItemCard("A gente", CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/busts_in_silhouette"));
-                cards.add(new ItemCard("Nós",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/busts_in_silhouette"));
-                cards.add(new ItemCard("Isto",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_right"));
-                cards.add(new ItemCard("Isso",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_down"));
-                cards.add(new ItemCard("Aquilo",  CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_up_2"));
+                cards.add(new ItemCard("Eu",      CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/grinning.png"));
+                cards.add(new ItemCard("Você",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/index_pointing_at_the_viewer.png"));
+                cards.add(new ItemCard("Ele",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/adult.png"));
+                cards.add(new ItemCard("Ela",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/girl.png"));
+                cards.add(new ItemCard("A gente", CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/busts_in_silhouette.png"));
+                cards.add(new ItemCard("Nós",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/busts_in_silhouette.png"));
+                cards.add(new ItemCard("Isto",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_right.png"));
+                cards.add(new ItemCard("Isso",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_down.png"));
+                cards.add(new ItemCard("Aquilo",  CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_up_2.png"));
                 cards.add(new ItemCard("Aquele",  CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/raising_hand.png"));
                 cards.add(new ItemCard("Aqui",    CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/palm_up_hand.png"));
-                cards.add(new ItemCard("Lá",      CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_up_2"));
-                cards.add(new ItemCard("Ali",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_down"));
-                cards.add(new ItemCard("Meu",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/raising_hand"));
-                cards.add(new ItemCard("Minha",   CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/raising_hand"));
+                cards.add(new ItemCard("Lá",      CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_up_2.png"));
+                cards.add(new ItemCard("Ali",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/point_down.png"));
+                cards.add(new ItemCard("Meu",     CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/raising_hand.png"));
+                cards.add(new ItemCard("Minha",   CategoriaItem.PESSOAL_REFERENCIA, "assets/pessoal/raising_hand.png"));
 
                 // ── SAÚDE ──
                 cards.add(new ItemCard("Dor de cabeça",      CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/face_with_head_bandage.png"));
                 cards.add(new ItemCard("Dor de barriga",     CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/sweat.png"));
-                cards.add(new ItemCard("Estou enjoado",      CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/nauseated_face"));
+                cards.add(new ItemCard("Estou enjoado",      CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/nauseated_face.png"));
                 cards.add(new ItemCard("Estou com febre",    CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/face_with_thermometer.png"));
-                cards.add(new ItemCard("Preciso de remédio", CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/pill"));
+                cards.add(new ItemCard("Preciso de remédio", CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/pill.png"));
                 cards.add(new ItemCard("Me machuquei",       CategoriaItem.PESSOAL_SAUDE, "assets/pessoal/adhesive_bandage.png"));
 
                 // ── CUIDADOS ──
                 cards.add(new ItemCard("Tomar banho",       CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/shower.png"));
                 cards.add(new ItemCard("Escovar os dentes", CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/toothbrush.png"));
                 cards.add(new ItemCard("Lavar as mãos",     CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/palms_up_together.png"));
-                cards.add(new ItemCard("Pentear o cabelo",  CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/hair_pick.jpg"));
-                cards.add(new ItemCard("Assoar o nariz",    CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/nose.jpg"));
-                cards.add(new ItemCard("Cortar a unha",     CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/scissors.jpg"));
+                cards.add(new ItemCard("Pentear o cabelo",  CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/hair_pick.png"));
+                cards.add(new ItemCard("Assoar o nariz",    CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/nose.png"));
+                cards.add(new ItemCard("Cortar a unha",     CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/scissors.png"));
                 cards.add(new ItemCard("Cortar o cabelo",   CategoriaItem.PESSOAL_CUIDADOS, "assets/pessoal/haircut.png"));
 
                 // ── ROUPAS ──
                 cards.add(new ItemCard("Estou com frio",  CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/cold_face.png"));
                 cards.add(new ItemCard("Estou com calor", CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/hot_face.png"));
-                cards.add(new ItemCard("Trocar de roupa", CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/shirt.jpg"));
+                cards.add(new ItemCard("Trocar de roupa", CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/shirt.png"));
                 cards.add(new ItemCard("Vestir casaco",   CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/coat.png"));
                 cards.add(new ItemCard("Calçar sapato",   CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/athletic_shoe.png"));
                 cards.add(new ItemCard("Tirar o sapato",  CategoriaItem.PESSOAL_ROUPAS, "assets/pessoal/athletic_shoe.png"));
@@ -846,23 +842,55 @@ public class MainActivity extends AppCompatActivity {
             // APRENDIZADO — coringas
             // ══════════════════════════════════════════════════════
             if (!aprendizadoOk) {
-                cards.add(new ItemCard("Quero estudar",    CategoriaItem.APRENDIZADO, ico));
-                cards.add(new ItemCard("Preciso de ajuda", CategoriaItem.APRENDIZADO, ico));
+                cards.add(new ItemCard("Quero estudar",    CategoriaItem.APRENDIZADO, "assets/aprendizado/book.png"));
+                cards.add(new ItemCard("Preciso de ajuda", CategoriaItem.APRENDIZADO, "assets/aprendizado/pencil2.png"));
 
                 // ── NÚMEROS ──
-                for (int i = 1; i <= 100; i++)
-                    cards.add(new ItemCard(String.valueOf(i), CategoriaItem.APRENDIZADO_NUMEROS, ico));
+                cards.add(new ItemCard("1",  CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/1.png"));
+                cards.add(new ItemCard("2",  CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/2.png"));
+                cards.add(new ItemCard("3",  CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/3.png"));
+                cards.add(new ItemCard("4",  CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/4.png"));
+                cards.add(new ItemCard("5",  CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/5.png"));
+                cards.add(new ItemCard("6",  CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/6.png"));
+                cards.add(new ItemCard("7",  CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/7.png"));
+                cards.add(new ItemCard("8",  CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/8.png"));
+                cards.add(new ItemCard("9",  CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/9.png"));
+                cards.add(new ItemCard("10", CategoriaItem.APRENDIZADO_NUMEROS, "assets/aprendizado/Gemini_Generated_Image_s8gj14s8gj14s8gj-removebg-preview.png"));
 
                 // ── ALFABETO ──
-                for (char c = 'A'; c <= 'Z'; c++)
-                    cards.add(new ItemCard(String.valueOf(c), CategoriaItem.APRENDIZADO_ALFABETO, ico));
+                cards.add(new ItemCard("A", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/a.png"));
+                cards.add(new ItemCard("B", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/b.png"));
+                cards.add(new ItemCard("C", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/c.png"));
+                cards.add(new ItemCard("D", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/d.png"));
+                cards.add(new ItemCard("E", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/e.png"));
+                cards.add(new ItemCard("F", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/f.png"));
+                cards.add(new ItemCard("G", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/g.png"));
+                cards.add(new ItemCard("H", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/h.png"));
+                cards.add(new ItemCard("I", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/i.png"));
+                cards.add(new ItemCard("J", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/j.png"));
+                cards.add(new ItemCard("K", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/k.png"));
+                cards.add(new ItemCard("L", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/L.png"));
+                cards.add(new ItemCard("M", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/m.png"));
+                cards.add(new ItemCard("N", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/n.png"));
+                cards.add(new ItemCard("O", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/o.png"));
+                cards.add(new ItemCard("P", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/p.png"));
+                cards.add(new ItemCard("Q", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/q.png"));
+                cards.add(new ItemCard("R", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/r.png"));
+                cards.add(new ItemCard("S", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/s.png"));
+                cards.add(new ItemCard("T", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/t.png"));
+                cards.add(new ItemCard("U", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/u.png"));
+                cards.add(new ItemCard("V", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/v.png"));
+                cards.add(new ItemCard("W", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/w.png"));
+                cards.add(new ItemCard("X", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/x.png"));
+                cards.add(new ItemCard("Y", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/y.png"));
+                cards.add(new ItemCard("Z", CategoriaItem.APRENDIZADO_ALFABETO, "assets/aprendizado/z.png"));
 
                 // ── VOGAIS ──
-                cards.add(new ItemCard("A", CategoriaItem.APRENDIZADO_VOGAIS, ico));
-                cards.add(new ItemCard("E", CategoriaItem.APRENDIZADO_VOGAIS, ico));
-                cards.add(new ItemCard("I", CategoriaItem.APRENDIZADO_VOGAIS, ico));
-                cards.add(new ItemCard("O", CategoriaItem.APRENDIZADO_VOGAIS, ico));
-                cards.add(new ItemCard("U", CategoriaItem.APRENDIZADO_VOGAIS, ico));
+                cards.add(new ItemCard("A", CategoriaItem.APRENDIZADO_VOGAIS, "assets/aprendizado/a.png"));
+                cards.add(new ItemCard("E", CategoriaItem.APRENDIZADO_VOGAIS, "assets/aprendizado/e.png"));
+                cards.add(new ItemCard("I", CategoriaItem.APRENDIZADO_VOGAIS, "assets/aprendizado/i.png"));
+                cards.add(new ItemCard("O", CategoriaItem.APRENDIZADO_VOGAIS, "assets/aprendizado/o.png"));
+                cards.add(new ItemCard("U", CategoriaItem.APRENDIZADO_VOGAIS, "assets/aprendizado/u.png"));
 
                 // ── CORES ──
                 cards.add(new ItemCard("Vermelho", CategoriaItem.APRENDIZADO_CORES, "assets/aprendizado/large_red_square.png"));
@@ -925,18 +953,8 @@ public class MainActivity extends AppCompatActivity {
                     // Na gaveta, a estrela sempre aparece ligada
                     imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
 
-                    // Lógica de leitura de imagem (Idêntica à principal)
-                    String uriOuIcone = card.getImagemUri();
-                    if (uriOuIcone != null && !uriOuIcone.isEmpty()) {
-                        try {
-                            if (uriOuIcone.matches("\\d+")) imgSimbolo.setImageResource(Integer.parseInt(uriOuIcone));
-                            else imgSimbolo.setImageURI(Uri.parse(uriOuIcone));
-                        } catch (Exception e) {
-                            imgSimbolo.setImageResource(android.R.drawable.ic_menu_help);
-                        }
-                    } else {
-                        imgSimbolo.setImageResource(android.R.drawable.ic_menu_help);
-                    }
+                    // Lógica de leitura dos assets
+                    AssetImageHelper.carregarImagem(MainActivity.this, card.getImagemUri(), imgSimbolo);
 
                     // TTS ao clicar no card na gaveta
                     cardRoot.setOnClickListener(v -> {
