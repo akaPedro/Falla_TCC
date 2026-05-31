@@ -27,7 +27,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     // Dados de cada slide: ícone, título, descrição
     private final int[] icones = {
-            android.R.drawable.ic_menu_help,
+            R.drawable.appicon,
             android.R.drawable.ic_menu_myplaces,
             android.R.drawable.ic_menu_sort_by_size,
             android.R.drawable.ic_menu_directions,
@@ -169,12 +169,23 @@ public class OnboardingActivity extends AppCompatActivity {
             holder.titulo.setText(titulos[position]);
             holder.descricao.setText(descricoes[position]);
 
+            if (position == 0) {
+                holder.icone.setImageTintList(null);
+            } else {
+                holder.icone.setImageTintList(
+                        android.content.res.ColorStateList.valueOf(
+                                androidx.core.content.ContextCompat.getColor(
+                                        holder.itemView.getContext(), R.color.texto_header)
+                        )
+                );
+            }
+
             View containerNome = holder.itemView.findViewById(R.id.container_campo_nome);
             android.widget.EditText edtNome = holder.itemView.findViewById(R.id.edt_nome_onboarding);
 
             if (position == 1) {
                 containerNome.setVisibility(View.VISIBLE);
-                edtNomeSlide = edtNome; // guarda referência para salvar depois
+                edtNomeSlide = edtNome;
             } else {
                 containerNome.setVisibility(View.GONE);
             }
