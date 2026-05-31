@@ -45,25 +45,20 @@
             android:padding="24dp">
 
             <!-- Logo central -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="60dp"
-                app:cardBackgroundColor="@color/verde_fosco_header"
-                app:cardElevation="4dp">
-
-                <ImageView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_launcher_foreground"
-                    android:scaleType="fitCenter"/>
-            </androidx.cardview.widget.CardView>
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:src="@drawable/appicon"
+                android:scaleType="fitCenter"/>
 
             <!-- Nome e versão -->
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
