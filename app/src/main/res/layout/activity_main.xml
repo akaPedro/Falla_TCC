@@ -58,7 +58,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_marginEnd="16dp"
-                        android:src="@drawable/m3_split_button_chevron_avd"
+                        android:src="@android:drawable/ic_btn_speak_now"
                         app:tint="@color/texto_header" />
 
                     <com.google.android.material.card.MaterialCardView

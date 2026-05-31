@@ -7,25 +7,20 @@
     android:background="@color/verde_fosco_header">
 
     <!-- Logo / ícone central -->
-    <androidx.cardview.widget.CardView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_marginBottom="32dp"
-        app:cardCornerRadius="70dp"
-        app:cardBackgroundColor="#33FFFFFF"
-        app:cardElevation="0dp">
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_launcher_foreground"
-            android:scaleType="fitCenter"/>
-
-    </androidx.cardview.widget.CardView>
+    <ImageView
+        android:layout_width="110dp"
+        android:layout_height="112dp"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:src="@drawable/appicon" />
 
     <!-- Nome do app -->
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.falla.DAO.AppDatabase;
 import com.example.falla.R;
+import com.example.falla.card.AssetImageHelper;
 import com.example.falla.card.ItemHistorico;
 
 import java.util.List;
@@ -84,17 +85,7 @@ public class HistoricoActivity extends AppCompatActivity {
 
 
                     // Lógica para carregar a imagem (Idêntica à da MainActivity)
-                    if (item.imagemUri != null && !item.imagemUri.isEmpty()) {
-                        try {
-                            if (item.imagemUri.matches("\\d+")) {
-                                imgSimbolo.setImageResource(Integer.parseInt(item.imagemUri));
-                            } else {
-                                imgSimbolo.setImageURI(Uri.parse(item.imagemUri));
-                            }
-                        } catch (Exception e) {
-                            imgSimbolo.setImageResource(android.R.drawable.ic_menu_help);
-                        }
-                    }
+                    AssetImageHelper.carregarImagem(this, item.imagemUri, imgSimbolo);
 
                     // Adiciona a linha na tela
                     containerListaHistorico.addView(viewItem);

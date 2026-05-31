@@ -87,6 +87,8 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
 
         voltaria.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
+        findViewById(R.id.btn_ajuda).setOnClickListener(v -> abrirDialogAjuda());
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.falla), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -305,6 +307,21 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
         AppDatabase.databaseWriteExecutor.execute(() -> {
             if (db != null) db.historicoDao().inserir(novoRegistro);
         });
+    }
+
+    private void abrirDialogAjuda() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_ajuda_falla, null);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        android.app.AlertDialog dialog = builder.create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+
+        dialogView.findViewById(R.id.btn_fechar_ajuda).setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     @Override

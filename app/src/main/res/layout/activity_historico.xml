@@ -19,7 +19,7 @@
             android:id="@+id/btn_voltar_historico"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@android:drawable/ic_media_previous"
+            android:src="@drawable/seta"
             app:tint="@color/texto_header" />
 
         <TextView
