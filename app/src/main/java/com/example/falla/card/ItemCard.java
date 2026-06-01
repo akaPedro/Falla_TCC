@@ -14,21 +14,21 @@ public class ItemCard {
     private CategoriaItem categoria;
     private boolean isFavorito;
 
-    // --- CONSTRUTOR PADRÃO  ---
+    // Construtor padrão para o Room
     public ItemCard() {}
 
-    // --- CONSTRUTOR CORRETO PARA INSERÇÃO ---
+    // Construtor para inserção
     public ItemCard(String fala, CategoriaItem categoria, String imagemUri) {
         this.fala = fala;
         this.texto = fala;
         this.categoria = categoria;
         this.imagemUri = imagemUri;
-        this.isFavorito = false; // Todo card novo nasce sem estrela
+        this.isFavorito = false;
     }
 
 
 
-    // Construtor especial — texto exibido diferente da fala (números, letras, cores, formas)
+    // Construtor especial, texto exibido diferente da fala
     public ItemCard(String texto, CategoriaItem categoria, String imagemUri, String fala) {
         this.texto = texto;
         this.fala = fala;
@@ -37,7 +37,7 @@ public class ItemCard {
         this.isFavorito = false;
     }
 
-    // --- ADICIONE ESSES GETTERS E SETTERS ABAIXO ---
+    // Getter e Setter
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

@@ -138,7 +138,7 @@ public class OnboardingActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
         prefs.edit().putBoolean("onboarding_concluido", true).apply();
 
-        // ✅ Salva o nome no banco se o usuário digitou
+        // Salva o nome no banco se o usuário digitou
         String nome = (edtNomeSlide != null) ? edtNomeSlide.getText().toString().trim() : "";
         if (!nome.isEmpty()) {
             AppDatabase db = AppDatabase.getDatabase(this);
@@ -153,7 +153,7 @@ public class OnboardingActivity extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
-    // ── Adapter interno ──────────────────────────────────────────────────
+    // Adapter interno
     private class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.SlideViewHolder> {
 
         @NonNull @Override

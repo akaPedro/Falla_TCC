@@ -15,7 +15,7 @@ public class AssetImageHelper {
             return;
         }
 
-        // URI da galeria (content://)
+        // URI da galeria
         if (caminho.startsWith("content://")) {
             try {
                 imageView.setImageURI(android.net.Uri.parse(caminho));
@@ -25,7 +25,7 @@ public class AssetImageHelper {
             return;
         }
 
-        // Ícone do Android (número inteiro como string)
+        // Ícone do Android
         if (caminho.matches("\\d+")) {
             try {
                 imageView.setImageResource(Integer.parseInt(caminho));
@@ -35,7 +35,7 @@ public class AssetImageHelper {
             return;
         }
 
-        // Imagem dos assets ("assets/pasta/arquivo.png")
+        // Imagem dos assets
         if (caminho.startsWith("assets/")) {
             try {
                 String caminhoRelativo = caminho.replace("assets/", "");

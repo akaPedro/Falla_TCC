@@ -61,7 +61,7 @@ public class PerfilActivity extends AppCompatActivity {
 
         db = AppDatabase.getDatabase(this);
 
-        // CARREGAR DADOS DO BANCO
+        // Carregar dados do banco
         AppDatabase.databaseWriteExecutor.execute(() -> {
             Usuario user = db.usuarioDao().getUsuario();
 
@@ -75,7 +75,7 @@ public class PerfilActivity extends AppCompatActivity {
                         fotoPerfil.setImageURI(Uri.fromFile(new File(caminhoFotoAtual)));
                     }
 
-                    // ✅ ADICIONADO: restaura o gênero salvo e destaca o botão correto
+                    // Restaura o gênero salvo e destaca o botão
                     if (user.genero != null) {
                         generoSelecionado = user.genero;
                         atualizarBotoesGenero(user.genero);
@@ -126,11 +126,11 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void selecionarGenero(String genero) {
-        generoSelecionado = genero; // ✅ ADICIONADO: salva na variável
+        generoSelecionado = genero;
         atualizarBotoesGenero(genero);
     }
 
-    // ✅ ADICIONADO: método separado para destacar os botões (usado no carregamento e na seleção)
+    // Metodo separado para destacar os botões
     private void atualizarBotoesGenero(String genero) {
         if (genero.equals("menino")) {
             btnMenino.setTextColor(ContextCompat.getColor(this, android.R.color.white));
@@ -154,7 +154,7 @@ public class PerfilActivity extends AppCompatActivity {
             usuario.nome = nome;
             usuario.registro = registro;
             usuario.caminhoFoto = caminhoFotoAtual;
-            usuario.genero = generoSelecionado; // ✅ ADICIONADO: salva o gênero
+            usuario.genero = generoSelecionado;
 
             db.usuarioDao().salvar(usuario);
             runOnUiThread(() -> finish());

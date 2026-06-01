@@ -10,8 +10,8 @@ public class CardEntity {
     public int id;
 
     public String fala;
-    public String imagemUri; // Salva o caminho/URI da imagem da galeria
-    public String categoria; // Ex: "Pessoal", "Comidas"
+    public String imagemUri;
+    public String categoria;
     public boolean isFavorito;
 
     // Construtor vazio para o Room

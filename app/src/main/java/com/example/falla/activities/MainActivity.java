@@ -39,20 +39,27 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Main
     private TextToSpeech tts;
     private ImageView ImgFll;
     private View ImgPerf;
     private ImageView imgProfileFoto;
     private DrawerLayout drawerLayout;
     private AppCompatImageView imgMenu;
+
     // Itens da barra lateral
-    private TextView itemTamanho, itemCores, itemHistorico, itemSobre, itemGrande, itemPequeno, btnSalvarEdt;
+    private TextView itemTamanho, itemCores, itemHistorico, itemSobre, itemGrande, itemPequeno;
+
+
+    // Gavetas
     private LinearLayout headerPessoal, headerFavoritos, headerComidas, headerLazer, headerAprendizado, submenuTamanho;
     private ImageView setaPessoal, setaFavoritos, setaComidas, setaLazer, setaAprendizado;
     private LinearLayout conteudoPessoal, conteudoComidas, conteudoLazer, conteudoAprendizado;
 
+
     // Cards coringas
     private GridLayout gridCoringaPessoal, gridCoringaAlimentos, gridCoringaLazer, gridCoringaAprendizado;
+
     // Subgavetas Pessoal
     private GridLayout gridSubPessoalEu, gridSubPessoalReferencia, gridSubPessoalSaude, gridSubPessoalCuidados, gridSubPessoalRoupas, gridSubPessoalAcoes;
 
@@ -63,9 +70,14 @@ public class MainActivity extends AppCompatActivity {
     private GridLayout gridSubLazerJogos, gridSubLazerTelas, gridSubLazerExterno, gridSubLazerSocial;
 
     // Subgavetas Aprendizado
-    private GridLayout conteudoFavoritos, gridSubAprendNumeros, gridSubAprendAlfabeto, gridSubAprendVogais, gridSubAprendCores, gridSubAprendFormas;    // Variável temporária para guardar em qual ImageView vamos colocar a foto da galeria
+    private GridLayout conteudoFavoritos, gridSubAprendNumeros, gridSubAprendAlfabeto, gridSubAprendVogais, gridSubAprendCores, gridSubAprendFormas;
+
+
+    // Variavel temporaria
     private ImageView imagemEmEdicaoAtual = null;
 
+
+    // Banco de dados
     private AppDatabase db;
 
 
@@ -84,17 +96,17 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // #####  BANCO DE DADOS  ##### //
+        // Banco de dados
         db = AppDatabase.getDatabase(MainActivity.this);
         // Carrega os cards do banco em segundo plano
         inserirCardsPadrao();
         carregarCardsFavoritos();
 
 
-       // #####  MAIN  ##### //
+       // Main
         drawerLayout = findViewById(R.id.main);
 
-        // #####  FALAR  ##### //
+        // Falar
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
                 // Define o idioma para Português Brasil
@@ -108,17 +120,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // #####  BARRA PRINCIPAL  ##### //
+        // Barra principal
         ImgFll = findViewById(R.id.img_keyboard);
         ImgPerf = findViewById(R.id.img_profile);
         imgProfileFoto = findViewById(R.id.img_profile_foto);
 
 
-        // #####  BARRA LATERAL  ##### //
+        // Barra lateral
         imgMenu = findViewById(R.id.img_menu);
 
+        // Tamanho
         itemTamanho = findViewById(R.id.item_tamanho);
-            // #######  TAMANHO  ##### //
             submenuTamanho = findViewById(R.id.submenu_tamanho);
             itemGrande = findViewById(R.id.item_tamanho_grande);
             itemPequeno = findViewById(R.id.item_tamanho_pequeno);
@@ -165,28 +177,28 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        // #####  HEADERS ##### //
+        // Headers
         headerPessoal = findViewById(R.id.header_pessoal);
         headerFavoritos = findViewById(R.id.header_favorito);
         headerComidas = findViewById(R.id.header_Alimentos);
         headerLazer = findViewById(R.id.header_lazer);
         headerAprendizado = findViewById(R.id.header_aprendizado);
 
-        // #####  SETAS ##### //
+        // Setas
         setaPessoal = findViewById(R.id.seta_pessoal);
         setaFavoritos = findViewById(R.id.seta_favorito);
         setaComidas = findViewById(R.id.seta_alimento);
         setaLazer = findViewById(R.id.seta_lazer);
         setaAprendizado = findViewById(R.id.seta_aprendizado);
 
-        // #####  CONTEUDO / GRIDS  ##### //
+        // Conteudo / Grids
         conteudoFavoritos = findViewById(R.id.conteudo_favoritos);
         conteudoPessoal = findViewById(R.id.conteudo_pessoal);
         conteudoComidas = findViewById(R.id.conteudo_alimentos);
         conteudoLazer = findViewById(R.id.conteudo_lazer);
         conteudoAprendizado = findViewById(R.id.conteudo_aprendizado);
 
-        // #####  LOGICA DE TAMANHO  ##### //
+        // Logica de tamanho
         itemGrande.setOnClickListener(v -> {
             salvarEAplicarColunas(2); // Salva 2 colunas e aplica
             drawerLayout.closeDrawers(); // Opcional: fecha a barra lateral ao clicar
@@ -200,13 +212,13 @@ public class MainActivity extends AppCompatActivity {
 
         conteudoAprendizado = findViewById(R.id.conteudo_aprendizado);
 
-        // tamanho salvo anteriormente, 2 colunas como padrão.
+        // Tamanho salvo anteriormente, 2 colunas como padrão.
         android.content.SharedPreferences pref = getSharedPreferences("ConfigFalla", MODE_PRIVATE);
         int colunasSalvas = pref.getInt("quantidade_colunas", 2);
         salvarEAplicarColunas(colunasSalvas);
 
 
-        // #### Barra latreral #### //
+        // Barra latreral
         itemTamanho.setOnClickListener(v -> {
             if (submenuTamanho.getVisibility() == View.GONE) {
                 submenuTamanho.setVisibility(View.VISIBLE);
@@ -250,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        // #####  cards principais ##### //
+        // Cards principais
 
         // Card Sim
         LinearLayout headerCardSim = findViewById(R.id.header_card_sim);
@@ -268,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         configurarGavetaInternaCard(headerCardSim, conteudoCardSim, txtSetaSim, ">", "v");
         configurarGavetaInternaCard(headerCardNao, conteudoCardNao, txtSetaNao, ">", "v");
 
-        // Se clicar direto na imagem do V/X, fala a palavra principal
+        // Se clicar direto na imagem do s/n, fala a palavra principal
         iconSim.setOnClickListener(v -> falarERegistrar("Sim"));
         iconNao.setOnClickListener(v -> falarERegistrar("Não"));
 
@@ -290,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
         // Conectar cliques das subgavetas
         configurarSubgaveta(R.id.header_sub_pessoal_eu,          R.id.seta_sub_pessoal_eu,          gridSubPessoalEu);
         configurarSubgaveta(R.id.header_sub_pessoal_referencia,  R.id.seta_sub_pessoal_referencia,  gridSubPessoalReferencia);
-            configurarSubgaveta(R.id.header_sub_pessoal_saude,   R.id.seta_sub_pessoal_saude,       gridSubPessoalSaude);
+        configurarSubgaveta(R.id.header_sub_pessoal_saude,       R.id.seta_sub_pessoal_saude,       gridSubPessoalSaude);
         configurarSubgaveta(R.id.header_sub_pessoal_cuidados,    R.id.seta_sub_pessoal_cuidados,    gridSubPessoalCuidados);
         configurarSubgaveta(R.id.header_sub_pessoal_roupas,      R.id.seta_sub_pessoal_roupas,      gridSubPessoalRoupas);
         configurarSubgaveta(R.id.header_sub_pessoal_acoes,       R.id.seta_sub_pessoal_acoes,       gridSubPessoalAcoes);
@@ -314,8 +326,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        // #####  HEADERS ##### //
-
+        // Headers
         headerFavoritos.setOnClickListener(v -> {
             if (conteudoFavoritos.getVisibility() == View.GONE) {
                 conteudoFavoritos.setVisibility(View.VISIBLE);
@@ -367,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        // ####  Botao voltar padrão  #### //
+        // Botao voltar padrão
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -393,9 +404,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // #####  BANCO DE DADOS  ##### //
+    // Banco de dados
     private void carregarGridEspecifico(CategoriaItem categoria, GridLayout gridGaveta) {
-        if (gridGaveta == null) return; // Evita quebrar se a gaveta não existir na tela
+        if (gridGaveta == null) return;
 
         AppDatabase.databaseWriteExecutor.execute(() -> {
             // Busca apenas os cards da categoria que foi solicitada
@@ -551,7 +562,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // #####  FALAR ##### //
+    // Falar
     private void falarERegistrar(String texto) {
         if (tts != null) {
             tts.speak(texto, TextToSpeech.QUEUE_ADD, null, null);
@@ -577,61 +588,58 @@ public class MainActivity extends AppCompatActivity {
             uri -> {
                 if (uri != null && imagemEmEdicaoAtual != null) {
 
-                    // A MÁGICA AQUI: Pede ao Android permissão PERMANENTE para ler essa imagem
-                    // Sem isso, a URI "morre" assim que o aplicativo é fechado!
+                    // Permissão permanente para ler essa imagem
                     getContentResolver().takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                    // 1. Joga o visual da foto no ImageView do Dialog
+                    // Joga o visual da foto no ImageView do Dialog
                     imagemEmEdicaoAtual.setImageURI(uri);
 
-                    // 2. GUARDA o caminho do texto dentro da Tag da View para usarmos ao salvar
+                    // Guarda o caminho do texto dentro da Tag da View para usarmos ao salvar
                     imagemEmEdicaoAtual.setTag(uri.toString());
                 }
             }
     );
 
 
-    // #####  EDITAR CARD ##### //
+    // Editar card
     private void abrirDialogEditarCard(ItemCard itemCardAtual, TextView txtFalaOriginal, ImageView imgSimboloOriginal) {
-        // 1. Infla o layout do diálogo customizado [cite: 164]
+        // Infla o layout do diálogo customizado
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_card, null);
 
-        // 2. Cria e configura o AlertDialog do Android [cite: 165]
+        // Cria e configura o AlertDialog do Android
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
-        builder.setView(dialogView); //[cite: 166]
+        builder.setView(dialogView);
         android.app.AlertDialog dialog = builder.create();
 
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
 
-        // 3. DECLARAÇÃO LOCAL: Encontra as Views de dentro do XML do diálogo
+        // Encontra as Views de dentro do XML do diálogo
         FrameLayout containerImagem = dialogView.findViewById(R.id.container_editar_imagem);
         ImageView imgDialogPreview = dialogView.findViewById(R.id.img_dialog_preview);
         EditText editFala = dialogView.findViewById(R.id.edit_dialog_fala);
         TextView btnCancelar = dialogView.findViewById(R.id.btn_dialog_cancelar);
+        TextView btnSalvarEdt = dialogView.findViewById(R.id.btn_dialog_salvar);
 
-        // Vincula a variável global btnSalvarEdt que você declarou no topo da Activity
-        btnSalvarEdt = dialogView.findViewById(R.id.btn_dialog_salvar);
-
-        // 4. Preenche os campos do diálogo com os dados atuais do card
+        // Preenche os campos do diálogo com os dados atuais do card
         editFala.setText(itemCardAtual.getFala());
         imgDialogPreview.setImageDrawable(imgSimboloOriginal.getDrawable());
 
-        // Limpa qualquer Tag antiga que tenha ficado na View para começar do zero
+        // Limpa tags antigas
         imgDialogPreview.setTag(null);
 
-        // 5. Configura a ação de clicar na imagem para abrir a galeria
+        // Abrir galeria ao clicar na imagem
         containerImagem.setOnClickListener(v -> {
             // Usa a sua variável global para rastrear qual ImageView vai receber a foto da galeria
             imagemEmEdicaoAtual = imgDialogPreview;
             abrirGaleria.launch("image/*");
         });
 
-        // 6. Configura a ação do botão cancelar        btnCancelar.setOnClickListener(v -> dialog.dismiss());
+        // Botão cancelar
+        btnCancelar.setOnClickListener(v -> dialog.dismiss());
 
-        // 7. LÓGICA DO BOTÃO SALVAR CORRIGIDA
-// 7. LÓGICA DO BOTÃO SALVAR CORRIGIDA
+        // Botão salvar
         btnSalvarEdt.setOnClickListener(vClick -> {
             String novoTexto = editFala.getText().toString().trim();
 
@@ -641,10 +649,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             itemCardAtual.setFala(novoTexto);
-            itemCardAtual.setTexto(novoTexto); // ✅ atualiza o texto também
+            itemCardAtual.setTexto(novoTexto);
             itemCardAtual.setImagemUri(novaUri);
 
-            // ✅ Atualiza o TextView visualmente na hora, sem precisar recarregar
+            // Atualiza o TextView
             txtFalaOriginal.setText(novoTexto);
             AssetImageHelper.carregarImagem(MainActivity.this, novaUri, imgSimboloOriginal);
 
@@ -661,6 +669,7 @@ public class MainActivity extends AppCompatActivity {
         // Mostra o popup na tela
         dialog.show();
     }
+
     private void inserirCardsPadrao() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
 
@@ -683,7 +692,7 @@ public class MainActivity extends AppCompatActivity {
             }
             final String nomeFinal = nomeUsuario;
 
-            // Ícone genérico — substitua pelo caminho do asset quando tiver a imagem
+            // Ícone genérico
             String ico = String.valueOf(android.R.drawable.ic_menu_add);
 
             java.util.List<ItemCard> cards = new java.util.ArrayList<>();
@@ -932,15 +941,15 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> carregarTodasAsGavetas());
         });
     }
-    // ####### FAVORITOS ####### //
+
+    // Favoritos
     private void carregarCardsFavoritos() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            // 1. Busca apenas os cards com isFavorito = 1
+            // Busca apenas os cards com isFavorito = 1
             List<ItemCard> listaFavoritos = db.itemCardDao().buscarFavoritos();
 
-            // 2. Desenha na interface da gaveta
+            // Desenha na interface da gaveta
             runOnUiThread(() -> {
-                // SUBSTITUA PELO ID REAL DO SEU LAYOUT DE FAVORITOS NA GAVETA
                 GridLayout gridFavoritos = findViewById(R.id.conteudo_favoritos);
                 if (gridFavoritos == null) return;
 
@@ -949,7 +958,7 @@ public class MainActivity extends AppCompatActivity {
                 if (listaFavoritos == null || listaFavoritos.isEmpty()) return;
 
                 for (ItemCard card : listaFavoritos) {
-                    // Reaproveitamos o mesmo visual do card
+                    // Reaproveita o mesmo visual do card
                     View cardView = getLayoutInflater().inflate(R.layout.item_card, gridFavoritos, false);
 
                     androidx.cardview.widget.CardView cardRoot = cardView.findViewById(R.id.card_root);
@@ -959,7 +968,7 @@ public class MainActivity extends AppCompatActivity {
 
                     txtFala.setText(card.getFala());
 
-                    // ✅ Acessibilidade
+                    // Acessibilidade
                     imgSimbolo.setContentDescription("Imagem: " + card.getFala());
                     cardRoot.setContentDescription(card.getFala());
                     imgEstrela.setContentDescription("Remover dos favoritos");
@@ -985,12 +994,12 @@ public class MainActivity extends AppCompatActivity {
                     imgEstrela.setFocusable(true);
                     imgEstrela.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
 
-                    // Lógica de DESFAVORITAR direto da gaveta
+                    // Lógica de desfavoritar
                     imgEstrela.setOnClickListener(v -> {
                         card.setFavorito(false);
                         AppDatabase.databaseWriteExecutor.execute(() -> {
                             db.itemCardDao().atualizar(card);
-                            // Atualiza AMBAS as telas para manter o espelho perfeito
+                            // Atualiza ambas as telas
                             carregarCardsFavoritos();
                             carregarTodasAsGavetas();
                         });
@@ -1009,9 +1018,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // ========================================================
-    // ATUALIZA A TELA SEMPRE QUE VOLTAR PARA A MAIN
-    // ========================================================
+
+    // Atualiza sempre que voltar pra main
     @Override
     protected void onResume() {
         super.onResume();
@@ -1027,7 +1035,7 @@ public class MainActivity extends AppCompatActivity {
             com.example.falla.usuario.Usuario user = db.usuarioDao().getUsuario();
             runOnUiThread(() -> {
                 if (user != null && user.caminhoFoto != null) {
-                    imgProfileFoto.setImageTintList(null); // remove o tint verde
+                    imgProfileFoto.setImageTintList(null);
                     imgProfileFoto.setImageURI(android.net.Uri.fromFile(new java.io.File(user.caminhoFoto)));
                 } else {
                     // sem foto: mantém o ícone padrão com tint
@@ -1078,14 +1086,14 @@ public class MainActivity extends AppCompatActivity {
         carregarGridEspecifico(CategoriaItem.APRENDIZADO_CORES,    gridSubAprendCores);
         carregarGridEspecifico(CategoriaItem.APRENDIZADO_FORMAS,   gridSubAprendFormas);
     }
-    // ========================================================
-    // SALVA E APLICA O TAMANHO DOS CARDS PERMANENTEMENTE
-    // ========================================================
+
+
+    // Salva e aplica o tamanho dos cards
     private void salvarEAplicarColunas(int quantidadeColunas) {
-        // 1. Salva a escolha
+        // Salva a escolha
         getSharedPreferences("ConfigFalla", MODE_PRIVATE).edit().putInt("quantidade_colunas", quantidadeColunas).apply();
 
-        // 2. Lista de TODOS os GridLayouts reais do app
+        // Lista de todos os GridLayouts
         GridLayout[] todosOsGrids = {
                 // Favoritos
                 conteudoFavoritos,
@@ -1093,7 +1101,6 @@ public class MainActivity extends AppCompatActivity {
                 // Cards coringas
                 gridCoringaPessoal, gridCoringaAlimentos,
                 gridCoringaLazer, gridCoringaAprendizado,
-
 
                 // Subgavetas Pessoal
                 gridSubPessoalEu, gridSubPessoalSaude, gridSubPessoalCuidados,
@@ -1112,7 +1119,7 @@ public class MainActivity extends AppCompatActivity {
                 gridSubAprendCores, gridSubAprendFormas
         };
 
-        // 3. Limpa e redefine colunas em todos os grids
+        // Limpa e redefine colunas
         for (GridLayout g : todosOsGrids) {
             if (g != null) {
                 g.removeAllViews();
@@ -1120,14 +1127,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // 4. Recarrega os cards no novo formato
+        // Recarrega os cards
         if (db != null) {
             carregarTodasAsGavetas();
         }
     }
 
 
-    // ###### HISTORICO ###### //
+    // Historico
     private void registrarNoHistorico(String uriOuIcone, String fala) {
         java.text.SimpleDateFormat formataData = new java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault());
         java.text.SimpleDateFormat formataHora = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
@@ -1137,7 +1144,7 @@ public class MainActivity extends AppCompatActivity {
                 formataData.format(agora),
                 formataHora.format(agora),
                 uriOuIcone,
-                fala  // <- passa o texto
+                fala
         );
 
         AppDatabase.databaseWriteExecutor.execute(() -> {
@@ -1162,7 +1169,7 @@ public class MainActivity extends AppCompatActivity {
         TextView btnCancelar = dialogView.findViewById(R.id.btn_cores_cancelar);
         TextView btnSalvar = dialogView.findViewById(R.id.btn_cores_salvar);
 
-        // Categorias disponíveis (sem FAVORITOS)
+        // Categorias disponíveis
         CategoriaItem[] categorias = {
                 CategoriaItem.PESSOAL,
                 CategoriaItem.COMIDAS,
@@ -1176,7 +1183,6 @@ public class MainActivity extends AppCompatActivity {
         spinnerCategoria.setAdapter(adapterCat);
 
         // Paleta de cores suaves para autistas
-        // Formato: {cor em int, nome para acessibilidade}
         int[] paleta = {
                 // Neutros
                 0xFFFFFFFF, // Branco
@@ -1221,7 +1227,7 @@ public class MainActivity extends AppCompatActivity {
                 0xFFDDA0A4, // Rosa empoeirado
         };
 
-        // Cor selecionada atualmente (começa com a cor já salva da categoria)
+        // Cor selecionada atualmente
         final int[] corSelecionada = {obterCorCategoria(categorias[0])};
         cardPreview.setCardBackgroundColor(corSelecionada[0]);
 
@@ -1283,7 +1289,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    // Lê a cor salva para uma categoria (retorna branco como padrão)
+    // Lê a cor salva para uma categoria
     private int obterCorCategoria(CategoriaItem categoria) {
         android.content.SharedPreferences prefs = getSharedPreferences("CoresCategoria", MODE_PRIVATE);
         return prefs.getInt("cor_" + categoria.name(), 0xFFFFFFFF);

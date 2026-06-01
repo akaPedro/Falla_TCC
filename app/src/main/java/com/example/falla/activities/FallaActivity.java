@@ -95,6 +95,7 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
             return insets;
         });
 
+        // Botão voltar padrão
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -126,7 +127,7 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
         uriImagemTemporaria = String.valueOf(android.R.drawable.ic_menu_camera);
         editTextoNovo.setText(textoInicial);
 
-        // Mapeamento: categoria principal → suas subcategorias
+        // Mapeamento: categoria principal > suas subcategorias
         java.util.Map<CategoriaItem, CategoriaItem[]> subMap = new java.util.LinkedHashMap<>();
         subMap.put(CategoriaItem.PESSOAL, new CategoriaItem[]{
                 CategoriaItem.PESSOAL,
@@ -160,7 +161,7 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
                 CategoriaItem.APRENDIZADO_FORMAS
         });
 
-        // Spinner de categorias principais (apenas as que têm subgavetas + FAVORITOS)
+        // Spinner de categorias principais
         CategoriaItem[] principais = {
                 CategoriaItem.FAVORITOS,
                 CategoriaItem.PESSOAL,
@@ -169,7 +170,7 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
                 CategoriaItem.APRENDIZADO
         };
 
-        // Adapter que exibe o nome legível (getNome()) em vez do nome do enum
+        // Adapter que exibe o nome legível
         android.widget.ArrayAdapter<CategoriaItem> adapterPrincipal =
                 new android.widget.ArrayAdapter<CategoriaItem>(this,
                         android.R.layout.simple_spinner_dropdown_item, principais) {
@@ -225,7 +226,7 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
                     spinnerSub.setAdapter(adapterSub);
                     containerSub.setVisibility(View.VISIBLE);
                 } else {
-                    // FAVORITOS não tem subcategoria: esconde o segundo spinner
+                    // Favorito não tem subcategoria: esconde o segundo spinner
                     containerSub.setVisibility(View.GONE);
                 }
             }
@@ -258,7 +259,7 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
                 catFinal = (CategoriaItem) spinnerCategoria.getSelectedItem();
             }
 
-            // card criado na categoria FAVORITOS já nasce com estrela ligada
+            // card criado na categoria favorito já nasce com estrela ligada
             if (catFinal == CategoriaItem.FAVORITOS) {
                 deveSerFavorito = true;
             }
@@ -300,7 +301,7 @@ public class FallaActivity extends AppCompatActivity implements TextToSpeech.OnI
         com.example.falla.card.ItemHistorico novoRegistro = new com.example.falla.card.ItemHistorico(
                 formataData.format(agora),
                 formataHora.format(agora),
-                String.valueOf(android.R.drawable.ic_menu_edit), // ícone de "digitado"
+                String.valueOf(android.R.drawable.ic_menu_edit),
                 texto
         );
 

@@ -11,7 +11,6 @@ public interface HistoricoDao {
     @Insert
     void inserir(ItemHistorico historico);
 
-    // Busca ordenando do mais recente (maior ID) para o mais antigo
     @Query("SELECT * FROM tabela_historico ORDER BY id DESC LIMIT 100")
     List<ItemHistorico> buscarTodoHistorico();
 }

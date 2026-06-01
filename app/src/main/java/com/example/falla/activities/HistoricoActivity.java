@@ -55,19 +55,19 @@ public class HistoricoActivity extends AppCompatActivity {
 
     private void carregarHistoricoDaBase() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            // Puxa do banco do mais recente para o mais antigo
+            // Puxa do banco do mais recente
             List<ItemHistorico> listaHistorico = db.historicoDao().buscarTodoHistorico();
 
-            // Desenha na tela (precisa ser na Thread Principal)
+            // Desenha na tela
             runOnUiThread(() -> {
                 containerListaHistorico.removeAllViews();
 
                 if (listaHistorico == null || listaHistorico.isEmpty()) {
-                    return; // Histórico vazio, não faz nada
+                    return;
                 }
 
                 for (ItemHistorico item : listaHistorico) {
-                    // Infla o "molde" que criamos (item_historico.xml)
+                    // Infla o item_historico.xml
                     View viewItem = getLayoutInflater().inflate(R.layout.item_historico, containerListaHistorico, false);
 
                     TextView txtHora = viewItem.findViewById(R.id.txt_hist_hora);
@@ -78,12 +78,12 @@ public class HistoricoActivity extends AppCompatActivity {
                     // Preenche com os dados do banco
                     txtHora.setText(item.hora);
                     txtData.setText(item.data);
-                    txtFala.setText(item.fala); // <- ADICIONAR
+                    txtFala.setText(item.fala);
 
 
 
 
-                    // Lógica para carregar a imagem (Idêntica à da MainActivity)
+                    // Lógica para carregar a imagem
                     AssetImageHelper.carregarImagem(this, item.imagemUri, imgSimbolo);
 
                     // Adiciona a linha na tela
