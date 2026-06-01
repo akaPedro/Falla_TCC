@@ -419,6 +419,13 @@ public class MainActivity extends AppCompatActivity {
 
                     txtFala.setText(card.getTexto());
 
+                    // Acessibilidade
+                    String textoAcessivel = card.getFala() != null && !card.getFala().isEmpty()
+                            ? card.getFala() : card.getTexto();
+                    imgSimbolo.setContentDescription("Imagem: " + textoAcessivel);
+                    cardRoot.setContentDescription(textoAcessivel);
+                    imgEstrela.setContentDescription(card.isFavorito() ? "Remover dos favoritos" : "Adicionar aos favoritos");
+
                     // Tratamento dos assets
                     AssetImageHelper.carregarImagem(MainActivity.this, card.getImagemUri(), imgSimbolo);
 
@@ -442,7 +449,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    // ✅ Aplica a cor da categoria no card
+                    // Switch Access — torna o card navegável e focável
+                    cardRoot.setFocusable(true);
+                    cardRoot.setFocusableInTouchMode(false);
+                    cardRoot.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+
+                    // Estrela também precisa ser alcançável separadamente
+                    imgEstrela.setFocusable(true);
+                    imgEstrela.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+
+                    // Aplica a cor da categoria no card
                     cardRoot.setCardBackgroundColor(obterCorCategoria(categoria));
 
 
@@ -683,7 +699,7 @@ public class MainActivity extends AppCompatActivity {
                 // ── EU ──
                 cards.add(new ItemCard("Estou feliz",         CategoriaItem.PESSOAL_EU, "assets/pessoal/smiley.png"));
                 cards.add(new ItemCard("Estou triste",        CategoriaItem.PESSOAL_EU, "assets/pessoal/slightly_frowning_face.png"));
-                cards.add(new ItemCard("Estou com raiva",     CategoriaItem.PESSOAL_EU, "asstes/pessoal/rage.png"));
+                cards.add(new ItemCard("Estou com raiva",     CategoriaItem.PESSOAL_EU, "assets/pessoal/rage.png"));
                 cards.add(new ItemCard("Estou cansado",       CategoriaItem.PESSOAL_EU, "assets/pessoal/sweat.png"));
                 cards.add(new ItemCard("Estou com medo",      CategoriaItem.PESSOAL_EU, "assets/pessoal/fearful.png"));
                 cards.add(new ItemCard("Quero ficar sozinho", CategoriaItem.PESSOAL_EU, "assets/pessoal/dotted_line_face.png"));
@@ -740,7 +756,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // ══════════════════════════════════════════════════════
-            // COMIDAS — coringas
+            // ALIMENTOS — coringas
             // ══════════════════════════════════════════════════════
             if (!comidasOk) {
                 cards.add(new ItemCard("Estou com fome", CategoriaItem.COMIDAS, "assets/alimentos/drooling_face.png"));
@@ -770,7 +786,7 @@ public class MainActivity extends AppCompatActivity {
                 cards.add(new ItemCard("Cereal",   CategoriaItem.COMIDAS_CAFE_LANCHES, "assets/alimentos/bowl_with_spoon.png"));
 
                 // ── BEBIDAS ──
-                cards.add(new ItemCard("Água",          CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/droplet.jpg"));
+                cards.add(new ItemCard("Água",          CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/droplet.png"));
                 cards.add(new ItemCard("Suco",          CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/tropical_drink.png"));
                 cards.add(new ItemCard("Café",          CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/coffee.png"));
                 cards.add(new ItemCard("Leite",         CategoriaItem.COMIDAS_BEBIDAS, "assets/alimentos/glass_of_milk.png"));
@@ -943,6 +959,11 @@ public class MainActivity extends AppCompatActivity {
 
                     txtFala.setText(card.getFala());
 
+                    // ✅ Acessibilidade
+                    imgSimbolo.setContentDescription("Imagem: " + card.getFala());
+                    cardRoot.setContentDescription(card.getFala());
+                    imgEstrela.setContentDescription("Remover dos favoritos");
+
                     // Na gaveta, a estrela sempre aparece ligada
                     imgEstrela.setImageResource(android.R.drawable.btn_star_big_on);
 
@@ -956,6 +977,13 @@ public class MainActivity extends AppCompatActivity {
                             tts.speak(textoParaFalar, TextToSpeech.QUEUE_ADD, null, null);
                         }
                     });
+
+                    // Acessibilidade
+                    cardRoot.setFocusable(true);
+                    cardRoot.setFocusableInTouchMode(false);
+                    cardRoot.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+                    imgEstrela.setFocusable(true);
+                    imgEstrela.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
 
                     // Lógica de DESFAVORITAR direto da gaveta
                     imgEstrela.setOnClickListener(v -> {

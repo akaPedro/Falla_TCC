@@ -15,45 +15,48 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:padding="8dp">
 
-        <TextView
-            android:id="@+id/txt_card_fala"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:text="Item"
-            android:textColor="@color/texto_principal"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
+        <!-- Imagem ocupa todo o espaço disponível -->
         <ImageView
             android:id="@+id/img_card_simbolo"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_above="@id/txt_card_fala"
-            android:layout_marginBottom="4dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:scaleType="fitCenter"
             android:src="@android:drawable/ic_menu_help" />
 
-        <ImageView
-            android:id="@+id/img_estrela_favorito"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:src="@android:drawable/btn_star_big_off"
-            android:contentDescription="Favoritar"
-            android:clickable="true"
-            android:focusable="true"
-            app:tint="@color/cor_estrela_favorito"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:elevation="2dp" />
+        <!-- Texto fixo na base -->
+        <TextView
+            android:id="@+id/txt_card_fala"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Item"
+            android:textColor="@color/texto_principal"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"/>
 
-    </RelativeLayout>
+    </LinearLayout>
+
+    <!-- Estrela sobreposta no canto superior direito -->
+    <ImageView
+        android:id="@+id/img_estrela_favorito"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="4dp"
+        android:src="@android:drawable/btn_star_big_off"
+        android:contentDescription="Favoritar"
+        android:clickable="true"
+        android:focusable="true"
+        app:tint="@color/cor_estrela_favorito"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:elevation="2dp" />
+
 </androidx.cardview.widget.CardView>
