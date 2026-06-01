@@ -1,6 +1,5 @@
-package com.example.falla.historico;
+package com.example.falla.activities;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;

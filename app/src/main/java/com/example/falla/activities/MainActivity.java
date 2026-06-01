@@ -3,7 +3,6 @@ package com.example.falla.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +22,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,16 +30,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.falla.DAO.AppDatabase;
 import com.example.falla.R;
 import com.example.falla.card.AssetImageHelper;
-import com.example.falla.card.CardEntity;
 import com.example.falla.card.CategoriaItem;
 import com.example.falla.card.ItemCard;
 import com.example.falla.card.ItemHistorico;
-import com.example.falla.historico.HistoricoActivity;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
