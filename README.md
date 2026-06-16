@@ -59,18 +59,6 @@ Desenvolvido como TCC do curso de **Ciências da computação** na **Universidad
 
 ---
 
-## 📱 Telas
-
-| Splash | Onboarding | Principal | Fala IA |
-|---|---|---|---|
-| Tela de carregamento | Tutorial de primeiro uso | Cards e gavetas | Digitação livre |
-
-| Histórico | Perfil | Sobre | |
-|---|---|---|---|
-| Comunicações registradas | Foto e nome do usuário | Informações do app | |
-
----
-
 ## 🏗️ Arquitetura
 
 ```
