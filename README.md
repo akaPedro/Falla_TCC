@@ -24,7 +24,7 @@ O **Falla** é um aplicativo de **Comunicação Aumentativa e Alternativa (CAA)*
 
 O app utiliza o **Android Text-to-Speech (TTS)** para "falar" pelo usuário ao tocar em pictogramas organizados em gavetas por categoria, com subcategorias e cards personalizáveis.
 
-Desenvolvido como TCC do curso de **[nome do curso]** na **[nome da instituição]**.
+Desenvolvido como TCC do curso de **Ciências da computação** na **Universidade Estadual do Piaui**.
 
 ---
 
