@@ -179,7 +179,6 @@ O Falla foi desenvolvido com foco em conformidade com a **WCAG 2.1**:
 ## 📄 Licença
 
 Este projeto foi desenvolvido para fins acadêmicos como Trabalho de Conclusão de Curso.
-As imagens pictográficas do ARASAAC estão sob licença **Creative Commons BY-NC-SA 4.0**.
 
 ---
 
